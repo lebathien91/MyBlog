@@ -1,25 +1,50 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 
 import { MdClose, MdRestore } from "react-icons/md";
+import { toast } from "react-toastify";
 import Pagination from "../../../components/Pagination";
 import Table from "../../../components/Table";
+import { GlobalContext } from "../../../store/GlobalState";
 import { categories } from "../../../utils/data/categories";
-import { FormSubmit, InputChange } from "../../../utils/interface";
+import { getData } from "../../../utils/fetchData";
+import { FormSubmit, Icategory, InputChange } from "../../../utils/interface";
 import Admin from "../../../views/Layout/Admin";
 
 export default function TrashCategoriesPage() {
   const router = useRouter();
-  const [posts, setPosts] = useState(categories);
+
+  const { state, dispatch } = useContext(GlobalContext);
+  const { auth } = state;
+  const token = auth?.token;
+
+  const [posts, setPosts] = useState<Icategory[]>([]);
   const [limit, setLimit] = useState(10);
-  const [count, setCount] = useState(posts.length);
+  const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
   const page = router.query.page || 1;
 
   useEffect(() => {
     // getPost & getCount dựa trên page and limit
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    getData(`category/trash?page=${page}&limit=${limit}`, token)
+      .then((res) => {
+        if (!res.error) {
+          setPosts(res.categories);
+          setCount(res.count);
+        }
+        dispatch({ type: "NOTIFY", payload: {} });
+      })
+      .catch((error) => {
+        setPosts([]);
+        setCount(0);
+        dispatch({ type: "NOTIFY", payload: {} });
+
+        toast.error(error, { theme: "colored" });
+      });
   }, [limit, page]);
+
   const handleCheckBox = (e: InputChange) => {
     const { value, checked } = e.target as HTMLInputElement;
 
@@ -30,7 +55,7 @@ export default function TrashCategoriesPage() {
       setPosts(newPosts);
     } else {
       const newPosts = posts.map((post) =>
-        post.id.toString() === value ? { ...post, isChecked: checked } : post
+        post._id.toString() === value ? { ...post, isChecked: checked } : post
       );
       setPosts(newPosts);
     }
@@ -41,7 +66,7 @@ export default function TrashCategoriesPage() {
     let selectPosts: any = [];
     posts.forEach((post) => {
       if (post.isChecked) {
-        selectPosts.push(post.id);
+        selectPosts.push(post._id);
       }
     });
     console.log(selectPosts);
@@ -105,11 +130,11 @@ export default function TrashCategoriesPage() {
         </thead>
         <tbody>
           {posts.map((post, index) => (
-            <tr key={post.id}>
+            <tr key={post._id}>
               <td className="py-3 border-b text-center pr-4">
                 <input
                   type="checkbox"
-                  value={post.id}
+                  value={post._id}
                   checked={post?.isChecked || false}
                   onChange={handleCheckBox}
                 />

@@ -16,6 +16,7 @@ export default function CategoriesPage() {
 
   const { state, dispatch } = useContext(GlobalContext);
   const { auth } = state;
+  const token = auth?.token;
 
   const [posts, setPosts] = useState<Icategory[]>([]);
   const [limit, setLimit] = useState(10);
@@ -26,10 +27,13 @@ export default function CategoriesPage() {
   useEffect(() => {
     // getPost & getCount dựa trên page and limit
     dispatch({ type: "NOTIFY", payload: { loading: true } });
-    getData(`category?page=${page}&limit=${limit}`)
+    getData(`category?page=${page}&limit=${limit}`, token)
       .then((res) => {
-        setPosts(res.categories);
-        setCount(res.count);
+        if (!res.error) {
+          setPosts(res.categories);
+          setCount(res.count);
+        }
+
         dispatch({ type: "NOTIFY", payload: {} });
       })
       .catch((error) => {

@@ -1,25 +1,48 @@
 import Link from "next/link";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
 import Admin from "../../../views/Layout/Admin";
 import Table from "../../../components/Table";
 import Pagination from "../../../components/Pagination";
 
-import { tags } from "../../../utils/data/tags";
 import { useRouter } from "next/router";
-import { FormSubmit, InputChange } from "../../../utils/interface";
+import { FormSubmit, InputChange, Itag } from "../../../utils/interface";
+import { GlobalContext } from "../../../store/GlobalState";
+import { getData } from "../../../utils/fetchData";
+import { toast } from "react-toastify";
 
 export default function TagsPage() {
   const router = useRouter();
-  const [posts, setPosts] = useState(tags);
+
+  const { state, dispatch } = useContext(GlobalContext);
+  const { auth } = state;
+  const token = auth?.token;
+
+  const [posts, setPosts] = useState<Itag[]>([]);
   const [limit, setLimit] = useState(10);
-  const [count, setCount] = useState(posts.length);
+  const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
   const page = router.query.page || 1;
 
   useEffect(() => {
     // getPost & getCount dựa trên page and limit
-    console.log(page, limit);
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    getData(`tag?populate=category&page=${page}&limit=${limit}`, token)
+      .then((res) => {
+        if (!res.error) {
+          setPosts(res.tags);
+          setCount(res.count);
+        }
+
+        dispatch({ type: "NOTIFY", payload: {} });
+      })
+      .catch((error) => {
+        setPosts([]);
+        setCount(0);
+        dispatch({ type: "NOTIFY", payload: {} });
+
+        toast.error(error, { theme: "colored" });
+      });
   }, [limit, page]);
 
   const handleCheckBox = (e: InputChange) => {
@@ -32,7 +55,7 @@ export default function TagsPage() {
       setPosts(newPosts);
     } else {
       const newPosts = posts.map((post) =>
-        post.id.toString() === value ? { ...post, isChecked: checked } : post
+        post._id.toString() === value ? { ...post, isChecked: checked } : post
       );
       setPosts(newPosts);
     }
@@ -43,7 +66,7 @@ export default function TagsPage() {
     let selectPosts: any = [];
     posts.forEach((post) => {
       if (post.isChecked) {
-        selectPosts.push(post.id);
+        selectPosts.push(post._id);
       }
     });
     console.log(selectPosts);
@@ -105,21 +128,23 @@ export default function TagsPage() {
         </thead>
         <tbody>
           {posts.map((post, index) => (
-            <tr key={post.id}>
+            <tr key={post._id}>
               <td className="py-3 border-b text-center pr-4">
                 <input
                   type="checkbox"
-                  value={post.id}
+                  value={post._id}
                   checked={post?.isChecked || false}
                   onChange={handleCheckBox}
                 />
               </td>
               <td className="py-3 border-b pr-4">{index + 1}</td>
               <td className="py-3 border-b">{post.name}</td>
-              <td className="py-3 border-b">{post.category}</td>
+              <td className="py-3 border-b">
+                {typeof post.category === "object" && post.category.name}
+              </td>
               <td className="py-3 border-b">
                 <div className="flex">
-                  <Link href={`/me/tag/${post.id}`}>
+                  <Link href={`/me/tag/${post._id}`}>
                     <a className="mr-3 text-sky-800 text-xl">
                       <BiEdit />
                     </a>
