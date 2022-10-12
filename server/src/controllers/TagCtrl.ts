@@ -120,9 +120,12 @@ const TagCtrl = class {
   // Route: /tag/:id
   async findById(req: IReqAuth, res: Response) {
     try {
-      const { id } = req.params;
+      const populate = req.query.populate as string;
 
-      const tag = await Tags.findById({ _id: id, deleted: null });
+      const tag = await Tags.findById({
+        _id: req.params.id,
+        deleted: null,
+      }).populate(populate);
       if (!tag) return res.status(400).json({ error: "Invalid Tag." });
 
       res.json({ success: "Find Tag Success", tag });

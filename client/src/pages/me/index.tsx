@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 import {
   MdCategory,
@@ -7,11 +7,14 @@ import {
   MdOutlineAccessTime,
 } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
-import { articles } from "../../utils/data/articles";
+
 import Table from "../../components/Table";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import { tags } from "../../utils/data/tags";
+
 import Admin from "../../views/Layout/Admin";
+import { Iarticle, Itag } from "../../utils/interface";
+import { getData } from "../../utils/fetchData";
+import { toast } from "react-toastify";
 
 const cards = [
   {
@@ -45,6 +48,26 @@ const cards = [
 ];
 
 export default function DashboardPage() {
+  const [articles, setArticles] = useState<Iarticle[]>([]);
+  const [tags, setTags] = useState<Itag[]>([]);
+
+  useEffect(() => {
+    getData(`article?limit=${5}`)
+      .then((res) => {
+        setArticles(res.articles);
+      })
+      .catch((error) => {
+        toast.error(error, { theme: "colored" });
+      });
+
+    getData(`tag?limit=${5}`)
+      .then((res) => {
+        setTags(res.tags);
+      })
+      .catch((error) => {
+        toast.error(error, { theme: "colored" });
+      });
+  }, []);
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
@@ -82,20 +105,20 @@ export default function DashboardPage() {
             <thead className="text-blue-800 font-semibold text-md">
               <tr>
                 <th className="py-3 border-b text-center pr-4">ID</th>
-                <th className="py-3 border-b text-left">Title</th>
-                <th className="py-3 border-b text-left">Users</th>
-                <th className="py-3 border-b text-left">Action</th>
+                <th className="py-3 pr-8 border-b text-left">Title</th>
+
+                <th className="py-3 border-b text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               {articles.map((article, i) => (
-                <tr key={article.id}>
-                  <td className="py-3 border-b text-center pr-4">{i + 1}</td>
+                <tr key={article._id}>
+                  <td className="py-3 pr-4 border-b text-center">{i + 1}</td>
 
-                  <td className="py-3 border-b">{article.title}</td>
-                  <td className="py-3 border-b">{article.user}</td>
-                  <td className="py-3 border-b">
-                    <div className="flex">
+                  <td className="py-3 border-b pr-8">{article.title}</td>
+
+                  <td className="py-3 border-b text-center">
+                    <div className="flex items-center justify-center">
                       <a href="#" className="mr-3 text-sky-800 text-xl">
                         <BiEdit />
                       </a>
@@ -118,20 +141,20 @@ export default function DashboardPage() {
             <thead className="text-blue-800 font-semibold text-md">
               <tr>
                 <th className="py-3 border-b text-center pr-4">ID</th>
-                <th className="py-3 border-b text-left">Name</th>
-                <th className="py-3 border-b text-left">Category</th>
-                <th className="py-3 border-b text-left">Action</th>
+                <th className="py-3 pr-8 border-b text-left">Name</th>
+
+                <th className="p-3 border-b text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               {tags.slice(0, 5).map((tag, i) => (
-                <tr key={tag.id}>
+                <tr key={tag._id}>
                   <td className="py-3 border-b text-center pr-4">{i + 1}</td>
 
-                  <td className="py-3 border-b">{tag.name}</td>
-                  <td className="py-3 border-b">{tag.category}</td>
-                  <td className="py-3 border-b">
-                    <div className="flex">
+                  <td className="py-3 pr-8 border-b">{tag.name}</td>
+
+                  <td className="p-3 border-b text-center">
+                    <div className="flex items-center justify-center">
                       <a href="#" className="mr-3 text-sky-800 text-xl">
                         <BiEdit />
                       </a>

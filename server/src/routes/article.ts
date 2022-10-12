@@ -11,14 +11,14 @@ router.get("/article/trash", auth, isEditor, ArticleCtrl.trash);
 router.patch("/article/restore/:id", auth, isEditor, ArticleCtrl.restore);
 router.patch("/article/restore", auth, isEditor, ArticleCtrl.restoreMany);
 
-router.get("/article/:slug", ArticleCtrl.findBySlug);
+router.get("/article/slug/:slug", ArticleCtrl.findBySlug);
 
 router
   .route("/article/:id")
+  .get(ArticleCtrl.findById)
   .put(auth, ArticleCtrl.update)
   .patch(auth, ArticleCtrl.delete)
   .delete(auth, isAdmin, ArticleCtrl.destroy);
-// .get(ArticleCtrl.findById);
 
 router
   .route("/article")

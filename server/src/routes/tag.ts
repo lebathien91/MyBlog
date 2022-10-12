@@ -10,14 +10,14 @@ router.get("/tag/trash", TagCtrl.trash);
 router.patch("/tag/restore/:id", auth, isAdmin, TagCtrl.restore);
 router.patch("/tag/restore", auth, isAdmin, TagCtrl.restoreMany);
 
-router.get("/tag/:slug", TagCtrl.findBySlug);
+router.get("/tag/slug/:slug", TagCtrl.findBySlug);
 
 router
   .route("/tag/:id")
+  .get(TagCtrl.findById)
   .put(auth, isEditor, TagCtrl.update)
   .patch(auth, isAdmin, TagCtrl.delete)
   .delete(auth, isRoot, TagCtrl.destroy);
-// .get(TagCtrl.findById);
 
 router
   .route("/tag")

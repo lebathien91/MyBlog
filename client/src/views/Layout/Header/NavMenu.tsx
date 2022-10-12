@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
-import { categories } from "../../../utils/data/categories";
+import { toast } from "react-toastify";
+import { Icategory } from "../../../utils/interface";
+import { getData } from "../../../utils/fetchData";
 
 interface NavProps {
   isMobile: boolean;
@@ -29,6 +31,16 @@ const NavMenu = ({ isMobile, setIsMobile }: NavProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [categories, setCategories] = useState<Icategory[]>([]);
+  useEffect(() => {
+    getData(`category`)
+      .then((res) => {
+        setCategories(res.categories);
+      })
+      .catch((error) => {
+        toast.error(error, { theme: "colored" });
+      });
+  }, []);
   return (
     <nav
       ref={navElement}
@@ -55,7 +67,7 @@ const NavMenu = ({ isMobile, setIsMobile }: NavProps) => {
         </li>
         {categories.map((category) => (
           <li
-            key={category.id}
+            key={category._id}
             className="mr-4 font-bold uppercase text-lg ml-4 lg:ml-0 py-3"
           >
             <a href={`/category/${category.slug}`}>{category.name}</a>

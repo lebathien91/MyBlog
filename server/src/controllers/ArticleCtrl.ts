@@ -115,8 +115,12 @@ const ArticleCtrl = class {
   // Method: GET
   // Route: /article/:id
   async findById(req: IReqAuth, res: Response) {
+    const populate = req.query.populate as string;
     try {
-      const article = await Articles.findById({ _id: req.params.id });
+      const article = await Articles.findById({
+        _id: req.params.id,
+        deleted: null,
+      }).populate(populate);
       if (!article) return res.status(400).json({ error: "Invalid Article." });
 
       res.json({ success: "Find Article Success", article });

@@ -1,15 +1,23 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
 import Editor from "../../../components/Editor";
 import { AsyncPaginate } from "react-select-async-paginate";
 import { FormSubmit, InputChange } from "../../../utils/interface";
 
 import Admin from "../../../views/Layout/Admin";
 
-import { tags } from "../../../utils/data/tags";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { useRouter } from "next/router";
+import { GlobalContext } from "../../../store/GlobalState";
+import { getData } from "../../../utils/fetchData";
 
 export default function NewArticle() {
+  const router = useRouter();
+
+  const { state, dispatch } = useContext(GlobalContext);
+  const { auth } = state;
+  const token = auth.token;
+
   interface Article {
     title: string;
     description: string;
@@ -22,8 +30,8 @@ export default function NewArticle() {
     tag: "",
     content: "",
   };
-  const [formData, setFormData] = useState(initialState);
 
+  const [formData, setFormData] = useState(initialState);
   const [body, setBody] = useState<string>("");
   const [tagId, setTagId] = useState<string | number>("");
 
@@ -35,9 +43,11 @@ export default function NewArticle() {
       if (inputValue.length < 2) return { options };
 
       // Get Tags
-      tags.forEach((tag) => {
+      const res = await getData(`tag?search=${inputValue}`);
+
+      res.tags.forEach((tag: any) => {
         options.push({
-          value: tag.id,
+          value: tag._id,
           label: tag.name,
         });
       });

@@ -1,18 +1,28 @@
 import moment from "moment";
 import { useRouter } from "next/router";
-import React, { ReactElement, useEffect, useState } from "react";
-import { categories } from "../../../utils/data/categories";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { GlobalContext } from "../../../store/GlobalState";
+
+import { getData } from "../../../utils/fetchData";
 import { FormSubmit, InputChange } from "../../../utils/interface";
 import Admin from "../../../views/Layout/Admin";
 
 export default function UpdateCategory() {
   const router = useRouter();
   const { id } = router.query;
+  const { state, dispatch } = useContext(GlobalContext);
+  const { auth } = state;
+  const token = auth.token;
 
   const initialState: {
+    _id: string | undefined;
     name: string | undefined;
     description: string | undefined;
+    createdAt?: string;
+    updatedAt?: string;
   } = {
+    _id: "",
     name: "",
     description: "",
   };
@@ -21,17 +31,29 @@ export default function UpdateCategory() {
 
   useEffect(() => {
     if (id) {
-      const category = categories.find((category) => {
-        return category.id.toString() === id;
-      });
+      dispatch({ type: "NOTIFY", payload: { loading: true } });
+      getData(`article/id/${id}?populate=tag`)
+        .then((res) => {
+          const { _id, name, description, createdAt, updatedAt } = res.article;
 
-      if (category) {
-        setFormData({ name: category.name, description: category.description });
-      }
+          setFormData({
+            _id,
+            name,
+            description,
+            createdAt,
+            updatedAt,
+          });
+
+          dispatch({ type: "NOTIFY", payload: {} });
+        })
+        .catch((error) => {
+          toast.error(error);
+          dispatch({ type: "NOTIFY", payload: {} });
+        });
     }
   }, [id]);
 
-  const { name, description } = formData;
+  const { _id, name, description, createdAt, updatedAt } = formData;
 
   const handleChangeInput = (e: InputChange) => {
     const { name, value } = e.target as HTMLInputElement;

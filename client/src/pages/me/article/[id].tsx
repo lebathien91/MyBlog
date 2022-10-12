@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 import { toast } from "react-toastify";
 
@@ -6,21 +6,28 @@ import Admin from "../../../views/Layout/Admin";
 import Editor from "../../../components/Editor";
 
 import { FormSubmit, InputChange } from "../../../utils/interface";
-import { tags } from "../../../utils/data/tags";
-import { articles } from "../../../utils/data/articles";
 import { useRouter } from "next/router";
-import moment from "moment";
+
+import { getData, putData } from "../../../utils/fetchData";
+import { GlobalContext } from "../../../store/GlobalState";
 
 export default function UpdateArticle() {
   const router = useRouter();
   const { id } = router.query;
+  const { state, dispatch } = useContext(GlobalContext);
+  const { auth } = state;
+  const token = auth.token;
 
   const initialState: {
+    _id: string;
     title: string;
     description: string;
-    tag: string | number;
+    tag: string | object;
     content: string;
+    createdAt?: string;
+    updatedAt?: string;
   } = {
+    _id: "",
     title: "",
     description: "",
     tag: "",
@@ -28,42 +35,58 @@ export default function UpdateArticle() {
   };
   const [formData, setFormData] = useState(initialState);
   const [body, setBody] = useState<string>("");
-  const [tagId, setTagId] = useState<string | number>("");
-  const [defaultTag, setDefaultTag] = useState<string | number | undefined>();
+  const [tagId, setTagId] = useState<string>("");
+  const [defaultTag, setDefaultTag] = useState<string | undefined>();
 
   useEffect(() => {
     if (id) {
       // Get Data
-      const article = articles.find((article) => {
-        return article.id.toString() === id;
-      });
-      if (article) {
-        const { title, description, tag, content } = article;
-        setFormData({ title, description, tag, content });
+      dispatch({ type: "NOTIFY", payload: { loading: true } });
+      getData(`article/${id}?populate=tag`)
+        .then((res) => {
+          const {
+            _id,
+            title,
+            description,
+            tag,
+            content,
+            createdAt,
+            updatedAt,
+          } = res.article;
 
-        const tagName = tags.find((item) => {
-          return item.id === tag;
+          setFormData({
+            _id,
+            title,
+            description,
+            tag: tag._id,
+            content,
+            createdAt,
+            updatedAt,
+          });
+          setDefaultTag(tag.name);
+          setBody(content);
+          dispatch({ type: "NOTIFY", payload: {} });
+        })
+        .catch((error) => {
+          toast.error(error);
+          dispatch({ type: "NOTIFY", payload: {} });
         });
-
-        setDefaultTag(tagName?.name);
-        setBody(content);
-      } else {
-        toast.error("Không tìm thấy bài viết");
-      }
     }
   }, [id]);
 
-  const { title, description, tag, content } = formData;
+  const { _id, title, description, tag, createdAt, updatedAt } = formData;
 
   const loadTags = async (inputValue: string) => {
     let options: { value: string | number; label: string }[] = [];
     try {
       if (inputValue.length < 2) return { options };
 
+      const res = await getData(`tag?search=${inputValue}`);
+
       // Get Tags
-      tags.forEach((tag) => {
+      res.tags.forEach((tag: any) => {
         options.push({
-          value: tag.id,
+          value: tag._id,
           label: tag.name,
         });
       });
@@ -75,37 +98,43 @@ export default function UpdateArticle() {
     }
   };
 
-  const handleChangeTagSelect = (e: any) => {
-    setTagId(e.value);
-  };
-
   const handleChangeInput = (e: InputChange) => {
     const { name, value } = e.target as HTMLInputElement;
-
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleChangeTagSelect = (e: any) => {
+    console.log(e.value);
+    setTagId(e.value);
+  };
+
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
-    if (!tagId)
-      return toast.error("Bạn chưa nhập Tag cho bài viết", {
-        theme: "colored",
-      });
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
 
-    console.log({ ...formData, tag: tagId, content: body });
+    const res = await putData(
+      `article/${_id}`,
+      { ...formData, tag: tagId ? tagId : tag, content: body },
+      token
+    );
+    dispatch({ type: "NOTIFY", payload: {} });
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    toast.success(res.success, { theme: "colored" });
+    return router.push("/me/article");
   };
 
   return (
     <form className="w-full" onSubmit={handleSubmit}>
       <div className="flex justify-between px-8 mb-8">
-        <h2 className="text-4xl">Create an article</h2>
+        <h2 className="text-4xl">Update Article</h2>
         <button className="px-4 py-2 bg-green-800 rounded-sm text-white text-md font-semibold">
           Save
         </button>
       </div>
       <div className="grid grid-cols-8 gap-8">
-        <div className="p-8 col-span-8 lg:col-span-5 bg-white rounded-md shadow-md border">
+        <div className="p-8 col-span-8 xl:col-span-5 bg-white rounded-md shadow-md border">
           <div className="mb-8">
             <label htmlFor="title" className="w-full text-xl font-semibold">
               Title
@@ -144,7 +173,7 @@ export default function UpdateArticle() {
             <Editor body={body} setBody={setBody} />
           </div>
         </div>
-        <div className="col-span-8 lg:col-span-3">
+        <div className="col-span-8 xl:col-span-3">
           <div className="rounded-md shadow-md p-6 mb-8 bg-white border">
             <h3 className="uppercase text-gray-500 border-b">Relation</h3>
             <div className="my-4">
@@ -166,11 +195,11 @@ export default function UpdateArticle() {
             <h3 className="uppercase text-gray-500 border-b">Infomation</h3>
             <div className="flex justify-between py-3">
               <span>Created</span>
-              <span>Now</span>
+              <span>{createdAt}</span>
             </div>
             <div className="flex justify-between py-3">
               <span>Updated</span>
-              <span>{moment().format("DD/MM/Y")}</span>
+              <span>{updatedAt}</span>
             </div>
             <div className="flex justify-between py-3">
               <span>By</span>
