@@ -1,15 +1,15 @@
 import Link from "next/link";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
-import { BiEdit, BiTrash } from "react-icons/bi";
-import Admin from "../../../views/Layout/Admin";
-import Table from "../../../components/Table";
-import Pagination from "../../../components/Pagination";
-
 import { useRouter } from "next/router";
-import { FormSubmit, InputChange, Itag } from "../../../utils/interface";
-import { GlobalContext } from "../../../store/GlobalState";
-import { getData } from "../../../utils/fetchData";
 import { toast } from "react-toastify";
+import { BiEdit, BiTrash } from "react-icons/bi";
+
+import Admin from "@/views/Layout/Admin";
+import Table from "@/components/Table";
+import Pagination from "@/components/Pagination";
+import { GlobalContext } from "@/store/GlobalState";
+import { getData } from "@/utils/fetchData";
+import { FormSubmit, InputChange, ITag } from "@/utils/interface";
 
 export default function TagsPage() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function TagsPage() {
   const { auth } = state;
   const token = auth?.token;
 
-  const [posts, setPosts] = useState<Itag[]>([]);
+  const [posts, setPosts] = useState<ITag[]>([]);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);

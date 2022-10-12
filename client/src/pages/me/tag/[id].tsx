@@ -1,16 +1,12 @@
+import { useRouter } from "next/router";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import moment from "moment";
 
-import { GlobalContext } from "../../../store/GlobalState";
-import { FormSubmit, Icategory, InputChange } from "../../../utils/interface";
-
-import Admin from "../../../views/Layout/Admin";
-
-import { useRouter } from "next/router";
-
-import NextImage from "../../../components/Image";
-import { getData } from "../../../utils/fetchData";
+import Admin from "@/views/Layout/Admin";
+import NextImage from "@/components/Image";
+import { getData } from "@/utils/fetchData";
+import { GlobalContext } from "@/store/GlobalState";
+import { InputChange, FormSubmit, ICategory, ITag } from "@/utils/interface";
 
 export default function UpdateTag() {
   const router = useRouter();
@@ -18,15 +14,7 @@ export default function UpdateTag() {
   const { state, dispatch } = useContext(GlobalContext);
   const token = state.auth.token;
 
-  const initialState: {
-    _id: string;
-    name: string;
-    description: string;
-    category: string;
-    thumbnail: string;
-    createdAt?: string;
-    updatedAt?: string;
-  } = {
+  const initialState = {
     _id: "",
     name: "",
     description: "",
@@ -34,14 +22,19 @@ export default function UpdateTag() {
     thumbnail: "",
   };
 
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState<ITag>(initialState);
   const [newThumbnail, setNewThumbnail] = useState<File>();
-  const [categories, setCategories] = useState<Icategory[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   useEffect(() => {
-    getData("category").then((res) => {
-      setCategories(res.categories);
-    });
+    getData("category")
+      .then((res) => {
+        setCategories(res.categories);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error, { theme: "colored" });
+      });
   }, []);
 
   useEffect(() => {
@@ -50,26 +43,7 @@ export default function UpdateTag() {
       dispatch({ type: "NOTIFY", payload: { loading: true } });
       getData(`tag/${id}`)
         .then((res) => {
-          const {
-            _id,
-            name,
-            description,
-            category,
-            thumbnail,
-            createdAt,
-            updatedAt,
-          } = res.tag;
-
-          setFormData({
-            _id,
-            name,
-            description,
-            category,
-            thumbnail,
-            createdAt,
-            updatedAt,
-          });
-
+          setFormData(res.tag);
           dispatch({ type: "NOTIFY", payload: {} });
         })
         .catch((error) => {
@@ -136,7 +110,7 @@ export default function UpdateTag() {
             <select
               name="category"
               id="category"
-              value={category}
+              value={typeof category === "string" ? category : category._id}
               onChange={handleChangeInput}
               className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
             >
@@ -203,7 +177,7 @@ export default function UpdateTag() {
             <footer className="px-4 py-2 flex justify-between text-[17px]">
               <span>
                 {category
-                  ? categories.find((cat) => cat._id.toString() === category)
+                  ? categories.find((cat) => cat._id?.toString() === category)
                       ?.name
                   : "Category"}
               </span>

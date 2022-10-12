@@ -1,14 +1,11 @@
 import Link from "next/link";
-import { ReactElement, useContext, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { GlobalContext } from "../../../store/GlobalState";
-import { FormSubmit, InputChange } from "../../../utils/interface";
-
-import Admin from "../../../views/Layout/Admin";
-
-import { categories as cats } from "../../../utils/data/categories";
-import moment from "moment";
+import Admin from "@/views/Layout/Admin";
+import { GlobalContext } from "@/store/GlobalState";
+import { getData } from "@/utils/fetchData";
+import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function NewTag() {
   const { state, dispatch } = useContext(GlobalContext);
@@ -21,7 +18,17 @@ export default function NewTag() {
   };
 
   const [formData, setFormData] = useState(initialState);
-  const [categories, setCatgories] = useState(cats);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  useEffect(() => {
+    getData("category")
+      .then((res) => {
+        setCategories(res.categories);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error, { theme: "colored" });
+      });
+  }, []);
 
   const { name, description, category, thumbnail } = formData;
 
@@ -77,7 +84,7 @@ export default function NewTag() {
             >
               <option value="">-- Choose --</option>
               {categories.map((category) => (
-                <option key={category.id} value={category.id}>
+                <option key={category._id} value={category._id}>
                   {category.name}
                 </option>
               ))}
@@ -141,12 +148,12 @@ export default function NewTag() {
                 <a>
                   {category
                     ? categories.filter(
-                        (cat) => cat.id.toString() == category
+                        (cat) => cat._id?.toString() == category
                       )[0].name
                     : "Category"}
                 </a>
               </Link>
-              <span>{moment().format("D/MM/YY")}</span>
+              <span>{new Date().toISOString()}</span>
             </footer>
           </div>
         </div>

@@ -1,7 +1,6 @@
-import moment from "moment";
-import React, { ReactElement, useState } from "react";
-import { FormSubmit, InputChange } from "../../../utils/interface";
-import Admin from "../../../views/Layout/Admin";
+import { ReactElement, useState } from "react";
+import Admin from "@/views/Layout/Admin";
+import { FormSubmit, InputChange } from "@/utils/interface";
 
 export default function NewCategory() {
   const [formData, setFormData] = useState({
@@ -68,7 +67,7 @@ export default function NewCategory() {
             <h3 className="uppercase text-gray-500 border-b">Infomation</h3>
             <div className="flex justify-between py-3">
               <span>Created</span>
-              <span>{moment().format("DD/MM/YY")}</span>
+              <span>{new Date().toISOString()}</span>
             </div>
 
             <div className="flex justify-between py-3">

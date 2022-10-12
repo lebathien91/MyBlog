@@ -5,8 +5,8 @@ export type InputChange = ChangeEvent<
 >;
 export type FormSubmit = FormEvent<HTMLFormElement>;
 
-export interface Iuser {
-  _id: string;
+export interface IUser {
+  _id?: string;
   username: string;
   email: string;
   avatar: string;
@@ -15,36 +15,35 @@ export interface Iuser {
   isChecked?: boolean;
 }
 
-export interface Icategory {
-  _id: string;
+export interface ICategory {
+  _id?: string;
   name: string;
-  slug: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   description?: string;
   isChecked?: boolean;
 }
 
-export interface Itag {
+export interface ITag {
   _id: string;
   name: string;
-  slug: string;
   thumbnail: string;
   description: string;
-  category: string | Icategory;
-  createdAt: string;
-  updatedAt: string;
+  category: string | ICategory;
+  createdAt?: string;
+  updatedAt?: string;
   deleted?: string | null;
   isChecked?: boolean;
 }
 
-export interface Iarticle {
-  _id: string;
+export interface IArticle {
+  _id?: string;
   title: string;
-  slug: string;
-  tag: string | number;
+  tag: string | ITag;
   description: string;
   content: string;
-  user: string | Iuser;
+  user?: string | IUser;
+  createdAt?: string;
+  updatedAt?: string;
   isChecked?: boolean;
 }

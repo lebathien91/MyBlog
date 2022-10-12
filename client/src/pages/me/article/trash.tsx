@@ -1,20 +1,19 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement, useContext, useEffect, useState } from "react";
-
-import { MdClose, MdRestore } from "react-icons/md";
-import Pagination from "../../../components/Pagination";
-import Table from "../../../components/Table";
-import Admin from "../../../views/Layout/Admin";
-
-import { FormSubmit, Iarticle, InputChange } from "../../../utils/interface";
-import { getData } from "../../../utils/fetchData";
 import { toast } from "react-toastify";
-import { GlobalContext } from "../../../store/GlobalState";
+import { MdClose, MdRestore } from "react-icons/md";
+
+import Admin from "@/views/Layout/Admin";
+import Table from "@/components/Table";
+import Pagination from "@/components/Pagination";
+import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
+import { getData } from "@/utils/fetchData";
+import { GlobalContext } from "@/store/GlobalState";
 
 export default function TrashArticlesPage() {
   const router = useRouter();
-  const [posts, setPosts] = useState<Iarticle[]>([]);
+  const [posts, setPosts] = useState<IArticle[]>([]);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -52,7 +51,7 @@ export default function TrashArticlesPage() {
       setPosts(newPosts);
     } else {
       const newPosts = posts.map((post) =>
-        post._id.toString() === value ? { ...post, isChecked: checked } : post
+        post._id?.toString() === value ? { ...post, isChecked: checked } : post
       );
       setPosts(newPosts);
     }

@@ -1,15 +1,13 @@
 import { ReactElement, useContext, useState } from "react";
-import Editor from "../../../components/Editor";
 import { AsyncPaginate } from "react-select-async-paginate";
-import { FormSubmit, InputChange } from "../../../utils/interface";
-
-import Admin from "../../../views/Layout/Admin";
-
 import { toast } from "react-toastify";
-import moment from "moment";
 import { useRouter } from "next/router";
-import { GlobalContext } from "../../../store/GlobalState";
-import { getData } from "../../../utils/fetchData";
+
+import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
+import Admin from "@/views/Layout/Admin";
+import Editor from "@/components/Editor";
+import { GlobalContext } from "@/store/GlobalState";
+import { getData } from "@/utils/fetchData";
 
 export default function NewArticle() {
   const router = useRouter();
@@ -18,20 +16,14 @@ export default function NewArticle() {
   const { auth } = state;
   const token = auth.token;
 
-  interface Article {
-    title: string;
-    description: string;
-    tag: string | number;
-    content: string;
-  }
-  const initialState: Article = {
+  const initialState = {
     title: "",
     description: "",
     tag: "",
     content: "",
   };
 
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState<IArticle>(initialState);
   const [body, setBody] = useState<string>("");
   const [tagId, setTagId] = useState<string | number>("");
 
@@ -149,7 +141,7 @@ export default function NewArticle() {
             <h3 className="uppercase text-gray-500 border-b">Infomation</h3>
             <div className="flex justify-between py-3">
               <span>Created</span>
-              <span>{moment().format("h:mm a D/MM/YY")}</span>
+              <span>{new Date().toISOString()}</span>
             </div>
 
             <div className="flex justify-between py-3">

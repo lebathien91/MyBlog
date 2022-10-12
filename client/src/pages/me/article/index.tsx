@@ -1,20 +1,21 @@
 import Link from "next/link";
-import { ReactElement, useContext, useEffect, useState } from "react";
-import { BiEdit, BiTrash } from "react-icons/bi";
-import Admin from "../../../views/Layout/Admin";
-import Table from "../../../components/Table";
-import Pagination from "../../../components/Pagination";
 import { useRouter } from "next/router";
-import { FormSubmit, InputChange } from "../../../utils/interface";
+import { ReactElement, useContext, useEffect, useState } from "react";
 
-import { Iarticle } from "../../../utils/interface";
-import { getData } from "../../../utils/fetchData";
-import { GlobalContext } from "../../../store/GlobalState";
 import { toast } from "react-toastify";
+import { BiEdit, BiTrash } from "react-icons/bi";
+
+import { FormSubmit, InputChange } from "@/utils/interface";
+import Admin from "@/views/Layout/Admin";
+import Table from "@/components/Table";
+import Pagination from "@/components/Pagination";
+import { IArticle } from "@/utils/interface";
+import { getData } from "@/utils/fetchData";
+import { GlobalContext } from "@/store/GlobalState";
 
 export default function ArticlesPage() {
   const router = useRouter();
-  const [posts, setPosts] = useState<Iarticle[]>([]);
+  const [posts, setPosts] = useState<IArticle[]>([]);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -50,7 +51,7 @@ export default function ArticlesPage() {
       setPosts(newPosts);
     } else {
       const newPosts = posts.map((post) =>
-        post._id.toString() === value ? { ...post, isChecked: checked } : post
+        post._id?.toString() === value ? { ...post, isChecked: checked } : post
       );
       setPosts(newPosts);
     }

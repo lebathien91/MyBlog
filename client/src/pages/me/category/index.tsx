@@ -1,15 +1,15 @@
 import Link from "next/link";
-import { ReactElement, useContext, useEffect, useState } from "react";
-import { BiEdit, BiTrash } from "react-icons/bi";
-import Admin from "../../../views/Layout/Admin";
-
-import Table from "../../../components/Table";
-import Pagination from "../../../components/Pagination";
 import { useRouter } from "next/router";
-import { FormSubmit, Icategory, InputChange } from "../../../utils/interface";
-import { GlobalContext } from "../../../store/GlobalState";
-import { getData } from "../../../utils/fetchData";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { BiEdit, BiTrash } from "react-icons/bi";
+
+import Admin from "@/views/Layout/Admin";
+import Table from "@/components/Table";
+import Pagination from "@/components/Pagination";
+import { GlobalContext } from "@/store/GlobalState";
+import { getData } from "@/utils/fetchData";
+import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function CategoriesPage() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function CategoriesPage() {
   const { auth } = state;
   const token = auth?.token;
 
-  const [posts, setPosts] = useState<Icategory[]>([]);
+  const [posts, setPosts] = useState<ICategory[]>([]);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -55,7 +55,7 @@ export default function CategoriesPage() {
       setPosts(newPosts);
     } else {
       const newPosts = posts.map((post) =>
-        post._id.toString() === value ? { ...post, isChecked: checked } : post
+        post._id?.toString() === value ? { ...post, isChecked: checked } : post
       );
       setPosts(newPosts);
     }
@@ -121,7 +121,6 @@ export default function CategoriesPage() {
             </th>
             <th className="py-3 border-b text-left pr-4">ID</th>
             <th className="py-3 border-b text-left">Name</th>
-            <th className="py-3 border-b text-left">Slug</th>
 
             <th className="py-3 border-b text-left">Action</th>
           </tr>
@@ -139,7 +138,6 @@ export default function CategoriesPage() {
               </td>
               <td className="py-3 border-b pr-4">{index + 1}</td>
               <td className="py-3 border-b">{post.name}</td>
-              <td className="py-3 border-b">{post.slug}</td>
 
               <td className="py-3 border-b">
                 <div className="flex">

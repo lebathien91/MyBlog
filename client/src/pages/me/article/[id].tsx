@@ -1,15 +1,13 @@
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 import { toast } from "react-toastify";
-
-import Admin from "../../../views/Layout/Admin";
-import Editor from "../../../components/Editor";
-
-import { FormSubmit, InputChange } from "../../../utils/interface";
 import { useRouter } from "next/router";
 
-import { getData, putData } from "../../../utils/fetchData";
-import { GlobalContext } from "../../../store/GlobalState";
+import Admin from "@/views/Layout/Admin";
+import Editor from "@/components/Editor";
+import { getData, putData } from "@/utils/fetchData";
+import { GlobalContext } from "@/store/GlobalState";
+import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
 
 export default function UpdateArticle() {
   const router = useRouter();
@@ -18,22 +16,14 @@ export default function UpdateArticle() {
   const { auth } = state;
   const token = auth.token;
 
-  const initialState: {
-    _id: string;
-    title: string;
-    description: string;
-    tag: string | object;
-    content: string;
-    createdAt?: string;
-    updatedAt?: string;
-  } = {
+  const initialState = {
     _id: "",
     title: "",
     description: "",
     tag: "",
     content: "",
   };
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState<IArticle>(initialState);
   const [body, setBody] = useState<string>("");
   const [tagId, setTagId] = useState<string>("");
   const [defaultTag, setDefaultTag] = useState<string | undefined>();

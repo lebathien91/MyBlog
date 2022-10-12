@@ -2,7 +2,7 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import React, { ReactElement, useEffect, useState } from "react";
 import { users } from "../../../utils/data/users";
-import { FormSubmit, InputChange } from "../../../utils/interface";
+import { FormSubmit, InputChange, IUser } from "../../../utils/interface";
 
 import Admin from "../../../views/Layout/Admin";
 
@@ -11,14 +11,7 @@ export default function UpdateUser() {
 
   const { id } = router.query;
 
-  const initialState: {
-    avatar: string;
-    username: string;
-    email: string;
-    password: string;
-    cf_password: string;
-    role: number;
-  } = {
+  const initialState = {
     avatar: "",
     username: "",
     password: "",
@@ -27,7 +20,7 @@ export default function UpdateUser() {
     role: 0,
   };
 
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState<IUser>(initialState);
 
   useEffect(() => {
     if (id) {

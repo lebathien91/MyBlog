@@ -1,12 +1,11 @@
-import moment from "moment";
 import { useRouter } from "next/router";
-import React, { ReactElement, useContext, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { GlobalContext } from "../../../store/GlobalState";
 
-import { getData } from "../../../utils/fetchData";
-import { FormSubmit, InputChange } from "../../../utils/interface";
-import Admin from "../../../views/Layout/Admin";
+import Admin from "@/views/Layout/Admin";
+import { GlobalContext } from "@/store/GlobalState";
+import { getData } from "@/utils/fetchData";
+import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function UpdateCategory() {
   const router = useRouter();
@@ -15,19 +14,13 @@ export default function UpdateCategory() {
   const { auth } = state;
   const token = auth.token;
 
-  const initialState: {
-    _id: string | undefined;
-    name: string | undefined;
-    description: string | undefined;
-    createdAt?: string;
-    updatedAt?: string;
-  } = {
+  const initialState = {
     _id: "",
     name: "",
     description: "",
   };
 
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState<ICategory>(initialState);
 
   useEffect(() => {
     if (id) {
@@ -117,7 +110,7 @@ export default function UpdateCategory() {
             </div>
             <div className="flex justify-between py-3">
               <span>Updated</span>
-              <span>{moment().format("DD/MM/Y")}</span>
+              <span>{new Date().toISOString()}</span>
             </div>
             <div className="flex justify-between py-3">
               <span>By</span>
