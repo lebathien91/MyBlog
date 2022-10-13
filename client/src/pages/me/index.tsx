@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 
 import {
   MdCategory,
@@ -12,49 +12,48 @@ import Table from "../../components/DataTable";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
 import AuthRouter from "../../views/layout/AuthRouter";
-import { IArticle, ITag } from "../../utils/interface";
+import { IArticle, ICategory, ITag, IUser } from "../../utils/interface";
 import { getData } from "../../utils/fetchData";
 import { toast } from "react-toastify";
-
-const cards = [
-  {
-    icon: <FaUserAlt size="36px" />,
-    color: "bg-[#ffa726]",
-    category: "Users",
-    title: "235",
-    time: "Just Updated",
-  },
-  {
-    icon: <MdCategory size="36px" />,
-    color: "bg-[#66bb6a]",
-    category: "Categories",
-    title: "5",
-    time: "Just Updated",
-  },
-  {
-    icon: <MdLocalOffer size="36px" />,
-    color: "bg-[#ef5350]",
-    category: "Tags",
-    title: "75",
-    time: "Just Updated",
-  },
-  {
-    icon: <MdOutlineArticle size="36px" />,
-    color: "bg-[#26c6da]",
-    category: "Article",
-    title: "+245",
-    time: "Just Updated",
-  },
-];
+import { GlobalContext } from "@/store/GlobalState";
+import Link from "next/link";
 
 export default function DashboardPage() {
-  const [articles, setArticles] = useState<IArticle[]>([]);
+  const { state, dispatch } = useContext(GlobalContext);
+  const token = state.auth.token;
+
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [countUsers, setCountUsers] = useState<number>(0);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [countCategories, setCountCategories] = useState<number>(0);
   const [tags, setTags] = useState<ITag[]>([]);
+  const [countTag, setCountTag] = useState<number>(0);
+  const [articles, setArticles] = useState<IArticle[]>([]);
+  const [countArticle, setCountArticles] = useState<number>(0);
 
   useEffect(() => {
+    getData(`user?limit=${5}`, token)
+      .then((res) => {
+        setUsers(res.user);
+        setCountUsers(res.count);
+      })
+      .catch((error) => {
+        toast.error(error, { theme: "colored" });
+      });
+
+    getData(`category?limit=${5}`)
+      .then((res) => {
+        setCategories(res.categories);
+        setCountCategories(res.count);
+      })
+      .catch((error) => {
+        toast.error(error, { theme: "colored" });
+      });
+
     getData(`article?limit=${5}`)
       .then((res) => {
         setArticles(res.articles);
+        setCountArticles(res.count);
       })
       .catch((error) => {
         toast.error(error, { theme: "colored" });
@@ -63,11 +62,47 @@ export default function DashboardPage() {
     getData(`tag?limit=${5}`)
       .then((res) => {
         setTags(res.tags);
+        setCountTag(res.count);
       })
       .catch((error) => {
         toast.error(error, { theme: "colored" });
       });
   }, []);
+
+  const cards = [
+    {
+      icon: <FaUserAlt size="36px" />,
+      color: "bg-[#ffa726]",
+      category: "Users",
+      slug: "user",
+      count: countUsers,
+      time: "Just Updated",
+    },
+    {
+      icon: <MdCategory size="36px" />,
+      color: "bg-[#66bb6a]",
+      category: "Categories",
+      slug: "category",
+      count: countCategories,
+      time: "Just Updated",
+    },
+    {
+      icon: <MdLocalOffer size="36px" />,
+      color: "bg-[#ef5350]",
+      category: "Tags",
+      slug: "tag",
+      count: countTag,
+      time: "Just Updated",
+    },
+    {
+      icon: <MdOutlineArticle size="36px" />,
+      color: "bg-[#26c6da]",
+      category: "Article",
+      slug: "article",
+      count: countArticle,
+      time: "Just Updated",
+    },
+  ];
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
@@ -80,8 +115,10 @@ export default function DashboardPage() {
                 >
                   {card.icon}
                 </div>
-                <p className="text-[#999]">{card.category}</p>
-                <h3 className="text-2xl text-[#3c4858]">{card.title}</h3>
+                <p className="text-[#999]">
+                  <Link href={`/me/${card.slug}`}>{card.category}</Link>
+                </p>
+                <h3 className="text-2xl text-[#3c4858]">{card.count}</h3>
               </div>
               <div className="flex items-center border-t border-[#eee] mt-4 pt-2 pb-1">
                 <i className="mr-2 text-[#999]">
@@ -98,7 +135,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <div className="col-span-1">
           <Table
-            title="Title Table"
+            title="New Article"
             subtitle="Subtitle Table"
             headerColor="bg-[#ab47bc]"
           >
@@ -119,12 +156,27 @@ export default function DashboardPage() {
 
                   <td className="py-3 border-b text-center">
                     <div className="flex items-center justify-center">
-                      <a href="#" className="mr-3 text-sky-800 text-xl">
-                        <BiEdit />
-                      </a>
-                      <a href="#" className="text-red-700 text-xl">
+                      <Link href={`/me/article/${article._id}`}>
+                        <a className="mr-3 text-sky-800 text-xl">
+                          <BiEdit />
+                        </a>
+                      </Link>
+                      <button
+                        className="text-red-700 text-xl"
+                        onClick={() =>
+                          dispatch({
+                            type: "NOTIFY",
+                            payload: {
+                              modal: {
+                                type: "DELETE_ARTICLE",
+                                id: article._id,
+                              },
+                            },
+                          })
+                        }
+                      >
                         <BiTrash />
-                      </a>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -134,7 +186,7 @@ export default function DashboardPage() {
         </div>
         <div className="col-span-1">
           <Table
-            title="Title Table"
+            title="New Tag"
             subtitle="Subtitle Table"
             headerColor="bg-[#ffa726]"
           >
@@ -147,7 +199,7 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {tags.slice(0, 5).map((tag, i) => (
+              {tags.map((tag, i) => (
                 <tr key={tag._id}>
                   <td className="py-3 border-b text-center pr-4">{i + 1}</td>
 
@@ -155,12 +207,24 @@ export default function DashboardPage() {
 
                   <td className="p-3 border-b text-center">
                     <div className="flex items-center justify-center">
-                      <a href="#" className="mr-3 text-sky-800 text-xl">
-                        <BiEdit />
-                      </a>
-                      <a href="#" className="text-red-700 text-xl">
+                      <Link href={`/me/tag/${tag._id}`}>
+                        <a className="mr-3 text-sky-800 text-xl">
+                          <BiEdit />
+                        </a>
+                      </Link>
+                      <button
+                        className="text-red-700 text-xl"
+                        onClick={() =>
+                          dispatch({
+                            type: "NOTIFY",
+                            payload: {
+                              modal: { type: "DELETE_TAG", id: tag._id },
+                            },
+                          })
+                        }
+                      >
                         <BiTrash />
-                      </a>
+                      </button>
                     </div>
                   </td>
                 </tr>
