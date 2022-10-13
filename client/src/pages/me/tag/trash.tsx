@@ -79,6 +79,12 @@ export default function TrashTagsPage() {
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
+
     return toast.success(res.success, { theme: "colored" });
   };
   return (

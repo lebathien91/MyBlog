@@ -5,11 +5,13 @@ import {
   patchData,
   patchManyData,
 } from "@/utils/fetchData";
+import { useRouter } from "next/router";
 import React, { useContext } from "react";
 import { MdClose } from "react-icons/md";
 import { toast } from "react-toastify";
 
 const Modal = () => {
+  const router = useRouter();
   const { state, dispatch } = useContext(GlobalContext);
   const { modal } = state.notify;
   const token = state.auth.token;
@@ -70,6 +72,7 @@ const Modal = () => {
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
+    router.reload();
     return toast.success(res.success, { theme: "colored" });
   };
   return (
