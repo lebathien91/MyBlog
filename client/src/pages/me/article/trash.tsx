@@ -4,11 +4,11 @@ import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { MdClose, MdRestore } from "react-icons/md";
 
-import Admin from "@/views/layout./Admin";
-import Table from "@/components/Table";
+import AuthRouter from "@/layout/AuthRouter";
+import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
-import { getData } from "@/utils/fetchData";
+import { getData, patchData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
 
 export default function TrashArticlesPage() {
@@ -68,6 +68,15 @@ export default function TrashArticlesPage() {
     console.log(selectPosts);
   };
 
+  const handleRestore = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`article/restore/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success(res.success, { theme: "colored" });
+  };
   return (
     <>
       <div className="flex justify-between px-4">
@@ -142,12 +151,25 @@ export default function TrashArticlesPage() {
               </td>
               <td className="py-3 border-b">
                 <div className="flex">
-                  <a href="#" className="mr-3 text-sky-800 text-xl">
+                  <button
+                    className="mr-3 text-sky-800 text-xl"
+                    onClick={() => handleRestore(post._id)}
+                  >
                     <MdRestore />
-                  </a>
-                  <a href="#" className="text-red-700 text-xl">
+                  </button>
+                  <button
+                    className="text-red-700 text-xl"
+                    onClick={() =>
+                      dispatch({
+                        type: "NOTIFY",
+                        payload: {
+                          modal: { type: "DESTROY_ARTICLE", id: post._id },
+                        },
+                      })
+                    }
+                  >
                     <MdClose />
-                  </a>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -160,5 +182,5 @@ export default function TrashArticlesPage() {
 }
 
 TrashArticlesPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

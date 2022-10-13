@@ -66,7 +66,7 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
 
   return (
     <aside
-      className={`fixed text-white bg-[#11101D] top-0 left-0 h-full px-[14px] py-[6px] z-50 transition-all ease-linear duration-300 ${
+      className={`fixed text-white bg-[#11101D] top-0 left-0 h-full px-[14px] py-[6px] z-30 transition-all ease-linear duration-300 ${
         active ? "w-[250px]" : "w-[78px]"
       }`}
     >

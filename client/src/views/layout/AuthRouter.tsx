@@ -1,12 +1,12 @@
 import { ReactNode, useContext } from "react";
-import Layout from ".";
-import Loading from "../../components/Loading";
-import Login from "../../pages/login";
-import { GlobalContext } from "../../store/GlobalState";
-import Profile from "../pages/Profile";
-import Dashboard from "./Dashboard";
+import Layout from "@/layout/index";
+import Loading from "@/components/Loading";
+import Login from "@/pages/login";
+import { GlobalContext } from "@/store/GlobalState";
+import Profile from "@/views/pages/Profile";
+import Dashboard from "@/layout/Dashboard";
 
-export default function Admin({
+export default function AuthRouter({
   children,
   isAuth,
   me,

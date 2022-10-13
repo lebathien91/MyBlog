@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 
 import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
-import Admin from "@/views/layout./Admin";
+import AuthRouter from "@/layout/AuthRouter";
 import Editor from "@/components/Editor";
 import { GlobalContext } from "@/store/GlobalState";
-import { getData } from "@/utils/fetchData";
+import { getData, postData } from "@/utils/fetchData";
 
 export default function NewArticle() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function NewArticle() {
   const [body, setBody] = useState<string>("");
   const [tagId, setTagId] = useState<string | number>("");
 
-  const { title, description, tag, content } = formData;
+  const { title, description } = formData;
 
   const loadTags = async (inputValue: string) => {
     let options: { value: string | number; label: string }[] = [];
@@ -61,7 +61,7 @@ export default function NewArticle() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
     if (!tagId)
@@ -69,7 +69,19 @@ export default function NewArticle() {
         theme: "colored",
       });
 
-    console.log({ ...formData, tag: tagId, content: body });
+    const res = await postData(
+      "article/create",
+      {
+        ...formData,
+        tag: tagId,
+        content: body,
+      },
+      token
+    );
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    toast.success(res.success, { theme: "colored" });
   };
 
   return (
@@ -156,5 +168,5 @@ export default function NewArticle() {
 }
 
 NewArticle.getLayout = function getLayout(page: ReactElement) {
-  return <Admin isAuth>{page}</Admin>;
+  return <AuthRouter isAuth>{page}</AuthRouter>;
 };

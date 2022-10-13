@@ -1,9 +1,15 @@
-import { ReactElement, useState } from "react";
-import Admin from "@/views/layout./Admin";
-import { FormSubmit, InputChange } from "@/utils/interface";
+import { ReactElement, useContext, useState } from "react";
+import AuthRouter from "@/layout/AuthRouter";
+import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
+import { postData } from "@/utils/fetchData";
+import { GlobalContext } from "@/store/GlobalState";
+import { toast } from "react-toastify";
 
 export default function NewCategory() {
-  const [formData, setFormData] = useState({
+  const { state, dispatch } = useContext(GlobalContext);
+  const token = state.auth.token;
+
+  const [formData, setFormData] = useState<ICategory>({
     name: "",
     description: "",
   });
@@ -14,10 +20,14 @@ export default function NewCategory() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
-    console.log(formData);
+    const res = await postData("category/create", formData, token);
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    toast.success(res.success, { theme: "colored" });
   };
 
   return (
@@ -67,7 +77,7 @@ export default function NewCategory() {
             <h3 className="uppercase text-gray-500 border-b">Infomation</h3>
             <div className="flex justify-between py-3">
               <span>Created</span>
-              <span>{new Date().toISOString()}</span>
+              <span>{new Date().toLocaleDateString()}</span>
             </div>
 
             <div className="flex justify-between py-3">
@@ -82,5 +92,5 @@ export default function NewCategory() {
 }
 
 NewCategory.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

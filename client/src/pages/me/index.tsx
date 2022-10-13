@@ -8,11 +8,11 @@ import {
 } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 
-import Table from "../../components/Table";
+import Table from "../../components/DataTable";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
-import Admin from "../../views/layout/Admin";
-import { Iarticle, Itag } from "../../utils/interface";
+import AuthRouter from "../../views/layout/AuthRouter";
+import { IArticle, ITag } from "../../utils/interface";
 import { getData } from "../../utils/fetchData";
 import { toast } from "react-toastify";
 
@@ -48,8 +48,8 @@ const cards = [
 ];
 
 export default function DashboardPage() {
-  const [articles, setArticles] = useState<Iarticle[]>([]);
-  const [tags, setTags] = useState<Itag[]>([]);
+  const [articles, setArticles] = useState<IArticle[]>([]);
+  const [tags, setTags] = useState<ITag[]>([]);
 
   useEffect(() => {
     getData(`article?limit=${5}`)
@@ -175,8 +175,8 @@ export default function DashboardPage() {
 
 DashboardPage.getLayout = function getLayout(page: ReactElement) {
   return (
-    <Admin isAuth me>
+    <AuthRouter isAuth me>
       {page}
-    </Admin>
+    </AuthRouter>
   );
 };

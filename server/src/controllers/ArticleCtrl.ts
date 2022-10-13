@@ -137,6 +137,7 @@ const ArticleCtrl = class {
         Articles.where("deleted").ne(null),
         req.query
       )
+        .filtering()
         .populated()
         .searching()
         .sorting()

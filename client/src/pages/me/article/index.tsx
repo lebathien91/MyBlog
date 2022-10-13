@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
 import { FormSubmit, InputChange } from "@/utils/interface";
-import Admin from "@/views/layout./Admin";
-import Table from "@/components/Table";
+import AuthRouter from "@/layout/AuthRouter";
+import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { IArticle } from "@/utils/interface";
 import { getData } from "@/utils/fetchData";
@@ -145,9 +145,19 @@ export default function ArticlesPage() {
                       <BiEdit />
                     </a>
                   </Link>
-                  <a href="#" className="text-red-700 text-xl">
+                  <button
+                    className="text-red-700 text-xl"
+                    onClick={() =>
+                      dispatch({
+                        type: "NOTIFY",
+                        payload: {
+                          modal: { type: "DELETE_ARTICLE", id: post._id },
+                        },
+                      })
+                    }
+                  >
                     <BiTrash />
-                  </a>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -160,5 +170,5 @@ export default function ArticlesPage() {
 }
 
 ArticlesPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

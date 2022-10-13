@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import Admin from "@/views/layout./Admin";
+import AuthRouter from "@/layout/AuthRouter";
 import { GlobalContext } from "@/store/GlobalState";
-import { getData } from "@/utils/fetchData";
+import { getData, putData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function UpdateCategory() {
@@ -25,17 +25,9 @@ export default function UpdateCategory() {
   useEffect(() => {
     if (id) {
       dispatch({ type: "NOTIFY", payload: { loading: true } });
-      getData(`article/id/${id}?populate=tag`)
+      getData(`category/${id}`)
         .then((res) => {
-          const { _id, name, description, createdAt, updatedAt } = res.article;
-
-          setFormData({
-            _id,
-            name,
-            description,
-            createdAt,
-            updatedAt,
-          });
+          setFormData(res.category);
 
           dispatch({ type: "NOTIFY", payload: {} });
         })
@@ -53,10 +45,16 @@ export default function UpdateCategory() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
-    console.log(formData);
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await putData(`category/${id}`, formData, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success(res.success, { theme: "colored" });
   };
 
   return (
@@ -110,7 +108,7 @@ export default function UpdateCategory() {
             </div>
             <div className="flex justify-between py-3">
               <span>Updated</span>
-              <span>{new Date().toISOString()}</span>
+              <span>{new Date().toLocaleDateString()}</span>
             </div>
             <div className="flex justify-between py-3">
               <span>By</span>
@@ -124,5 +122,5 @@ export default function UpdateCategory() {
 }
 
 UpdateCategory.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

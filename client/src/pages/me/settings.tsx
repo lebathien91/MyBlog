@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import Admin from "../../views/layout/Admin";
+import { ReactElement } from "react";
+import AuthRouter from "@/layout/AuthRouter";
 
 export default function SettingsPage() {
   return <>SettingsPage</>;
@@ -15,7 +15,7 @@ SettingsPage.getLayout = function getLayout(page: ReactElement) {
 
   if (!user) return <div>Login</div>;
 
-  if (user.root) return <Admin>{page}</Admin>;
+  if (user.root) return <AuthRouter>{page}</AuthRouter>;
 
   return <div>403</div>;
 };

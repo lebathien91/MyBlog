@@ -2,13 +2,14 @@ import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import Admin from "@/views/layout./Admin";
+import AuthRouter from "@/layout/AuthRouter";
 import { GlobalContext } from "@/store/GlobalState";
-import { getData } from "@/utils/fetchData";
+import { getData, postData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function NewTag() {
   const { state, dispatch } = useContext(GlobalContext);
+  const token = state.auth.token;
 
   const initialState = {
     name: "",
@@ -37,13 +38,17 @@ export default function NewTag() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
     dispatch({ type: "NOTIFY", payload: { loading: true } });
-    toast.success("Gui du lieu thanh cong");
-    console.log(formData);
+
+    const res = await postData("tag/create", formData, token);
     dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success(res.success, { theme: "colored" });
   };
 
   return (
@@ -163,5 +168,5 @@ export default function NewTag() {
 }
 
 NewTag.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

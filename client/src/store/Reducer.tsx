@@ -1,6 +1,14 @@
 import { ACTIONS } from "./Actions";
 
-const Reducers = (state: any, action: { type: string; payload: any }) => {
+export interface IGlobalState {
+  notify: object;
+  auth: object;
+}
+
+const Reducers = (
+  state: IGlobalState,
+  action: { type: string; payload: object }
+) => {
   switch (action.type) {
     case ACTIONS.NOTIFY:
       return {

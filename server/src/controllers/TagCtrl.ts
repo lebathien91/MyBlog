@@ -75,6 +75,8 @@ const TagCtrl = class {
   async trash(req: IReqAuth, res: Response) {
     try {
       const features = new featureAPI(Tags.where("deleted").ne(null), req.query)
+        .filtering()
+        .populated()
         .searching()
         .sorting()
         .paginating();

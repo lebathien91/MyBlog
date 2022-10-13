@@ -1,15 +1,18 @@
-import moment from "moment";
-import { useRouter } from "next/router";
-import React, { ReactElement, useEffect, useState } from "react";
-import { users } from "../../../utils/data/users";
-import { FormSubmit, InputChange, IUser } from "../../../utils/interface";
+import { GlobalContext } from "@/store/GlobalState";
+import { getData, putData } from "@/utils/fetchData";
 
-import Admin from "../../../views/layout/Admin";
+import { useRouter } from "next/router";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
+import AuthRouter from "@/layout/AuthRouter";
+import { FormSubmit, InputChange, IUser } from "@/utils/interface";
 
 export default function UpdateUser() {
   const router = useRouter();
-
   const { id } = router.query;
+  const { state, dispatch } = useContext(GlobalContext);
+  const token = state.auth.token;
 
   const initialState = {
     avatar: "",
@@ -17,23 +20,23 @@ export default function UpdateUser() {
     password: "",
     cf_password: "",
     email: "",
-    role: 0,
+    role: "user",
   };
 
   const [formData, setFormData] = useState<IUser>(initialState);
 
   useEffect(() => {
     if (id) {
-      const user = users.find((user) => {
-        return user.id.toString() === id;
-      });
-
-      if (user) {
-        setFormData({
-          ...formData,
-          ...user,
+      dispatch({ type: "NOTIFY", payload: { loading: true } });
+      getData(`user/${id}`, token)
+        .then((res) => {
+          setFormData({ ...formData, ...res.user });
+          dispatch({ type: "NOTIFY", payload: {} });
+        })
+        .catch((error) => {
+          toast.error(error);
+          dispatch({ type: "NOTIFY", payload: {} });
         });
-      }
     }
   }, [id]);
 
@@ -44,11 +47,16 @@ export default function UpdateUser() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
-    const { username, role } = formData;
 
-    console.log(formData);
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await putData(`user/${id}`, formData, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success(res.success, { theme: "colored" });
   };
   return (
     <form className="w-full" onSubmit={handleSubmit}>
@@ -129,9 +137,9 @@ export default function UpdateUser() {
               onChange={handleChangeInput}
               className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
             >
-              <option value="0">User</option>
-              <option value="1">Editor</option>
-              <option value="2">Admin</option>
+              <option value="user">User</option>
+              <option value="editor">Editor</option>
+              <option value="admin">AuthRouter</option>
             </select>
           </div>
         </div>
@@ -144,7 +152,7 @@ export default function UpdateUser() {
             </div>
             <div className="flex justify-between py-3">
               <span>Updated</span>
-              <span>{moment().format("D/MM/YY")}</span>
+              <span>{new Date().toLocaleDateString()}</span>
             </div>
             <div className="flex justify-between py-3">
               <span>By</span>
@@ -158,5 +166,5 @@ export default function UpdateUser() {
 }
 
 UpdateUser.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

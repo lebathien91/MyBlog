@@ -77,15 +77,13 @@ const CategoryCtrl = class {
 
   // Method: GET
   // Route: /category/:slug
-  async findBySlug(req: Request, res: Response) {
+  async findBySlug(req: IReqAuth, res: Response) {
     try {
-      const { slug } = req.params;
-      const features = new featureAPI(
-        Categories.findOne({ slug }),
-        req.query
-      ).populated();
+      const category = await Categories.findOne({
+        slug: req.params.slug,
+        deleted: null,
+      });
 
-      const category = await features.query;
       if (!category)
         return res.status(400).json({ error: "Invalid Category." });
 
@@ -97,15 +95,12 @@ const CategoryCtrl = class {
 
   // Method: GET
   // Route: /category/:id
-  async findById(req: Request, res: Response) {
+  async findById(req: IReqAuth, res: Response) {
     try {
-      const { id } = req.params;
-      const features = new featureAPI(
-        Categories.findOne({ _id: id }),
-        req.query
-      ).populated();
-
-      const category = await features.query;
+      const category = await Categories.findById({
+        _id: req.params.id,
+        deleted: null,
+      });
       if (!category)
         return res.status(400).json({ error: "Invalid Category." });
 
@@ -123,6 +118,7 @@ const CategoryCtrl = class {
         Categories.where("deleted").ne(null),
         req.query
       )
+        .filtering()
         .populated()
         .searching()
         .sorting()
@@ -157,27 +153,14 @@ const CategoryCtrl = class {
       const id = req.params.id;
       const date = new Date();
 
-      if (req.user?.role === "editor" || req.user?.role === "admin") {
-        const category = await Categories.findOneAndUpdate(
-          { _id: id },
-          { deleted: date }
-        );
+      const category = await Categories.findOneAndUpdate(
+        { _id: id, user: req.user?._id },
+        { deleted: date }
+      );
 
-        if (!category)
-          return res.status(400).json({ error: "Invalid Category" });
+      if (!category) return res.status(400).json({ error: "Invalid Category" });
 
-        res.json({ success: "Delete Category Success" });
-      } else {
-        const category = await Categories.findOneAndUpdate(
-          { _id: id, user: req.user?._id },
-          { deleted: date }
-        );
-
-        if (!category)
-          return res.status(400).json({ error: "Invalid Category" });
-
-        res.json({ success: "Delete Category Success" });
-      }
+      res.json({ success: "Delete Category Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }

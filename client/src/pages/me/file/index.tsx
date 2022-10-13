@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import Admin from "../../../views/layout/Admin";
+import Admin from "../../../views/layout/AuthRouter";
 
 export default function FilesPage() {
   return <>FilesPage</>;

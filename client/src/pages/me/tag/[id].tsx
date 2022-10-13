@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import Admin from "@/views/layout./Admin";
+import AuthRouter from "@/layout/AuthRouter";
 import NextImage from "@/components/Image";
-import { getData } from "@/utils/fetchData";
+import { getData, putData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
 import { InputChange, FormSubmit, ICategory, ITag } from "@/utils/interface";
 
@@ -15,7 +15,6 @@ export default function UpdateTag() {
   const token = state.auth.token;
 
   const initialState = {
-    _id: "",
     name: "",
     description: "",
     category: "",
@@ -53,7 +52,7 @@ export default function UpdateTag() {
     }
   }, [id]);
 
-  const { _id, name, description, category, thumbnail, createdAt } = formData;
+  const { name, description, category, thumbnail, createdAt } = formData;
 
   const handleChangeInput = (e: InputChange) => {
     const { name, value } = e.target as HTMLInputElement;
@@ -69,13 +68,16 @@ export default function UpdateTag() {
     }
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
     dispatch({ type: "NOTIFY", payload: { loading: true } });
-    toast.success("Gui du lieu thanh cong", { theme: "colored" });
-    console.log(formData);
+
+    const res = await putData(`tag/${id}`, formData, token);
     dispatch({ type: "NOTIFY", payload: {} });
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success("Gui du lieu thanh cong", { theme: "colored" });
   };
 
   return (
@@ -192,5 +194,5 @@ export default function UpdateTag() {
 }
 
 UpdateTag.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

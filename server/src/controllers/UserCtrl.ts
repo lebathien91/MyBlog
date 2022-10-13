@@ -18,7 +18,7 @@ const UsersCtrl = class {
         username,
         email,
         password: hashPassword,
-        avatar: avatar ? avatar : "/banner.jpg",
+        avatar: avatar,
         role,
         root,
       });
@@ -117,7 +117,7 @@ const UsersCtrl = class {
 
   // Method: GET
   // Route: /user/:id
-  async findOne(req: Request, res: Response) {
+  async findById(req: Request, res: Response) {
     try {
       const { id } = req.params;
 

@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
-import Admin from "@/views/layout/Admin";
-import Table from "@/components/Table";
+import AuthRouter from "@/layout/AuthRouter";
+import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData } from "@/utils/fetchData";
@@ -55,7 +55,7 @@ export default function TagsPage() {
       setPosts(newPosts);
     } else {
       const newPosts = posts.map((post) =>
-        post._id.toString() === value ? { ...post, isChecked: checked } : post
+        post._id?.toString() === value ? { ...post, isChecked: checked } : post
       );
       setPosts(newPosts);
     }
@@ -140,7 +140,7 @@ export default function TagsPage() {
               <td className="py-3 border-b pr-4">{index + 1}</td>
               <td className="py-3 border-b">{post.name}</td>
               <td className="py-3 border-b">
-                {typeof post.category === "object" && post.category.name}
+                {typeof post.category === "object" && post.category?.name}
               </td>
               <td className="py-3 border-b">
                 <div className="flex">
@@ -149,9 +149,19 @@ export default function TagsPage() {
                       <BiEdit />
                     </a>
                   </Link>
-                  <a href="#" className="text-red-700 text-xl">
+                  <button
+                    className="text-red-700 text-xl"
+                    onClick={() =>
+                      dispatch({
+                        type: "NOTIFY",
+                        payload: {
+                          modal: { type: "DELETE_TAG", id: post._id },
+                        },
+                      })
+                    }
+                  >
                     <BiTrash />
-                  </a>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -164,5 +174,5 @@ export default function TagsPage() {
 }
 
 TagsPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

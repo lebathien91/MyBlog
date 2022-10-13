@@ -1,31 +1,43 @@
-import moment from "moment";
-import React, { ReactElement, useState } from "react";
+import { GlobalContext } from "@/store/GlobalState";
+import { postData } from "@/utils/fetchData";
+import React, { ReactElement, useContext, useState } from "react";
+import { toast } from "react-toastify";
 import { FormSubmit, InputChange } from "../../../utils/interface";
 import { validRegister } from "../../../utils/valid";
-import Admin from "../../../views/layout/Admin";
+import AuthRouter from "../../../views/layout/AuthRouter";
 
 export default function NewUser() {
+  const { state, dispatch } = useContext(GlobalContext);
+  const token = state.auth.token;
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     cf_password: "",
+    role: "user",
   });
-  const { username, email, password, cf_password } = formData;
+  const { username, email, password, cf_password, role } = formData;
 
   const handleChangeInput = (e: InputChange) => {
     const { name, value } = e.target as HTMLInputElement;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     const { username, email, password, cf_password } = formData;
     const msg = validRegister(username, email, password, cf_password);
 
-    if (msg) return console.log(msg);
+    if (msg) return toast.error(msg, { theme: "colored" });
 
-    console.log(formData);
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await postData("user/create", formData, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success(res.success, { theme: "colored" });
   };
   return (
     <form className="w-full" onSubmit={handleSubmit}>
@@ -95,13 +107,29 @@ export default function NewUser() {
               className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
             />
           </div>
+          <div className="mb-8">
+            <label htmlFor="role" className="w-full text-xl font-semibold">
+              Role
+            </label>
+            <select
+              name="role"
+              id="role"
+              value={role}
+              onChange={handleChangeInput}
+              className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
+            >
+              <option value="user">User</option>
+              <option value="editor">Editor</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
         </div>
         <div className="col-span-3 ml-8  ">
           <div className="rounded-md shadow-md p-6 mb-8 bg-white">
             <h3 className="uppercase text-gray-500 border-b">Infomation</h3>
             <div className="flex justify-between py-3">
               <span>Created</span>
-              <span>{moment().format("D/MM/YY")}</span>
+              <span>{new Date().toLocaleDateString()}</span>
             </div>
 
             <div className="flex justify-between py-3">
@@ -116,5 +144,5 @@ export default function NewUser() {
 }
 
 NewUser.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

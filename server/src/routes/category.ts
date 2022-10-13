@@ -11,14 +11,14 @@ router.get("/category/trash", auth, isAdmin, CategoryCtrl.trash);
 router.patch("/category/restore/:id", auth, isAdmin, CategoryCtrl.restore);
 router.patch("/category/restore", auth, isAdmin, CategoryCtrl.restoreMany);
 
-router.get("/category/:slug", CategoryCtrl.findBySlug);
+router.get("/category/slug/:slug", CategoryCtrl.findBySlug);
 
 router
   .route("/category/:id")
+  .get(CategoryCtrl.findById)
   .put(auth, isAdmin, CategoryCtrl.update)
   .patch(auth, isAdmin, CategoryCtrl.delete)
   .delete(auth, isRoot, CategoryCtrl.destroy);
-// .get(CategoryCtrl.findById);
 
 router
   .route("/category")

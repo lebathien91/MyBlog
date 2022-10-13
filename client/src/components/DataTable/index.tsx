@@ -7,7 +7,7 @@ export interface TableProps {
   subtitle?: string;
 }
 
-const Table = ({
+const DataTable = ({
   children,
   headerColor = "bg-cyan-700",
   title,
@@ -31,4 +31,4 @@ const Table = ({
   );
 };
 
-export default Table;
+export default DataTable;

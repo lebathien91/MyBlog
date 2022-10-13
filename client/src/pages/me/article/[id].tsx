@@ -3,7 +3,7 @@ import { AsyncPaginate } from "react-select-async-paginate";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 
-import Admin from "@/views/layout./Admin";
+import AuthRouter from "@/layout/AuthRouter";
 import Editor from "@/components/Editor";
 import { getData, putData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
@@ -26,7 +26,7 @@ export default function UpdateArticle() {
   const [formData, setFormData] = useState<IArticle>(initialState);
   const [body, setBody] = useState<string>("");
   const [tagId, setTagId] = useState<string>("");
-  const [defaultTag, setDefaultTag] = useState<string | undefined>();
+  const [defaultTag, setDefaultTag] = useState<string>("");
 
   useEffect(() => {
     if (id) {
@@ -34,27 +34,9 @@ export default function UpdateArticle() {
       dispatch({ type: "NOTIFY", payload: { loading: true } });
       getData(`article/${id}?populate=tag`)
         .then((res) => {
-          const {
-            _id,
-            title,
-            description,
-            tag,
-            content,
-            createdAt,
-            updatedAt,
-          } = res.article;
-
-          setFormData({
-            _id,
-            title,
-            description,
-            tag: tag._id,
-            content,
-            createdAt,
-            updatedAt,
-          });
-          setDefaultTag(tag.name);
-          setBody(content);
+          setFormData(res.article);
+          setDefaultTag(res.article.tag.name);
+          setBody(res.article.content);
           dispatch({ type: "NOTIFY", payload: {} });
         })
         .catch((error) => {
@@ -203,5 +185,5 @@ export default function UpdateArticle() {
 }
 
 UpdateArticle.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

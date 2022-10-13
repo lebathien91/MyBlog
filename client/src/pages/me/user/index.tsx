@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import Admin from "../../../views/layout/Admin";
+import AuthRouter from "../../../views/layout/AuthRouter";
 
-import Table from "../../../components/Table";
+import Table from "../../../components/DataTable";
 import Pagination from "../../../components/Pagination";
 import { useRouter } from "next/router";
-import { FormSubmit, Iuser } from "../../../utils/interface";
+import { FormSubmit, IUser } from "../../../utils/interface";
 import { getData } from "../../../utils/fetchData";
 import { GlobalContext } from "../../../store/GlobalState";
 import { toast } from "react-toastify";
@@ -18,7 +18,7 @@ export default function UsersPage() {
   const { auth } = state;
   const token = auth.token;
 
-  const [posts, setPosts] = useState<Iuser[]>([]);
+  const [posts, setPosts] = useState<IUser[]>([]);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -144,9 +144,19 @@ export default function UsersPage() {
                       <BiEdit />
                     </a>
                   </Link>
-                  <a href="#" className="text-red-700 text-xl">
+                  <button
+                    className="text-red-700 text-xl"
+                    onClick={() =>
+                      dispatch({
+                        type: "NOTIFY",
+                        payload: {
+                          modal: { type: "DELETE_USER", id: post._id },
+                        },
+                      })
+                    }
+                  >
                     <BiTrash />
-                  </a>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -159,5 +169,5 @@ export default function UsersPage() {
 }
 
 UsersPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

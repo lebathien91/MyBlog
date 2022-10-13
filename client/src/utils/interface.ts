@@ -9,9 +9,11 @@ export interface IUser {
   _id?: string;
   username: string;
   email: string;
-  avatar: string;
-  role: number;
-  root: boolean;
+  avatar?: string;
+  password?: string;
+  cf_password?: string;
+  role: string;
+  root?: boolean;
   isChecked?: boolean;
 }
 
@@ -25,7 +27,7 @@ export interface ICategory {
 }
 
 export interface ITag {
-  _id: string;
+  _id?: string;
   name: string;
   thumbnail: string;
   description: string;

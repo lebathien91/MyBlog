@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { MdClose, MdRestore } from "react-icons/md";
-import Table from "../../../components/Table";
-import Admin from "../../../views/layout/Admin";
+import Table from "../../../components/DataTable";
+import AuthRouter from "../../../views/layout/AuthRouter";
 import Pagination from "../../../components/Pagination";
 import { useRouter } from "next/router";
-import { FormSubmit, Iuser } from "../../../utils/interface";
+import { FormSubmit, IUser } from "../../../utils/interface";
 
 import { GlobalContext } from "../../../store/GlobalState";
-import { getData } from "../../../utils/fetchData";
+import { getData, patchData } from "../../../utils/fetchData";
 import { toast } from "react-toastify";
 
 export default function TrashUsersPage() {
@@ -18,7 +18,7 @@ export default function TrashUsersPage() {
   const { auth } = state;
   const token = auth.token;
 
-  const [posts, setPosts] = useState<Iuser[]>([]);
+  const [posts, setPosts] = useState<IUser[]>([]);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -67,6 +67,16 @@ export default function TrashUsersPage() {
       }
     });
     console.log(selectPosts);
+  };
+
+  const handleRestore = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`user/restore/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success(res.success, { theme: "colored" });
   };
   return (
     <>
@@ -142,12 +152,25 @@ export default function TrashUsersPage() {
               <td className="py-3 border-b">{post.role}</td>
               <td className="py-3 border-b">
                 <div className="flex">
-                  <a href="#" className="mr-3 text-sky-800 text-xl">
+                  <button
+                    className="mr-3 text-sky-800 text-xl"
+                    onClick={() => handleRestore(post._id)}
+                  >
                     <MdRestore />
-                  </a>
-                  <a href="#" className="text-red-700 text-xl">
+                  </button>
+                  <button
+                    className="text-red-700 text-xl"
+                    onClick={() =>
+                      dispatch({
+                        type: "NOTIFY",
+                        payload: {
+                          modal: { type: "DESTROY_USER", id: post._id },
+                        },
+                      })
+                    }
+                  >
                     <MdClose />
-                  </a>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -160,5 +183,5 @@ export default function TrashUsersPage() {
 }
 
 TrashUsersPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

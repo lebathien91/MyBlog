@@ -14,10 +14,12 @@ const auth = async (req: IReqAuth, res: Response, next: NextFunction) => {
     const decode = <IDecodedToken>(
       jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
     );
+
     if (!decode)
       return res.status(400).json({ error: "Access token not found" });
 
     const user = await Users.findById({ _id: decode.id }).select("-password");
+
     if (!user) return res.status(400).json({ error: "Invalid Authentication" });
 
     req.user = user;

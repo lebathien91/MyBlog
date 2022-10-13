@@ -16,6 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "@/layout/*": ["src/views/layout/*"],
       "@/*": ["src/*"]
     }
   },

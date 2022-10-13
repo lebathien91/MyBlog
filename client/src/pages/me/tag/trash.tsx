@@ -3,13 +3,13 @@ import { useRouter } from "next/router";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { MdClose, MdRestore } from "react-icons/md";
 import { toast } from "react-toastify";
-import Pagination from "../../../components/Pagination";
-import Table from "../../../components/Table";
-import { GlobalContext } from "../../../store/GlobalState";
-import { getData } from "../../../utils/fetchData";
 
-import { FormSubmit, InputChange, Itag } from "../../../utils/interface";
-import Admin from "../../../views/layout/Admin";
+import AuthRouter from "@/layout/AuthRouter";
+import Pagination from "@/components/Pagination";
+import Table from "@/components/DataTable";
+import { GlobalContext } from "@/store/GlobalState";
+import { getData, patchData } from "@/utils/fetchData";
+import { FormSubmit, InputChange, ITag } from "@/utils/interface";
 
 export default function TrashTagsPage() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function TrashTagsPage() {
   const { auth } = state;
   const token = auth?.token;
 
-  const [posts, setPosts] = useState<Itag[]>([]);
+  const [posts, setPosts] = useState<ITag[]>([]);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -55,7 +55,7 @@ export default function TrashTagsPage() {
       setPosts(newPosts);
     } else {
       const newPosts = posts.map((post) =>
-        post._id.toString() === value ? { ...post, isChecked: checked } : post
+        post._id?.toString() === value ? { ...post, isChecked: checked } : post
       );
       setPosts(newPosts);
     }
@@ -72,6 +72,15 @@ export default function TrashTagsPage() {
     console.log(selectPosts);
   };
 
+  const handleRestore = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`tag/restore/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success(res.success, { theme: "colored" });
+  };
   return (
     <>
       <div className="flex justify-between px-4">
@@ -143,16 +152,29 @@ export default function TrashTagsPage() {
               <td className="py-3 border-b pr-4">{index + 1}</td>
               <td className="py-3 border-b">{post.name}</td>
               <td className="py-3 border-b">
-                {typeof post.category === "object" && post.category.name}
+                {typeof post.category === "object" && post.category?.name}
               </td>
               <td className="py-3 border-b">
                 <div className="flex">
-                  <a href="#" className="mr-3 text-sky-800 text-xl">
+                  <button
+                    className="mr-3 text-sky-800 text-xl"
+                    onClick={() => handleRestore(post._id)}
+                  >
                     <MdRestore />
-                  </a>
-                  <a href="#" className="text-red-700 text-xl">
+                  </button>
+                  <button
+                    className="text-red-700 text-xl"
+                    onClick={() =>
+                      dispatch({
+                        type: "NOTIFY",
+                        payload: {
+                          modal: { type: "DESTROY_TAG", id: post._id },
+                        },
+                      })
+                    }
+                  >
                     <MdClose />
-                  </a>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -165,5 +187,5 @@ export default function TrashTagsPage() {
 }
 
 TrashTagsPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

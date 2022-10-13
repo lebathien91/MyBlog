@@ -14,12 +14,10 @@ router.patch("/user/restore", auth, isAdmin, UserCtrl.restoreMany);
 
 router
   .route("/user/:id")
+  .get(auth, UserCtrl.findById)
   .put(auth, isRoot, UserCtrl.update)
   .patch(auth, isRoot, UserCtrl.delete)
-  .delete(auth, isRoot, UserCtrl.destroy)
-  .get(UserCtrl.findOne);
-
-router.get("/user", auth, isAdmin, UserCtrl.find);
+  .delete(auth, isRoot, UserCtrl.destroy);
 
 router
   .route("/user")

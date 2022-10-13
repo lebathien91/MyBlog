@@ -4,19 +4,18 @@ import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { MdClose, MdRestore } from "react-icons/md";
 
-import Admin from "@/views/layout./Admin";
-import Table from "@/components/Table";
+import AuthRouter from "@/layout/AuthRouter";
+import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";
-import { getData } from "@/utils/fetchData";
+import { getData, patchData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function TrashCategoriesPage() {
   const router = useRouter();
 
   const { state, dispatch } = useContext(GlobalContext);
-  const { auth } = state;
-  const token = auth?.token;
+  const token = state.auth?.token;
 
   const [posts, setPosts] = useState<ICategory[]>([]);
   const [limit, setLimit] = useState(10);
@@ -69,6 +68,16 @@ export default function TrashCategoriesPage() {
       }
     });
     console.log(selectPosts);
+  };
+
+  const handleRestore = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`category/restore/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    return toast.success(res.success, { theme: "colored" });
   };
   return (
     <>
@@ -142,12 +151,25 @@ export default function TrashCategoriesPage() {
 
               <td className="py-3 border-b">
                 <div className="flex">
-                  <a href="#" className="mr-3 text-sky-800 text-xl">
+                  <button
+                    className="mr-3 text-sky-800 text-xl"
+                    onClick={() => handleRestore(post._id)}
+                  >
                     <MdRestore />
-                  </a>
-                  <a href="#" className="text-red-700 text-xl">
+                  </button>
+                  <button
+                    className="text-red-700 text-xl"
+                    onClick={() =>
+                      dispatch({
+                        type: "NOTIFY",
+                        payload: {
+                          modal: { type: "DESTROY_CATEGORY", id: post._id },
+                        },
+                      })
+                    }
+                  >
                     <MdClose />
-                  </a>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -160,5 +182,5 @@ export default function TrashCategoriesPage() {
 }
 
 TrashCategoriesPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };

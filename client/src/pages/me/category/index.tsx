@@ -4,8 +4,8 @@ import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
-import Admin from "@/views/layout./Admin";
-import Table from "@/components/Table";
+import AuthRouter from "@/layout/AuthRouter";
+import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData } from "@/utils/fetchData";
@@ -146,9 +146,19 @@ export default function CategoriesPage() {
                       <BiEdit />
                     </a>
                   </Link>
-                  <a href="#" className="text-red-700 text-xl">
+                  <button
+                    className="text-red-700 text-xl"
+                    onClick={() =>
+                      dispatch({
+                        type: "NOTIFY",
+                        payload: {
+                          modal: { type: "DELETE_CATEGORY", id: post._id },
+                        },
+                      })
+                    }
+                  >
                     <BiTrash />
-                  </a>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -161,5 +171,5 @@ export default function CategoriesPage() {
 }
 
 CategoriesPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+  return <AuthRouter>{page}</AuthRouter>;
 };
