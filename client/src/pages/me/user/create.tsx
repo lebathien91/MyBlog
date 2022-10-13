@@ -2,7 +2,7 @@ import moment from "moment";
 import React, { ReactElement, useState } from "react";
 import { FormSubmit, InputChange } from "../../../utils/interface";
 import { validRegister } from "../../../utils/valid";
-import Admin from "../../../views/layout./Admin";
+import Admin from "../../../views/layout/Admin";
 
 export default function NewUser() {
   const [formData, setFormData] = useState({

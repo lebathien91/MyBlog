@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
-import Admin from "@/views/layout./Admin";
+import Admin from "@/views/layout/Admin";
 import Table from "@/components/Table";
 import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";

@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
-import Layout from "../../views/layout.";
-import Cards from "../../views/pages./Cards";
+import Layout from "../../views/layout";
+import Cards from "../../views/pages/Cards";
 import { useRouter } from "next/router";
 
 import { getData } from "../../utils/fetchData";

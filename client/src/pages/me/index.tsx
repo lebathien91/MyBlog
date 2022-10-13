@@ -11,7 +11,7 @@ import { FaUserAlt } from "react-icons/fa";
 import Table from "../../components/Table";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
-import Admin from "../../views/layout./Admin";
+import Admin from "../../views/layout/Admin";
 import { Iarticle, Itag } from "../../utils/interface";
 import { getData } from "../../utils/fetchData";
 import { toast } from "react-toastify";
