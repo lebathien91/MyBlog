@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 
-import Layout from "../views/Layout";
-import Detail from "../views/Pages/Detail";
+import Layout from "../views/layout.";
+import Detail from "../views/pages./Detail";
 
 export default function DetailPage() {
   return <Detail />;

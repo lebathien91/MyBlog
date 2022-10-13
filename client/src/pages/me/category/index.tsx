@@ -4,7 +4,7 @@ import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
-import Admin from "@/views/Layout/Admin";
+import Admin from "@/views/layout./Admin";
 import Table from "@/components/Table";
 import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";

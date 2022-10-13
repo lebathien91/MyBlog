@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import Admin from "@/views/Layout/Admin";
+import Admin from "@/views/layout./Admin";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";

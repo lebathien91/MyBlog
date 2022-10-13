@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import Admin from "../../../views/Layout/Admin";
+import Admin from "../../../views/layout./Admin";
 
 import Table from "../../../components/Table";
 import Pagination from "../../../components/Pagination";

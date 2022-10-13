@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 
 import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
-import Admin from "@/views/Layout/Admin";
+import Admin from "@/views/layout./Admin";
 import Editor from "@/components/Editor";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData } from "@/utils/fetchData";

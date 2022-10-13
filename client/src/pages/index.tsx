@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
-import Layout from "../views/Layout";
-import Cards from "../views/Pages/Cards";
+import Layout from "../views/layout.";
+import Cards from "../views/pages./Cards";
 
 import { getData } from "../utils/fetchData";
 

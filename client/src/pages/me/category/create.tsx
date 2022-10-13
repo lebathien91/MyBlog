@@ -1,5 +1,5 @@
 import { ReactElement, useState } from "react";
-import Admin from "@/views/Layout/Admin";
+import Admin from "@/views/layout./Admin";
 import { FormSubmit, InputChange } from "@/utils/interface";
 
 export default function NewCategory() {

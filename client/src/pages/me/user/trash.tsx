@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { MdClose, MdRestore } from "react-icons/md";
 import Table from "../../../components/Table";
-import Admin from "../../../views/Layout/Admin";
+import Admin from "../../../views/layout./Admin";
 import Pagination from "../../../components/Pagination";
 import { useRouter } from "next/router";
 import { FormSubmit, Iuser } from "../../../utils/interface";

@@ -4,7 +4,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { users } from "../../../utils/data/users";
 import { FormSubmit, InputChange, IUser } from "../../../utils/interface";
 
-import Admin from "../../../views/Layout/Admin";
+import Admin from "../../../views/layout./Admin";
 
 export default function UpdateUser() {
   const router = useRouter();

@@ -3,7 +3,7 @@ import Layout from ".";
 import Loading from "../../components/Loading";
 import Login from "../../pages/login";
 import { GlobalContext } from "../../store/GlobalState";
-import Profile from "../Pages/Profile";
+import Profile from "../pages./Profile";
 import Dashboard from "./Dashboard";
 
 export default function Admin({

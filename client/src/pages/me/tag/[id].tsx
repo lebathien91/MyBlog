@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import Admin from "@/views/Layout/Admin";
+import Admin from "@/views/layout./Admin";
 import NextImage from "@/components/Image";
 import { getData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";

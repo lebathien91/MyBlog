@@ -9,7 +9,7 @@ import { GlobalContext } from "../../../store/GlobalState";
 import { getData } from "../../../utils/fetchData";
 
 import { FormSubmit, InputChange, Itag } from "../../../utils/interface";
-import Admin from "../../../views/Layout/Admin";
+import Admin from "../../../views/layout./Admin";
 
 export default function TrashTagsPage() {
   const router = useRouter();

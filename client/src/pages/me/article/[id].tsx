@@ -3,7 +3,7 @@ import { AsyncPaginate } from "react-select-async-paginate";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 
-import Admin from "@/views/Layout/Admin";
+import Admin from "@/views/layout./Admin";
 import Editor from "@/components/Editor";
 import { getData, putData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
