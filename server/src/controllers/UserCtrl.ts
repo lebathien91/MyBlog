@@ -95,11 +95,14 @@ const UsersCtrl = class {
   // Route: /user
   async find(req: Request, res: Response) {
     try {
-      const features = new featureAPI(Users.find(), req.query)
-        .paginating()
-        .sorting();
+      const features = new featureAPI(Users.find({ deleted: null }), req.query)
+        .sorting()
+        .paginating();
 
-      const counting = new featureAPI(Users.find(), req.query).counting();
+      const counting = new featureAPI(
+        Users.find({ deleted: null }),
+        req.query
+      ).counting();
 
       const results = await Promise.allSettled([
         features.query,
@@ -121,7 +124,9 @@ const UsersCtrl = class {
     try {
       const { id } = req.params;
 
-      const user = await Users.findById({ _id: id }).select("-password");
+      const user = await Users.findById({ _id: id, deleted: null }).select(
+        "-password"
+      );
       if (!user) return res.status(400).json({ error: "Invalid User." });
 
       res.json({ success: "Find User Success", user });
