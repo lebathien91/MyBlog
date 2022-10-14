@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 
 export default function SettingsPage() {
   return <>SettingsPage</>;

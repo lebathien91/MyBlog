@@ -2,13 +2,13 @@ import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { MdClose, MdRestore } from "react-icons/md";
 import Table from "../../../components/DataTable";
-import AuthRouter from "../../../views/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import Pagination from "../../../components/Pagination";
 import { useRouter } from "next/router";
 import { FormSubmit, IUser } from "../../../utils/interface";
 
 import { GlobalContext } from "../../../store/GlobalState";
-import { getData, patchData } from "../../../utils/fetchData";
+import { getData, patchData, patchManyData } from "../../../utils/fetchData";
 import { toast } from "react-toastify";
 
 export default function TrashUsersPage() {
@@ -19,6 +19,7 @@ export default function TrashUsersPage() {
   const token = auth.token;
 
   const [posts, setPosts] = useState<IUser[]>([]);
+  const [select, setSelect] = useState<string>();
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -58,7 +59,7 @@ export default function TrashUsersPage() {
     }
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
     posts.forEach((post) => {
@@ -66,7 +67,29 @@ export default function TrashUsersPage() {
         selectPosts.push(post._id);
       }
     });
-    console.log(selectPosts);
+    if (select === "DESTROY_MULTI_USER") {
+      return dispatch({
+        type: "NOTIFY",
+        payload: {
+          modal: { type: select, id: selectPosts },
+        },
+      });
+    }
+
+    if (select === "RESTORE_MULTI_USER") {
+      dispatch({ type: "NOTIFY", payload: { loading: true } });
+      const res = await patchManyData("/user/restore", selectPosts, token);
+      dispatch({ type: "NOTIFY", payload: {} });
+
+      if (res.error) toast.error(res.error, { theme: "colored" });
+      const newPosts = posts.filter((post) => {
+        return !selectPosts.includes(post._id);
+      });
+      setPosts(newPosts);
+      setCount((prev) => prev - selectPosts.length);
+
+      return toast.success(res.success, { theme: "colored" });
+    }
   };
 
   const handleRestore = async (id: string | undefined) => {
@@ -75,7 +98,11 @@ export default function TrashUsersPage() {
     dispatch({ type: "NOTIFY", payload: {} });
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
-
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
     return toast.success(res.success, { theme: "colored" });
   };
   return (
@@ -86,10 +113,12 @@ export default function TrashUsersPage() {
             <select
               name="select"
               id="select"
+              onChange={(e) => setSelect(e.target.value)}
               className="py-2 px-4 border border-gray-400 rounded-sm outline-none"
             >
               <option>--Action--</option>
-              <option value="delete">Xóa</option>
+              <option value="RESTORE_MULTI_USER">Restore</option>
+              <option value="DESTROY_MULTI_USER">Destroy</option>
             </select>
             <button className="ml-4 px-4 py-2 bg-yellow-600 rounded-sm text-white text-md font-semibold">
               Thực hiện

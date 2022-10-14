@@ -4,16 +4,14 @@ import Loading from "@/components/Loading";
 import Login from "@/pages/login";
 import { GlobalContext } from "@/store/GlobalState";
 import Profile from "@/views/pages/Profile";
-import Dashboard from "@/layout/Dashboard";
+import Admin from "@/layout/Admin";
 
 export default function AuthRouter({
   children,
-  isAuth,
-  me,
+  isUser,
 }: {
   children: ReactNode;
-  isAuth?: boolean;
-  me?: boolean;
+  isUser?: boolean;
 }) {
   const { state } = useContext(GlobalContext);
 
@@ -24,12 +22,12 @@ export default function AuthRouter({
 
   if (!user) return <Login />;
 
-  if (user.role === "admin") return <Dashboard>{children}</Dashboard>;
+  if (user.role === "admin" || user.root) return <Admin>{children}</Admin>;
 
-  if (isAuth)
+  if (isUser)
     return (
       <Layout>
-        <div className="container my-12">{me ? <Profile /> : children}</div>
+        <div className="container my-12">{children}</div>
       </Layout>
     );
 

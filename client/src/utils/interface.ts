@@ -20,6 +20,7 @@ export interface IUser {
 export interface ICategory {
   _id?: string;
   name: string;
+  slug?: string;
   createdAt?: string;
   updatedAt?: string;
   description?: string;
@@ -29,6 +30,7 @@ export interface ICategory {
 export interface ITag {
   _id?: string;
   name: string;
+  slug?: string;
   thumbnail: string;
   description: string;
   category: string | ICategory;
@@ -41,6 +43,7 @@ export interface ITag {
 export interface IArticle {
   _id?: string;
   title: string;
+  slug?: string;
   tag: string | ITag;
   description: string;
   content: string;

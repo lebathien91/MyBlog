@@ -1,12 +1,18 @@
-import React, { ReactElement } from "react";
-import Layout from "../../views/layout";
-import Cards from "../../views/pages/Cards";
+import { ReactElement } from "react";
 import { useRouter } from "next/router";
 
-import { getData } from "../../utils/fetchData";
-import Loading from "../../components/Loading";
+import Layout from "@/layout/index";
+import Tags from "@/views/pages/Tags";
+import Loading from "@/components/Loading";
+import { getData } from "@/utils/fetchData";
+import { ITag } from "@/utils/interface";
 
-export default function Category({ tags, count }: any) {
+interface ICategory {
+  tags: ITag[];
+  count: number;
+}
+
+export default function Category({ tags, count }: ICategory) {
   const router = useRouter();
   if (router.isFallback) {
     return <Loading />;
@@ -17,7 +23,7 @@ export default function Category({ tags, count }: any) {
     metaDescription: `Tất cả bài viết theo chuyên mục`,
   };
 
-  return <Cards posts={tags} />;
+  return <Tags posts={tags} />;
 }
 
 export async function getStaticPaths() {
@@ -38,7 +44,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }: any) {
   try {
     const slug = params?.slug;
-    const res = await getData(`category/${slug}`);
+    const res = await getData(`category/slug/${slug}`);
     const catId = res.category._id;
 
     const tagsRes = await getData(`tag?category=${catId}`);

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
 import { FormSubmit, InputChange } from "@/utils/interface";
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { IArticle } from "@/utils/interface";
@@ -16,6 +16,7 @@ import { GlobalContext } from "@/store/GlobalState";
 export default function ArticlesPage() {
   const router = useRouter();
   const [posts, setPosts] = useState<IArticle[]>([]);
+  const [select, setSelect] = useState<string>();
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -65,7 +66,13 @@ export default function ArticlesPage() {
         selectPosts.push(post._id);
       }
     });
-    console.log(selectPosts);
+    if (select === "DELETE_MULTI_ARTICLE")
+      return dispatch({
+        type: "NOTIFY",
+        payload: {
+          modal: { type: select, id: selectPosts },
+        },
+      });
   };
 
   return (
@@ -76,10 +83,11 @@ export default function ArticlesPage() {
             <select
               name="select"
               id="select"
+              onChange={(e) => setSelect(e.target.value)}
               className="py-2 px-4 border border-gray-400 rounded-sm outline-none"
             >
               <option>--Action--</option>
-              <option value="delete">Xóa</option>
+              <option value="DELETE_MULTI_ARTICLE">Delete</option>
             </select>
             <button className="ml-4 px-4 py-2 bg-yellow-600 rounded-sm text-white text-md font-semibold">
               Thực hiện
@@ -134,7 +142,11 @@ export default function ArticlesPage() {
                 />
               </td>
               <td className="py-3 border-b pr-4">{index + 1}</td>
-              <td className="py-3 border-b max-w-xs pr-8">{post.title}</td>
+              <td className="py-3 border-b max-w-xs pr-8">
+                <h4 title={post.title} className="line-clamp-1">
+                  {post.title}
+                </h4>
+              </td>
               <td className="py-3 border-b">
                 {typeof post.user === "object" && post.user.username}
               </td>

@@ -1,3 +1,8 @@
+import { useContext } from "react";
+import { useRouter } from "next/router";
+import { MdClose } from "react-icons/md";
+import { toast } from "react-toastify";
+
 import { GlobalContext } from "@/store/GlobalState";
 import {
   deleteData,
@@ -5,16 +10,13 @@ import {
   patchData,
   patchManyData,
 } from "@/utils/fetchData";
-import { useRouter } from "next/router";
-import React, { useContext } from "react";
-import { MdClose } from "react-icons/md";
-import { toast } from "react-toastify";
 
 const Modal = () => {
   const router = useRouter();
   const { state, dispatch } = useContext(GlobalContext);
-  const { modal } = state.notify;
   const token = state.auth.token;
+  const { modal } = state.notify;
+  const { title, type, id } = modal;
 
   const handleSubmit = async () => {
     const handleModal = async (type: string, id: object) => {
@@ -64,8 +66,6 @@ const Modal = () => {
       }
     };
 
-    const { type, id } = modal;
-
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await handleModal(type, id);
     dispatch({ type: "NOTIFY", payload: {} });
@@ -75,13 +75,14 @@ const Modal = () => {
     router.reload();
     return toast.success(res.success, { theme: "colored" });
   };
+
   return (
     <div className="fixed top-0 left-0 z-40 w-full h-full overflow-x-hidden overflow-y-auto outline-none">
       <div className="fixed top-0 left-0 bg-gray-800 opacity-30 w-full h-full"></div>
       <div className="relative z-50 m-2 md:mx-auto md:my-8 max-w-[500px] w-auto pointer-events-none ">
         <div className="relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding border border-gray-400 rounded-md outline-none">
           <div className="flex flex-shrink-0 items-center justify-between p-3 border-b border-[#dee2e6] rounded-tl-[calc(0.3rem - 1px)] rounded-tr-[calc(0.3rem-1px)]">
-            <h5 className="text-xl md:text-2xl font-semibold">Modal Title</h5>
+            <h5 className="text-xl md:text-2xl font-semibold">{title}</h5>
             <span
               className="cursor-pointer"
               onClick={() => dispatch({ type: "NOTIFY", payload: {} })}
@@ -90,7 +91,7 @@ const Modal = () => {
             </span>
           </div>
           <div className="relative flex-auto px-4 py-6">
-            <p className="text-xl">Bạn có muốn xoá phần tử này</p>
+            <p className="text-xl">Bạn có muốn xoá phần tử này?</p>
           </div>
           <div className="flex flex-wrap flex-shrink-0 items-center justify-end p-3 border-t border-t-[#dee2e6] rounded-br-[calc(0.3rem-1px)] border-bl-[calc(0.3rem-1px)]">
             <button

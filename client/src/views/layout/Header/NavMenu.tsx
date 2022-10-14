@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { toast } from "react-toastify";
-import { Icategory } from "../../../utils/interface";
+import { ICategory } from "../../../utils/interface";
 import { getData } from "../../../utils/fetchData";
 
 interface NavProps {
@@ -31,7 +31,7 @@ const NavMenu = ({ isMobile, setIsMobile }: NavProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const [categories, setCategories] = useState<Icategory[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   useEffect(() => {
     getData(`category`)
       .then((res) => {
@@ -70,7 +70,7 @@ const NavMenu = ({ isMobile, setIsMobile }: NavProps) => {
             key={category._id}
             className="mr-4 font-bold uppercase text-lg ml-4 lg:ml-0 py-3"
           >
-            <a href={`/category/${category.slug}`}>{category.name}</a>
+            <a href={`/category/${category?.slug}`}>{category.name}</a>
           </li>
         ))}
       </ul>

@@ -1,12 +1,24 @@
+import { IArticle, ITag } from "@/utils/interface";
+import Link from "next/link";
 import { MdClose } from "react-icons/md";
 
 interface TopicProps {
   isMobile: boolean;
   active: boolean;
   setActive: Function;
+  disease: ITag;
+  articles: IArticle[];
+  articleSlug: string;
 }
 
-const Topic = ({ isMobile, active, setActive }: TopicProps) => {
+const Topic = ({
+  isMobile,
+  active,
+  setActive,
+  disease,
+  articles,
+  articleSlug,
+}: TopicProps) => {
   return (
     <aside
       className={`flex-[3_1_0%] bg-white absolute lg:relative left-0 top-0 bottom-0 ${
@@ -21,23 +33,17 @@ const Topic = ({ isMobile, active, setActive }: TopicProps) => {
           className="absolute right-4 top-4 cursor-pointer"
           onClick={() => setActive(false)}
         />
-        <h2 className="pt-8 pb-4">Chuyên đề: Topic</h2>
+        <h2 className="pt-8 pb-4">Topic: {disease.name}</h2>
         <ul>
-          <li>
-            <a href="#">Chuyên đề 1</a>
-          </li>
-          <li>
-            <a href="#">Chuyên đề 1</a>
-          </li>
-          <li>
-            <a href="#">Chuyên đề 1</a>
-          </li>
-          <li>
-            <a href="#">Chuyên đề 1</a>
-          </li>
-          <li>
-            <a href="#">Chuyên đề 1</a>
-          </li>
+          {articles.map((item) => (
+            <li key={item.slug} className="my-1 hover:font-bold">
+              <Link href={`/${disease.slug}/${item.slug}`}>
+                <a className={item.slug === articleSlug ? "font-bold" : ""}>
+                  {item.title}
+                </a>
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </aside>

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
 
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";
@@ -19,6 +19,7 @@ export default function TagsPage() {
   const token = auth?.token;
 
   const [posts, setPosts] = useState<ITag[]>([]);
+  const [select, setSelect] = useState<string>();
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -69,7 +70,13 @@ export default function TagsPage() {
         selectPosts.push(post._id);
       }
     });
-    console.log(selectPosts);
+    if (select === "DELETE_MULTI_TAG")
+      return dispatch({
+        type: "NOTIFY",
+        payload: {
+          modal: { type: select, id: selectPosts },
+        },
+      });
   };
 
   return (
@@ -80,10 +87,11 @@ export default function TagsPage() {
             <select
               name="select"
               id="select"
+              onChange={(e) => setSelect(e.target.value)}
               className="py-2 px-4 border border-gray-400 rounded-sm outline-none"
             >
               <option>--Action--</option>
-              <option value="delete">Delete</option>
+              <option value="DELETE_MULTI_TAG">Delete</option>
             </select>
             <button className="ml-4 px-4 py-2 bg-yellow-600 rounded-sm text-white text-md font-semibold">
               Thực hiện

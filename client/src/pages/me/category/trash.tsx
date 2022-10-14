@@ -4,11 +4,11 @@ import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { MdClose, MdRestore } from "react-icons/md";
 
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";
-import { getData, patchData } from "@/utils/fetchData";
+import { getData, patchData, patchManyData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function TrashCategoriesPage() {
@@ -18,6 +18,7 @@ export default function TrashCategoriesPage() {
   const token = state.auth?.token;
 
   const [posts, setPosts] = useState<ICategory[]>([]);
+  const [select, setSelect] = useState<string>();
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -59,7 +60,7 @@ export default function TrashCategoriesPage() {
     }
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
     posts.forEach((post) => {
@@ -67,7 +68,29 @@ export default function TrashCategoriesPage() {
         selectPosts.push(post._id);
       }
     });
-    console.log(selectPosts);
+    if (select === "DESTROY_MULTI_CATEGORY") {
+      return dispatch({
+        type: "NOTIFY",
+        payload: {
+          modal: { type: select, id: selectPosts },
+        },
+      });
+    }
+
+    if (select === "RESTORE_MULTI_CATEGORY") {
+      dispatch({ type: "NOTIFY", payload: { loading: true } });
+      const res = await patchManyData("/category/restore", selectPosts, token);
+      dispatch({ type: "NOTIFY", payload: {} });
+
+      if (res.error) toast.error(res.error, { theme: "colored" });
+      const newPosts = posts.filter((post) => {
+        return !selectPosts.includes(post._id);
+      });
+      setPosts(newPosts);
+      setCount((prev) => prev - selectPosts.length);
+
+      return toast.success(res.success, { theme: "colored" });
+    }
   };
 
   const handleRestore = async (id: string | undefined) => {
@@ -76,9 +99,15 @@ export default function TrashCategoriesPage() {
     dispatch({ type: "NOTIFY", payload: {} });
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
 
     return toast.success(res.success, { theme: "colored" });
   };
+
   return (
     <>
       <div className="flex justify-between px-4">
@@ -87,10 +116,12 @@ export default function TrashCategoriesPage() {
             <select
               name="select"
               id="select"
+              onChange={(e) => setSelect(e.target.value)}
               className="py-2 px-4 border border-gray-400 rounded-sm outline-none"
             >
               <option>--Action--</option>
-              <option value="delete">Xóa</option>
+              <option value="RESTORE_MULTI_CATEGORY">Restore</option>
+              <option value="DESTROY_MULTI_CATEGORY">Destroy</option>
             </select>
             <button className="ml-4 px-4 py-2 bg-yellow-600 rounded-sm text-white text-md font-semibold">
               Thực hiện

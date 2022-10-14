@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData, postData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function NewTag() {
+  const router = useRouter();
   const { state, dispatch } = useContext(GlobalContext);
   const token = state.auth.token;
 
@@ -48,7 +50,8 @@ export default function NewTag() {
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
-    return toast.success(res.success, { theme: "colored" });
+    toast.success(res.success, { theme: "colored" });
+    return router.back();
   };
 
   return (

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import AuthRouter from "../../../views/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 
 import Table from "../../../components/DataTable";
 import Pagination from "../../../components/Pagination";
@@ -19,6 +19,7 @@ export default function UsersPage() {
   const token = auth.token;
 
   const [posts, setPosts] = useState<IUser[]>([]);
+  const [select, setSelect] = useState<string>();
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -66,7 +67,13 @@ export default function UsersPage() {
         selectPosts.push(post._id);
       }
     });
-    console.log(selectPosts);
+    if (select === "DELETE_MULTI_USER")
+      return dispatch({
+        type: "NOTIFY",
+        payload: {
+          modal: { type: select, id: selectPosts },
+        },
+      });
   };
   return (
     <>
@@ -76,10 +83,11 @@ export default function UsersPage() {
             <select
               name="select"
               id="select"
+              onChange={(e) => setSelect(e.target.value)}
               className="py-2 px-4 border border-gray-400 rounded-sm outline-none"
             >
               <option>--Action--</option>
-              <option value="delete">Xóa</option>
+              <option value="DELETE_MULTI_USER">Delete</option>
             </select>
             <button className="ml-4 px-4 py-2 bg-yellow-600 rounded-sm text-white text-md font-semibold">
               Thực hiện

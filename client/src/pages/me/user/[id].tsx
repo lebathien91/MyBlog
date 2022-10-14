@@ -1,11 +1,10 @@
-import { GlobalContext } from "@/store/GlobalState";
-import { getData, putData } from "@/utils/fetchData";
-
 import { useRouter } from "next/router";
-import React, { ReactElement, useContext, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
+import { GlobalContext } from "@/store/GlobalState";
+import { getData, putData } from "@/utils/fetchData";
 import { FormSubmit, InputChange, IUser } from "@/utils/interface";
 
 export default function UpdateUser() {
@@ -56,7 +55,8 @@ export default function UpdateUser() {
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
-    return toast.success(res.success, { theme: "colored" });
+    toast.success(res.success, { theme: "colored" });
+    return router.back();
   };
   return (
     <form className="w-full" onSubmit={handleSubmit}>
@@ -139,7 +139,7 @@ export default function UpdateUser() {
             >
               <option value="user">User</option>
               <option value="editor">Editor</option>
-              <option value="admin">AuthRouter</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
         </div>

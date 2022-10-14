@@ -1,12 +1,15 @@
-import { GlobalContext } from "@/store/GlobalState";
-import { postData } from "@/utils/fetchData";
-import React, { ReactElement, useContext, useState } from "react";
+import { useRouter } from "next/router";
+import { ReactElement, useContext, useState } from "react";
 import { toast } from "react-toastify";
-import { FormSubmit, InputChange } from "../../../utils/interface";
-import { validRegister } from "../../../utils/valid";
-import AuthRouter from "../../../views/layout/AuthRouter";
+
+import AuthRouter from "@/middleware/AuthRouter";
+import { GlobalContext } from "@/store/GlobalState";
+import { validRegister } from "@/utils/valid";
+import { postData } from "@/utils/fetchData";
+import { FormSubmit, InputChange } from "@/utils/interface";
 
 export default function NewUser() {
+  const router = useRouter();
   const { state, dispatch } = useContext(GlobalContext);
   const token = state.auth.token;
 
@@ -37,7 +40,8 @@ export default function NewUser() {
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
-    return toast.success(res.success, { theme: "colored" });
+    toast.success(res.success, { theme: "colored" });
+    return router.back();
   };
   return (
     <form className="w-full" onSubmit={handleSubmit}>

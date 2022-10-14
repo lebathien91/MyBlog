@@ -176,9 +176,9 @@ const UsersCtrl = class {
       const id = req.params.id;
       const date = new Date();
 
-      if (req.user?.role === "editor" || req.user?.role === "admin") {
+      if (req.user?.role === "admin") {
         const user = await Users.findOneAndUpdate(
-          { _id: id },
+          { _id: id, root: false },
           { deleted: date }
         );
 
@@ -275,7 +275,10 @@ const UsersCtrl = class {
     try {
       const ids = req.body;
 
-      const results = await Users.deleteMany({ _id: { $in: ids } });
+      const results = await Users.deleteMany({
+        _id: { $in: ids },
+        root: false,
+      });
 
       if (!results) return res.status(400).json({ error: "Invalid Category" });
 

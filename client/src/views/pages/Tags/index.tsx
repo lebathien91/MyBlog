@@ -1,8 +1,7 @@
-import React from "react";
-import Card from "./Card";
-import { Itag } from "../../../utils/interface";
+import Card from "./Tag";
+import { ITag } from "@/utils/interface";
 
-const Cards = ({ posts }: { posts: Itag[] }) => {
+const Tags = ({ posts }: { posts: ITag[] }) => {
   return (
     <>
       <div className="container my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-6">
@@ -19,4 +18,4 @@ const Cards = ({ posts }: { posts: Itag[] }) => {
   );
 };
 
-export default Cards;
+export default Tags;

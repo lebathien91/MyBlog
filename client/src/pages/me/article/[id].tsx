@@ -3,7 +3,7 @@ import { AsyncPaginate } from "react-select-async-paginate";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import Editor from "@/components/Editor";
 import { getData, putData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
@@ -17,7 +17,6 @@ export default function UpdateArticle() {
   const token = auth.token;
 
   const initialState = {
-    _id: "",
     title: "",
     description: "",
     tag: "",
@@ -46,7 +45,7 @@ export default function UpdateArticle() {
     }
   }, [id]);
 
-  const { _id, title, description, tag, createdAt, updatedAt } = formData;
+  const { title, description, tag, createdAt, updatedAt } = formData;
 
   const loadTags = async (inputValue: string) => {
     let options: { value: string | number; label: string }[] = [];
@@ -86,7 +85,7 @@ export default function UpdateArticle() {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
 
     const res = await putData(
-      `article/${_id}`,
+      `article/${id}`,
       { ...formData, tag: tagId ? tagId : tag, content: body },
       token
     );
@@ -94,7 +93,7 @@ export default function UpdateArticle() {
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
     toast.success(res.success, { theme: "colored" });
-    return router.push("/me/article");
+    return router.back();
   };
 
   return (
@@ -185,5 +184,5 @@ export default function UpdateArticle() {
 }
 
 UpdateArticle.getLayout = function getLayout(page: ReactElement) {
-  return <AuthRouter>{page}</AuthRouter>;
+  return <AuthRouter isUser>{page}</AuthRouter>;
 };

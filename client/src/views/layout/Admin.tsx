@@ -5,7 +5,7 @@ import Main from "./Main";
 
 import Account from "./Header/Account";
 
-export default function Dashboard({ children }: { children: ReactNode }) {
+export default function Admin({ children }: { children: ReactNode }) {
   const [activeSidebar, setActiveSidebar] = useState(true);
 
   return (

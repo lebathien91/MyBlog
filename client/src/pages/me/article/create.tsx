@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 
 import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import Editor from "@/components/Editor";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData, postData } from "@/utils/fetchData";
@@ -82,6 +82,7 @@ export default function NewArticle() {
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
     toast.success(res.success, { theme: "colored" });
+    return router.back();
   };
 
   return (
@@ -168,5 +169,5 @@ export default function NewArticle() {
 }
 
 NewArticle.getLayout = function getLayout(page: ReactElement) {
-  return <AuthRouter isAuth>{page}</AuthRouter>;
+  return <AuthRouter isUser>{page}</AuthRouter>;
 };

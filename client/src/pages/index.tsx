@@ -1,11 +1,17 @@
 import type { ReactElement } from "react";
+
 import Layout from "@/layout/index";
-import Cards from "@/views/pages/Cards";
+import Tags from "@/views/pages/Tags";
+import { getData } from "@/utils/fetchData";
+import { ITag } from "@/utils/interface";
 
-import { getData } from "../utils/fetchData";
+interface IHome {
+  tags: ITag[];
+  count: number;
+}
 
-export default function Home({ tags, count }: any) {
-  return <Cards posts={tags} />;
+export default function Home({ tags, count }: IHome) {
+  return <Tags posts={tags} />;
 }
 
 export async function getStaticProps() {

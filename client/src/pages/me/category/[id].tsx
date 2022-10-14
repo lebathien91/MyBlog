@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData, putData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
@@ -15,7 +15,6 @@ export default function UpdateCategory() {
   const token = auth.token;
 
   const initialState = {
-    _id: "",
     name: "",
     description: "",
   };
@@ -38,7 +37,7 @@ export default function UpdateCategory() {
     }
   }, [id]);
 
-  const { _id, name, description, createdAt, updatedAt } = formData;
+  const { name, description, createdAt, updatedAt } = formData;
 
   const handleChangeInput = (e: InputChange) => {
     const { name, value } = e.target as HTMLInputElement;
@@ -54,7 +53,8 @@ export default function UpdateCategory() {
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
-    return toast.success(res.success, { theme: "colored" });
+    toast.success(res.success, { theme: "colored" });
+    return router.back();
   };
 
   return (

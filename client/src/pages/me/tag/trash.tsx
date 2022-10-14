@@ -4,11 +4,11 @@ import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { MdClose, MdRestore } from "react-icons/md";
 import { toast } from "react-toastify";
 
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/DataTable";
 import { GlobalContext } from "@/store/GlobalState";
-import { getData, patchData } from "@/utils/fetchData";
+import { getData, patchData, patchManyData } from "@/utils/fetchData";
 import { FormSubmit, InputChange, ITag } from "@/utils/interface";
 
 export default function TrashTagsPage() {
@@ -19,6 +19,7 @@ export default function TrashTagsPage() {
   const token = auth?.token;
 
   const [posts, setPosts] = useState<ITag[]>([]);
+  const [select, setSelect] = useState<string>();
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
@@ -61,7 +62,7 @@ export default function TrashTagsPage() {
     }
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
     posts.forEach((post) => {
@@ -69,7 +70,30 @@ export default function TrashTagsPage() {
         selectPosts.push(post._id);
       }
     });
-    console.log(selectPosts);
+
+    if (select === "DESTROY_MULTI_TAG") {
+      return dispatch({
+        type: "NOTIFY",
+        payload: {
+          modal: { type: select, id: selectPosts },
+        },
+      });
+    }
+
+    if (select === "RESTORE_MULTI_TAG") {
+      dispatch({ type: "NOTIFY", payload: { loading: true } });
+      const res = await patchManyData("/tag/restore", selectPosts, token);
+      dispatch({ type: "NOTIFY", payload: {} });
+
+      if (res.error) toast.error(res.error, { theme: "colored" });
+      const newPosts = posts.filter((post) => {
+        return !selectPosts.includes(post._id);
+      });
+      setPosts(newPosts);
+      setCount((prev) => prev - selectPosts.length);
+
+      return toast.success(res.success, { theme: "colored" });
+    }
   };
 
   const handleRestore = async (id: string | undefined) => {
@@ -95,11 +119,12 @@ export default function TrashTagsPage() {
             <select
               name="select"
               id="select"
+              onChange={(e) => setSelect(e.target.value)}
               className="py-2 px-4 border border-gray-400 rounded-sm outline-none"
             >
               <option>--Action--</option>
-              <option value="destroy">Destroy</option>
-              <option value="restore">Restore</option>
+              <option value="RESTORE_MULTI_TAG">Restore</option>
+              <option value="DESTROY_MULTI_TAG">Destroy</option>
             </select>
             <button className="ml-4 px-4 py-2 bg-yellow-600 rounded-sm text-white text-md font-semibold">
               Thực hiện

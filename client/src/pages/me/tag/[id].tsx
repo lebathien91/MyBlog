@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import AuthRouter from "@/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 import NextImage from "@/components/Image";
 import { getData, putData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
@@ -77,7 +77,8 @@ export default function UpdateTag() {
     dispatch({ type: "NOTIFY", payload: {} });
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
-    return toast.success("Gui du lieu thanh cong", { theme: "colored" });
+    toast.success(res.success, { theme: "colored" });
+    return router.back();
   };
 
   return (
