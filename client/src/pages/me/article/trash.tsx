@@ -8,7 +8,7 @@ import AuthRouter from "@/middleware/AuthRouter";
 import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
-import { getData, patchData, patchManyData } from "@/utils/fetchData";
+import { deleteData, getData, patchData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
 
 export default function TrashArticlesPage() {
@@ -58,6 +58,36 @@ export default function TrashArticlesPage() {
     }
   };
 
+  const handleDestroy = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await deleteData(`article/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
+    return toast.success(res.success, { theme: "colored" });
+  };
+
+  const handeMutiDestroy = async (ids: Array<string | undefined>) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await deleteData("article", ids, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    const newPosts = posts.filter((post) => {
+      return !ids.includes(post._id);
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - ids.length);
+
+    return toast.success(res.success, { theme: "colored" });
+  };
+
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
@@ -71,14 +101,18 @@ export default function TrashArticlesPage() {
       return dispatch({
         type: "NOTIFY",
         payload: {
-          modal: { type: select, id: selectPosts },
+          modal: {
+            title: "Xóa bài viết",
+            message: "Thông báo",
+            handleSure: () => handeMutiDestroy(selectPosts),
+          },
         },
       });
     }
 
     if (select === "RESTORE_MULTI_ARTICLE") {
       dispatch({ type: "NOTIFY", payload: { loading: true } });
-      const res = await patchManyData("/article/restore", selectPosts, token);
+      const res = await patchData("/article/restore", selectPosts, token);
       dispatch({ type: "NOTIFY", payload: {} });
 
       if (res.error) toast.error(res.error, { theme: "colored" });
@@ -194,7 +228,11 @@ export default function TrashArticlesPage() {
                       dispatch({
                         type: "NOTIFY",
                         payload: {
-                          modal: { type: "DESTROY_ARTICLE", id: post._id },
+                          modal: {
+                            title: "Chuyển thùng rác",
+                            message: "Thông điệp",
+                            handleSure: () => handleDestroy(post._id),
+                          },
                         },
                       })
                     }

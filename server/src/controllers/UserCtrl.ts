@@ -207,7 +207,7 @@ const UsersCtrl = class {
       const ids = req.body;
       const date = new Date();
       const results = await Users.updateMany(
-        { _id: { $in: ids } },
+        { _id: { $in: ids }, root: false },
         { deleted: date }
       );
 

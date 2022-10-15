@@ -13,13 +13,13 @@ export async function search(options: any = {}) {
     .join("&");
 
   const results = await fetch(
-    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/resources/search?${paramString}`,
+    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/resources/search?${paramString}`,
     {
       headers: {
         Authorization: `Basic ${Buffer.from(
-          process.env.NEXT_PUBLIC_CLOUD_API_KEY +
+          process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY +
             ":" +
-            process.env.NEXT_PUBLIC_CLOUD_API_SECRET
+            process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET
         ).toString("base64")}`,
       },
     }
@@ -30,13 +30,13 @@ export async function search(options: any = {}) {
 
 export async function getFolders(options = {}) {
   const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/folders`,
+    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/folders`,
     {
       headers: {
         Authorization: `Basic ${Buffer.from(
-          process.env.NEXT_PUBLIC_CLOUD_API_KEY +
+          process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY +
             ":" +
-            process.env.NEXT_PUBLIC_CLOUD_API_SECRET
+            process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET
         ).toString("base64")}`,
       },
     }

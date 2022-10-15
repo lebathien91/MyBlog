@@ -1,80 +1,12 @@
 import { useContext } from "react";
-import { useRouter } from "next/router";
 import { MdClose } from "react-icons/md";
-import { toast } from "react-toastify";
 
 import { GlobalContext } from "@/store/GlobalState";
-import {
-  deleteData,
-  deleteManyData,
-  patchData,
-  patchManyData,
-} from "@/utils/fetchData";
 
 const Modal = () => {
-  const router = useRouter();
   const { state, dispatch } = useContext(GlobalContext);
-  const token = state.auth.token;
   const { modal } = state.notify;
-  const { title, type, id } = modal;
-
-  const handleSubmit = async () => {
-    const handleModal = async (type: string, id: object) => {
-      switch (type) {
-        // Xử lý User
-        case "DELETE_USER":
-          return await patchData(`user/${id}`, {}, token);
-        case "DESTROY_USER":
-          return await deleteData(`user/${id}`, token);
-        case "DELETE_MULTI_USER":
-          return await patchManyData("user", id, token);
-        case "DESTROY_MULTI_USER":
-          return await deleteManyData("user", id, token);
-
-        // Xử lý Category
-        case "DELETE_CATEGORY":
-          return await patchData(`category/${id}`, {}, token);
-        case "DESTROY_CATEGORY":
-          return await deleteData(`category/${id}`, token);
-        case "DELETE_MULTI_CATEGORY":
-          return await patchManyData("category", id, token);
-        case "DESTROY_MULTI_CATEGORY":
-          return await deleteManyData("category", id, token);
-
-        // Xử lý Tag
-        case "DELETE_TAG":
-          return await patchData(`tag/${id}`, {}, token);
-        case "DESTROY_TAG":
-          return await deleteData(`tag/${id}`, token);
-        case "DELETE_MULTI_TAG":
-          return await patchManyData("tag", id, token);
-        case "DESTROY_MULTI_TAG":
-          return await deleteManyData("tag", id, token);
-
-        // Xử lý Article
-        case "DELETE_ARTICLE":
-          return await patchData(`article/${id}`, {}, token);
-        case "DESTROY_ARTICLE":
-          return await await deleteData(`article/${id}`, token);
-        case "DELETE_MULTI_ARTICLE":
-          return await patchManyData("article", id, token);
-        case "DESTROY_MULTI_ARTICLE":
-          return await deleteManyData("article", id, token);
-
-        default:
-          return { error: "Bạn cần chọn hành động" };
-      }
-    };
-
-    dispatch({ type: "NOTIFY", payload: { loading: true } });
-    const res = await handleModal(type, id);
-    dispatch({ type: "NOTIFY", payload: {} });
-
-    if (res.error) return toast.error(res.error, { theme: "colored" });
-
-    router.reload();
-    return toast.success(res.success, { theme: "colored" });
-  };
+  const { title, message, handleSure } = modal;
 
   return (
     <div className="fixed top-0 left-0 z-40 w-full h-full overflow-x-hidden overflow-y-auto outline-none">
@@ -91,12 +23,12 @@ const Modal = () => {
             </span>
           </div>
           <div className="relative flex-auto px-4 py-6">
-            <p className="text-xl">Bạn có muốn xoá phần tử này?</p>
+            <p className="text-xl">{message}</p>
           </div>
           <div className="flex flex-wrap flex-shrink-0 items-center justify-end p-3 border-t border-t-[#dee2e6] rounded-br-[calc(0.3rem-1px)] border-bl-[calc(0.3rem-1px)]">
             <button
               className="m-1 font-medium text-center px-4 py-2 border rounded-md text-white bg-red-600 hover:bg-gray-500"
-              onClick={handleSubmit}
+              onClick={handleSure}
             >
               Yes
             </button>

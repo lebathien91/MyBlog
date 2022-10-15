@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { MdClose, MdRestore } from "react-icons/md";
-import Table from "../../../components/DataTable";
-import AuthRouter from "@/middleware/AuthRouter";
-import Pagination from "../../../components/Pagination";
-import { useRouter } from "next/router";
-import { FormSubmit, IUser } from "../../../utils/interface";
-
-import { GlobalContext } from "../../../store/GlobalState";
-import { getData, patchData, patchManyData } from "../../../utils/fetchData";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+
+import { GlobalContext } from "@/store/GlobalState";
+import AuthRouter from "@/middleware/AuthRouter";
+import Table from "@/components/DataTable";
+import Pagination from "@/components/Pagination";
+import { deleteData, getData, patchData } from "@/utils/fetchData";
+import { FormSubmit, IUser } from "@/utils/interface";
 
 export default function TrashUsersPage() {
   const router = useRouter();
@@ -59,6 +59,36 @@ export default function TrashUsersPage() {
     }
   };
 
+  const handleDestroy = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await deleteData(`user/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
+    return toast.success(res.success, { theme: "colored" });
+  };
+
+  const handeMutiDestroy = async (ids: Array<string | undefined>) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await deleteData("user", ids, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    const newPosts = posts.filter((post) => {
+      return !ids.includes(post._id);
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - ids.length);
+
+    return toast.success(res.success, { theme: "colored" });
+  };
+
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
@@ -71,14 +101,18 @@ export default function TrashUsersPage() {
       return dispatch({
         type: "NOTIFY",
         payload: {
-          modal: { type: select, id: selectPosts },
+          modal: {
+            title: "Xóa bài viết",
+            message: "Thông báo",
+            handleSure: () => handeMutiDestroy(selectPosts),
+          },
         },
       });
     }
 
     if (select === "RESTORE_MULTI_USER") {
       dispatch({ type: "NOTIFY", payload: { loading: true } });
-      const res = await patchManyData("/user/restore", selectPosts, token);
+      const res = await patchData("/user/restore", selectPosts, token);
       dispatch({ type: "NOTIFY", payload: {} });
 
       if (res.error) toast.error(res.error, { theme: "colored" });
@@ -193,7 +227,11 @@ export default function TrashUsersPage() {
                       dispatch({
                         type: "NOTIFY",
                         payload: {
-                          modal: { type: "DESTROY_USER", id: post._id },
+                          modal: {
+                            title: "Chuyển thùng rác",
+                            message: "Thông điệp",
+                            handleSure: () => handleDestroy(post._id),
+                          },
                         },
                       })
                     }

@@ -8,7 +8,7 @@ import AuthRouter from "@/middleware/AuthRouter";
 import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";
-import { getData } from "@/utils/fetchData";
+import { getData, patchData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 
 export default function CategoriesPage() {
@@ -62,6 +62,36 @@ export default function CategoriesPage() {
     }
   };
 
+  const handleDelete = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`category/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
+    return toast.success(res.success, { theme: "colored" });
+  };
+
+  const handeMutiDelete = async (ids: Array<string | undefined>) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData("category", ids, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    const newPosts = posts.filter((post) => {
+      return !ids.includes(post._id);
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - ids.length);
+
+    return toast.success(res.success, { theme: "colored" });
+  };
+
   const handleSubmit = (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
@@ -74,7 +104,11 @@ export default function CategoriesPage() {
       return dispatch({
         type: "NOTIFY",
         payload: {
-          modal: { type: select, id: selectPosts },
+          modal: {
+            title: "Xóa bài viết",
+            message: "Thông báo",
+            handleSure: () => handeMutiDelete(selectPosts),
+          },
         },
       });
   };
@@ -160,7 +194,11 @@ export default function CategoriesPage() {
                       dispatch({
                         type: "NOTIFY",
                         payload: {
-                          modal: { type: "DELETE_CATEGORY", id: post._id },
+                          modal: {
+                            title: "Chuyển thùng rác",
+                            message: "Thông điệp",
+                            handleSure: () => handleDelete(post._id),
+                          },
                         },
                       })
                     }

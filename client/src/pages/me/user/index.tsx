@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import AuthRouter from "@/middleware/AuthRouter";
-
-import Table from "../../../components/DataTable";
-import Pagination from "../../../components/Pagination";
-import { useRouter } from "next/router";
-import { FormSubmit, IUser } from "../../../utils/interface";
-import { getData } from "../../../utils/fetchData";
-import { GlobalContext } from "../../../store/GlobalState";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+
+import AuthRouter from "@/middleware/AuthRouter";
+import { GlobalContext } from "@/store/GlobalState";
+import Table from "@/components/DataTable";
+import Pagination from "@/components/Pagination";
+import { FormSubmit, IUser } from "@/utils/interface";
+import { getData, patchData } from "@/utils/fetchData";
 
 export default function UsersPage() {
   const router = useRouter();
@@ -59,6 +59,36 @@ export default function UsersPage() {
     }
   };
 
+  const handleDelete = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`user/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
+    return toast.success(res.success, { theme: "colored" });
+  };
+
+  const handeMutiDelete = async (ids: Array<string | undefined>) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData("user", ids, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    const newPosts = posts.filter((post) => {
+      return !ids.includes(post._id);
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - ids.length);
+
+    return toast.success(res.success, { theme: "colored" });
+  };
+
   const handleSubmit = (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
@@ -71,7 +101,11 @@ export default function UsersPage() {
       return dispatch({
         type: "NOTIFY",
         payload: {
-          modal: { type: select, id: selectPosts },
+          modal: {
+            title: "Xóa bài viết",
+            message: "Thông báo",
+            handleSure: () => handeMutiDelete(selectPosts),
+          },
         },
       });
   };
@@ -158,7 +192,11 @@ export default function UsersPage() {
                       dispatch({
                         type: "NOTIFY",
                         payload: {
-                          modal: { type: "DELETE_USER", id: post._id },
+                          modal: {
+                            title: "Chuyển thùng rác",
+                            message: "Thông điệp",
+                            handleSure: () => handleDelete(post._id),
+                          },
                         },
                       })
                     }

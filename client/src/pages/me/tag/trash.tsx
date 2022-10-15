@@ -8,7 +8,7 @@ import AuthRouter from "@/middleware/AuthRouter";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/DataTable";
 import { GlobalContext } from "@/store/GlobalState";
-import { getData, patchData, patchManyData } from "@/utils/fetchData";
+import { deleteData, getData, patchData } from "@/utils/fetchData";
 import { FormSubmit, InputChange, ITag } from "@/utils/interface";
 
 export default function TrashTagsPage() {
@@ -62,6 +62,36 @@ export default function TrashTagsPage() {
     }
   };
 
+  const handleDestroy = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await deleteData(`tag/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
+    return toast.success(res.success, { theme: "colored" });
+  };
+
+  const handeMutiDestroy = async (ids: Array<string | undefined>) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await deleteData("tag", ids, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    const newPosts = posts.filter((post) => {
+      return !ids.includes(post._id);
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - ids.length);
+
+    return toast.success(res.success, { theme: "colored" });
+  };
+
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
@@ -75,14 +105,18 @@ export default function TrashTagsPage() {
       return dispatch({
         type: "NOTIFY",
         payload: {
-          modal: { type: select, id: selectPosts },
+          modal: {
+            title: "Xóa bài viết",
+            message: "Thông báo",
+            handleSure: () => handeMutiDestroy(selectPosts),
+          },
         },
       });
     }
 
     if (select === "RESTORE_MULTI_TAG") {
       dispatch({ type: "NOTIFY", payload: { loading: true } });
-      const res = await patchManyData("/tag/restore", selectPosts, token);
+      const res = await patchData("/tag/restore", selectPosts, token);
       dispatch({ type: "NOTIFY", payload: {} });
 
       if (res.error) toast.error(res.error, { theme: "colored" });
@@ -199,7 +233,11 @@ export default function TrashTagsPage() {
                       dispatch({
                         type: "NOTIFY",
                         payload: {
-                          modal: { type: "DESTROY_TAG", id: post._id },
+                          modal: {
+                            title: "Chuyển thùng rác",
+                            message: "Thông điệp",
+                            handleSure: () => handleDestroy(post._id),
+                          },
                         },
                       })
                     }

@@ -33,7 +33,10 @@ const Detail = ({ data }: any) => {
   const content = parse(article.content);
   const headings = content.querySelectorAll("h1, h2, h3");
   for (const heading of headings) {
-    heading.setAttribute("id", slug(heading.rawText));
+    heading.setAttribute(
+      "id",
+      slug(heading.rawText, { locale: "vi", lower: true })
+    );
   }
 
   return (
@@ -58,7 +61,7 @@ const Detail = ({ data }: any) => {
           articles={articles}
         />
 
-        <article className="single flex-[7_1_0%] px-[16px]">
+        <article className="flex-[7_1_0%] px-[16px]">
           <header className={`${activeTopic ? "pt-8" : ""} pb-4`}>
             <div className="font-semibold text-xl">
               <Link href={`/tag/${slugDisease}`}>
@@ -77,7 +80,7 @@ const Detail = ({ data }: any) => {
               <span> - {readTime} phút đọc</span>
             </div>
             <div
-              className="detail-body"
+              className="single"
               dangerouslySetInnerHTML={{ __html: content.toString() }}
             />
           </main>

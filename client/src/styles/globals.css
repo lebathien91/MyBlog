@@ -41,22 +41,26 @@
   .single ul.todo-list li {
     @apply list-none;
   }
+  .ck-content h1,
+  .single h1 {
+    @apply my-4 scroll-mt-20;
+  }
   .ck-content h2,
   .single h2 {
-    @apply my-4;
+    @apply my-4 scroll-mt-20;
   }
   .ck-content p,
   .ck-content h3,
   .single p,
   .single h3 {
-    @apply my-2;
+    @apply my-2 scroll-mt-20;
   }
   .ck-content h4,
   .single h4 {
-    @apply font-bold;
+    @apply font-bold scroll-mt-20;
   }
   .ck-content h5,
   .single h5 {
-    @apply font-bold;
+    @apply font-bold scroll-mt-20;
   }
 }

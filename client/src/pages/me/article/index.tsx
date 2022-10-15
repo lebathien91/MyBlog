@@ -10,7 +10,7 @@ import AuthRouter from "@/middleware/AuthRouter";
 import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import { IArticle } from "@/utils/interface";
-import { getData } from "@/utils/fetchData";
+import { getData, patchData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
 
 export default function ArticlesPage() {
@@ -23,6 +23,7 @@ export default function ArticlesPage() {
   const page = router.query.page || 1;
 
   const { state, dispatch } = useContext(GlobalContext);
+  const { token } = state.auth;
 
   useEffect(() => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
@@ -58,6 +59,36 @@ export default function ArticlesPage() {
     }
   };
 
+  const handleDelete = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`article/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+    const newPosts = posts.filter((post) => {
+      return post._id !== id;
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - 1);
+    return toast.success(res.success, { theme: "colored" });
+  };
+
+  const handeMutiDelete = async (ids: Array<string | undefined>) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData("article", ids, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    const newPosts = posts.filter((post) => {
+      return !ids.includes(post._id);
+    });
+    setPosts(newPosts);
+    setCount((prev) => prev - ids.length);
+
+    return toast.success(res.success, { theme: "colored" });
+  };
+
   const handleSubmit = (e: FormSubmit) => {
     e.preventDefault();
     let selectPosts: any = [];
@@ -70,7 +101,11 @@ export default function ArticlesPage() {
       return dispatch({
         type: "NOTIFY",
         payload: {
-          modal: { type: select, id: selectPosts },
+          modal: {
+            title: "Xóa bài viết",
+            message: "Thông báo",
+            handleSure: () => handeMutiDelete(selectPosts),
+          },
         },
       });
   };
@@ -163,7 +198,11 @@ export default function ArticlesPage() {
                       dispatch({
                         type: "NOTIFY",
                         payload: {
-                          modal: { type: "DELETE_ARTICLE", id: post._id },
+                          modal: {
+                            title: "Chuyển thùng rác",
+                            message: "Thông điệp",
+                            handleSure: () => handleDelete(post._id),
+                          },
                         },
                       })
                     }

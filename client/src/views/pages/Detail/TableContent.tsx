@@ -51,7 +51,8 @@ const TableContent = ({ active, headings }: TableContentProps) => {
 
         const visibleHeadings: any[] = [];
         Object.keys(headingElementsRef.current).forEach((key) => {
-          const headingElement = headingElementsRef.current[key];
+          const headingElementsRefCurrent = headingElementsRef.current as any;
+          const headingElement = headingElementsRefCurrent[key];
           if (headingElement.isIntersecting)
             visibleHeadings.push(headingElement);
         });

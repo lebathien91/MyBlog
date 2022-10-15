@@ -59,38 +59,7 @@ export const patchData = async (
   return data;
 };
 
-export const patchManyData = async (
-  path: string,
-  post?: object,
-  token?: string
-) => {
-  const res = await fetch(`${baseUrl}/api/${path}`, {
-    method: "PATCH",
-    headers: {
-      "content-Type": "application/json",
-      Authorization: token || `Bearer ${token}`,
-    },
-    body: JSON.stringify(post),
-  });
-
-  const data = await res.json();
-  return data;
-};
-
-export const deleteData = async (path: string, token?: string) => {
-  const res = await fetch(`${baseUrl}/api/${path}`, {
-    method: "DELETE",
-    headers: {
-      "content-Type": "application/json",
-      Authorization: token || `Bearer ${token}`,
-    },
-  });
-
-  const data = await res.json();
-  return data;
-};
-
-export const deleteManyData = async (
+export const deleteData = async (
   path: string,
   post?: object,
   token?: string

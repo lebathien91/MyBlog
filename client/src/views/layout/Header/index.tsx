@@ -9,7 +9,7 @@ const Header = () => {
   const [isMobile, setIsMobile] = useState(false);
   return (
     <>
-      <header className="z-40 border-b border-gray-200 py-2 sticky top-0 lg:relative">
+      <header className="z-40 bg-white border-b border-gray-200 py-2 sticky top-0 lg:relative">
         <div className="container flex justify-between items-center">
           <BiMenu
             size="1.875rem"
