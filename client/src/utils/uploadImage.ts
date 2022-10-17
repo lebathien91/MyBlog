@@ -1,7 +1,7 @@
 export const checkImage = (
   file: File,
-  size = 5,
-  types = ["image/png", "image/jpeg", "image/webp", "image/gif"]
+  size: number = 5,
+  types: Array<string> = ["image/png", "image/jpeg", "image/webp", "image/gif"]
 ) => {
   let errMsg;
   if (!file) return (errMsg = "File does not exits");
@@ -14,7 +14,7 @@ export const checkImage = (
   return errMsg;
 };
 
-export const uploadImage = async (image: File, folder = "MyBlog") => {
+export const uploadImage = async (image: File, folder: string = "KuChuoi") => {
   try {
     const formData = new FormData();
 

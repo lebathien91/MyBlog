@@ -7,6 +7,7 @@ import NextImage from "@/components/Image";
 import { getData, putData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
 import { InputChange, FormSubmit, ICategory, ITag } from "@/utils/interface";
+import { checkImage, uploadImage } from "@/utils/uploadImage";
 
 export default function UpdateTag() {
   const router = useRouter();
@@ -64,16 +65,30 @@ export default function UpdateTag() {
     const files = target.files;
     if (files) {
       const file = files[0];
+
+      const errMsg = checkImage(file, 3);
+      if (errMsg)
+        return dispatch({ type: "NOTIFY", payload: { error: errMsg } });
+
       setNewThumbnail(file);
     }
   };
 
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
+    if (!category)
+      return toast.error("Bạn phải chọn Category", { theme: "colored" });
+
+    let media;
 
     dispatch({ type: "NOTIFY", payload: { loading: true } });
+    if (newThumbnail) media = await uploadImage(newThumbnail, "TagsList");
 
-    const res = await putData(`tag/${id}`, formData, token);
+    const res = await putData(
+      `tag/${id}`,
+      { ...formData, thumbnail: media && media.url },
+      token
+    );
     dispatch({ type: "NOTIFY", payload: {} });
     if (res.error) return toast.error(res.error, { theme: "colored" });
 

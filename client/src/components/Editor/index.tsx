@@ -1,10 +1,14 @@
+import { GlobalContext } from "@/store/GlobalState";
+import { checkImage, uploadImage } from "@/utils/uploadImage";
 import { useState, useRef, useEffect, useContext } from "react";
 
 import { defaultConfig } from "./config";
 
 const Editor = ({ body, setBody }: { body: string; setBody: Function }) => {
-  const editorRef = useRef<any>();
   const [editorLoader, setEdiorLoaded] = useState(false);
+  const { state, dispatch } = useContext(GlobalContext);
+
+  const editorRef = useRef<any>();
 
   useEffect(() => {
     editorRef.current = {
@@ -21,11 +25,30 @@ const Editor = ({ body, setBody }: { body: string; setBody: Function }) => {
     return {
       upload: async () => {
         try {
+          dispatch({ type: "NOTIFY", payload: { loading: true } });
           const file = await loader.file;
 
-          console.log(file);
+          const check = checkImage(file);
+
+          if (check) {
+            dispatch({ type: "NOTIFY", payload: { error: check } });
+            return {
+              default: "/imageUrlDefault.jpg",
+            };
+          }
+
+          const image = await uploadImage(file, "Articles");
+
+          dispatch({ type: "NOTIFY", payload: {} });
+
+          return {
+            default: image.url,
+          };
         } catch (error: any) {
           console.log({ error: error.message });
+          return {
+            default: "/imageUrlDefault.jpg",
+          };
         }
       },
     };

@@ -7,13 +7,19 @@ import AuthRouter from "@/middleware/AuthRouter";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData, postData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
+import { checkImage, uploadImage } from "@/utils/uploadImage";
 
 export default function NewTag() {
   const router = useRouter();
   const { state, dispatch } = useContext(GlobalContext);
   const token = state.auth.token;
 
-  const initialState = {
+  const initialState: {
+    name: string;
+    description: string;
+    category: string;
+    thumbnail: string;
+  } = {
     name: "",
     description: "",
     category: "",
@@ -22,6 +28,7 @@ export default function NewTag() {
 
   const [formData, setFormData] = useState(initialState);
   const [categories, setCategories] = useState<Array<ICategory>>([]);
+  const [banner, setBanner] = useState<File>();
   useEffect(() => {
     getData("category")
       .then((res) => {
@@ -40,12 +47,33 @@ export default function NewTag() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const changeThumbnail = (e: InputChange) => {
+    const target = e.target as HTMLInputElement;
+    const files = target.files;
+    if (files) {
+      const file = files[0];
+
+      const errMsg = checkImage(file, 3);
+      if (errMsg) dispatch({ type: "NOTIFY", payload: { error: errMsg } });
+      setBanner(file);
+    }
+  };
+
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
+    if (!category)
+      return toast.error("Bạn phải chọn Category", { theme: "colored" });
+
+    let media;
 
     dispatch({ type: "NOTIFY", payload: { loading: true } });
+    if (banner) media = await uploadImage(banner, "TagsList");
 
-    const res = await postData("tag/create", formData, token);
+    const res = await postData(
+      "tag/create",
+      { ...formData, thumbnail: media && media.url },
+      token
+    );
     dispatch({ type: "NOTIFY", payload: {} });
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
@@ -106,8 +134,8 @@ export default function NewTag() {
               type="file"
               name="thumbnail"
               id="thumbnail"
-              value={thumbnail}
-              onChange={handleChangeInput}
+              accept="image/*"
+              onChange={changeThumbnail}
               className="w-full block mt-1"
             />
           </div>
@@ -131,20 +159,17 @@ export default function NewTag() {
         </div>
         <div className="hidden lg:block lg:col-span-4 xl:col-span-3 lg:pl-8">
           <div className="bg-white border border-gray-300 rounded-md overflow-hidden shadow-md shadow-slate-300 hover:shadow-2xl hover:shadow-slate-300">
-            <Link href="#">
-              <a>
-                <img
-                  src="https://res.cloudinary.com/kuchuoi/image/upload/v1662444829/Diseases/jpe803fyhzckocfxpn8r.webp"
-                  alt="Example"
-                />
-              </a>
-            </Link>
+            <img
+              src={
+                banner
+                  ? URL.createObjectURL(banner)
+                  : "https://res.cloudinary.com/kuchuoi/image/upload/v1662444829/Diseases/jpe803fyhzckocfxpn8r.webp"
+              }
+              alt="Example"
+            />
+
             <main className="px-4">
-              <h2 className="py-2">
-                <Link href="#">
-                  <a>{name ? name : "Title Example"}</a>
-                </Link>
-              </h2>
+              <h2 className="py-2">{name ? name : "Title Example"}</h2>
               <p className="line-clamp-3">
                 {description
                   ? description
@@ -152,15 +177,14 @@ export default function NewTag() {
               </p>
             </main>
             <footer className="px-4 py-2 flex justify-between text-[17px]">
-              <Link href="#">
-                <a>
-                  {category
-                    ? categories.filter(
-                        (cat) => cat._id?.toString() == category
-                      )[0].name
-                    : "Category"}
-                </a>
-              </Link>
+              <span>
+                {category
+                  ? categories.filter(
+                      (cat) => cat._id?.toString() == category
+                    )[0].name
+                  : "Category"}
+              </span>
+
               <span>{new Date().toISOString()}</span>
             </footer>
           </div>
