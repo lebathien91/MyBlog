@@ -3,18 +3,18 @@ import { ReactElement, useContext } from "react";
 import AuthRouter from "@/middleware/AuthRouter";
 import Dashboard from "@/views/pages/Dashboard";
 import { GlobalContext } from "@/store/GlobalState";
-import Profile from "@/views/pages/Profile";
+import Me from "@/views/pages/Me";
 
-export default function Me() {
+export default function MePage() {
   const { state } = useContext(GlobalContext);
   const user = state.auth.user;
   const role = user?.role;
 
   if (role === "admin" || user.root) return <Dashboard />;
 
-  return <Profile />;
+  return <Me />;
 }
 
-Me.getLayout = function getLayout(page: ReactElement) {
+MePage.getLayout = function getLayout(page: ReactElement) {
   return <AuthRouter isUser>{page}</AuthRouter>;
 };

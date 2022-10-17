@@ -12,7 +12,7 @@ export default function UpdateUser() {
   const router = useRouter();
   const { id } = router.query;
   const { state, dispatch } = useContext(GlobalContext);
-  const token = state.auth.token;
+  const { token } = state.auth;
 
   const initialState = {
     avatar: "",

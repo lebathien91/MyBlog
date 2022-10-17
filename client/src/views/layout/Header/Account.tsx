@@ -57,7 +57,7 @@ const Account = () => {
                     </Link>
                   </li>
                   <li className="flex py-2 items-center hover:text-rose-800">
-                    <Link href="/me">
+                    <Link href="/profile">
                       <a onClick={() => setVisible(false)}>Your Profile</a>
                     </Link>
                   </li>
