@@ -114,8 +114,8 @@ export default function CategoriesPage() {
         type: "NOTIFY",
         payload: {
           modal: {
-            title: "Xóa bài viết",
-            message: "Thông báo",
+            title: "Xóa chuyên mục",
+            message: "Bạn có chắc chắn muốn xóa những chuyên mục đã chọn?",
             handleSure: () => handeMutiDelete(selectPosts),
           },
         },
@@ -253,8 +253,8 @@ export default function CategoriesPage() {
                         type: "NOTIFY",
                         payload: {
                           modal: {
-                            title: "Chuyển thùng rác",
-                            message: "Thông điệp",
+                            title: "Xóa chuyên mục",
+                            message: "Bạn chắc chắn muốn xóa chuyên mục?",
                             handleSure: () => handleDelete(post._id),
                           },
                         },

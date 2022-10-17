@@ -114,8 +114,8 @@ export default function TrashCategoriesPage() {
         type: "NOTIFY",
         payload: {
           modal: {
-            title: "Xóa bài viết",
-            message: "Thông báo",
+            title: "Xóa chuyên mục",
+            message: "Bạn có chắc chắn muốn xóa hoàn toàn chuyên mục đã chọn?",
             handleSure: () => handeMutiDestroy(selectPosts),
           },
         },
@@ -287,8 +287,9 @@ export default function TrashCategoriesPage() {
                         type: "NOTIFY",
                         payload: {
                           modal: {
-                            title: "Chuyển thùng rác",
-                            message: "Thông điệp",
+                            title: "Xóa chuyên mục",
+                            message:
+                              "Bạn chắc chắn muốn xóa hoàn toàn chuyên mục?",
                             handleSure: () => handleDestroy(post._id),
                           },
                         },

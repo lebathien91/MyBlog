@@ -205,8 +205,8 @@ const Dashboard = () => {
                             type: "NOTIFY",
                             payload: {
                               modal: {
-                                title: "Chuyển thùng rác",
-                                message: "Thông điệp",
+                                title: "Xóa bài viết",
+                                message: "Bạn có chắc chắn muốn xóa bài viết?",
                                 handleSure: () =>
                                   handleDeleteArtile(article._id),
                               },
@@ -262,8 +262,8 @@ const Dashboard = () => {
                             type: "NOTIFY",
                             payload: {
                               modal: {
-                                title: "Chuyển thùng rác",
-                                message: "Thông điệp",
+                                title: "Xóa chủ đề",
+                                message: "Bạn có chắc chắn muốn xóa chủ đề?",
                                 handleSure: () => handleDeleteTag(tag._id),
                               },
                             },

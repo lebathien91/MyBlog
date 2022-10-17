@@ -112,8 +112,8 @@ export default function TrashUsersPage() {
         type: "NOTIFY",
         payload: {
           modal: {
-            title: "Xóa bài viết",
-            message: "Thông báo",
+            title: "Xóa thành viên",
+            message: "Bạn có chắc chẳn muốn xóa những thành viên đã chọn?",
             handleSure: () => handeMutiDestroy(selectPosts),
           },
         },
@@ -295,8 +295,8 @@ export default function TrashUsersPage() {
                         type: "NOTIFY",
                         payload: {
                           modal: {
-                            title: "Chuyển thùng rác",
-                            message: "Thông điệp",
+                            title: "Xóa thành viên",
+                            message: "Bạn có chắc chắn muốn xóa thành viên?",
                             handleSure: () => handleDestroy(post._id),
                           },
                         },

@@ -115,8 +115,8 @@ export default function TagsPage() {
         type: "NOTIFY",
         payload: {
           modal: {
-            title: "Xóa bài viết",
-            message: "Thông báo",
+            title: "Xóa chủ đề",
+            message: "Bạn có chắc chắn muốn xóa những chủ đề đã chọn?",
             handleSure: () => handeMutiDelete(selectPosts),
           },
         },
@@ -261,8 +261,8 @@ export default function TagsPage() {
                         type: "NOTIFY",
                         payload: {
                           modal: {
-                            title: "Chuyển thùng rác",
-                            message: "Thông điệp",
+                            title: "Xóa chủ đề",
+                            message: "Bạn có chắc chắn muốn xóa chủ đề?",
                             handleSure: () => handleDelete(post._id),
                           },
                         },

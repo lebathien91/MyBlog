@@ -112,8 +112,8 @@ export default function UsersPage() {
         type: "NOTIFY",
         payload: {
           modal: {
-            title: "Xóa bài viết",
-            message: "Thông báo",
+            title: "Xóa thành viên",
+            message: "Bạn chắc chắn muốn xóa những thành viên đã chọn?",
             handleSure: () => handeMutiDelete(selectPosts),
           },
         },
@@ -261,8 +261,8 @@ export default function UsersPage() {
                         type: "NOTIFY",
                         payload: {
                           modal: {
-                            title: "Chuyển thùng rác",
-                            message: "Thông điệp",
+                            title: "Xóa thành viên",
+                            message: "Bạn có chắc chắn muốn xóa thành viên?",
                             handleSure: () => handleDelete(post._id),
                           },
                         },

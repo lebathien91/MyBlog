@@ -6,14 +6,13 @@ import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 
-import { FormSubmit, InputChange } from "@/utils/interface";
 import AuthRouter from "@/middleware/AuthRouter";
 import Table from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
-import { IArticle } from "@/utils/interface";
 import { getData, patchData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
 import useDebounce from "@/hooks/useDebounce";
+import { FormSubmit, InputChange, IArticle } from "@/utils/interface";
 
 export default function ArticlesPage() {
   const { state, dispatch } = useContext(GlobalContext);
@@ -113,7 +112,7 @@ export default function ArticlesPage() {
         payload: {
           modal: {
             title: "Xóa bài viết",
-            message: "Thông báo",
+            message: "Bạn chắc chắn muốn xóa những bài viết đã chọn?",
             handleSure: () => handeMutiDelete(selectPosts),
           },
         },
@@ -263,8 +262,8 @@ export default function ArticlesPage() {
                         type: "NOTIFY",
                         payload: {
                           modal: {
-                            title: "Chuyển thùng rác",
-                            message: "Thông điệp",
+                            title: "Xóa bài viết",
+                            message: "Bạn có chắc chắn xóa bài viết?",
                             handleSure: () => handleDelete(post._id),
                           },
                         },

@@ -290,8 +290,9 @@ export default function TrashArticlesPage() {
                         type: "NOTIFY",
                         payload: {
                           modal: {
-                            title: "Chuyển thùng rác",
-                            message: "Thông điệp",
+                            title: "Xóa bài viết",
+                            message:
+                              "Bạn chắc chắn muốn xóa hoàn toàn bài viết?",
                             handleSure: () => handleDestroy(post._id),
                           },
                         },

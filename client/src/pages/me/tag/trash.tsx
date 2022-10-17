@@ -9,9 +9,9 @@ import AuthRouter from "@/middleware/AuthRouter";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/DataTable";
 import { GlobalContext } from "@/store/GlobalState";
+import useDebounce from "@/hooks/useDebounce";
 import { deleteData, getData, patchData } from "@/utils/fetchData";
 import { FormSubmit, InputChange, ITag } from "@/utils/interface";
-import useDebounce from "@/hooks/useDebounce";
 
 export default function TrashTagsPage() {
   const router = useRouter();
@@ -116,8 +116,9 @@ export default function TrashTagsPage() {
         type: "NOTIFY",
         payload: {
           modal: {
-            title: "Xóa bài viết",
-            message: "Thông báo",
+            title: "Xóa chủ đề",
+            message:
+              "Bạn có chắc chắn muốn xóa hoàn toàn những chủ đề đã chọn?",
             handleSure: () => handeMutiDestroy(selectPosts),
           },
         },
@@ -298,8 +299,9 @@ export default function TrashTagsPage() {
                         type: "NOTIFY",
                         payload: {
                           modal: {
-                            title: "Chuyển thùng rác",
-                            message: "Thông điệp",
+                            title: "Xóa chủ đề",
+                            message:
+                              "Bạn có chắc chắn muốn xóab hoàn toàn chủ đề?",
                             handleSure: () => handleDestroy(post._id),
                           },
                         },
