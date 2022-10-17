@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -6,7 +5,7 @@ import { useRouter } from "next/router";
 import AuthRouter from "@/middleware/AuthRouter";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData, postData } from "@/utils/fetchData";
-import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
+import { FormSubmit, ICategory, InputChange, ITag } from "@/utils/interface";
 import { checkImage, uploadImage } from "@/utils/uploadImage";
 
 export default function NewTag() {
@@ -14,19 +13,14 @@ export default function NewTag() {
   const { state, dispatch } = useContext(GlobalContext);
   const token = state.auth.token;
 
-  const initialState: {
-    name: string;
-    description: string;
-    category: string;
-    thumbnail: string;
-  } = {
+  const initialState = {
     name: "",
     description: "",
     category: "",
     thumbnail: "",
   };
 
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState<ITag>(initialState);
   const [categories, setCategories] = useState<Array<ICategory>>([]);
   const [banner, setBanner] = useState<File>();
   useEffect(() => {
@@ -85,7 +79,7 @@ export default function NewTag() {
   return (
     <form className="w-full" onSubmit={handleSubmit}>
       <div className="flex justify-between px-8 mb-8">
-        <h2 className="text-4xl">Create an entry</h2>
+        <h2 className="text-4xl">Create a tag</h2>
         <button className="px-4 py-2 bg-green-800 rounded-sm text-white text-md font-semibold">
           Save
         </button>
@@ -114,7 +108,7 @@ export default function NewTag() {
             <select
               name="category"
               id="category"
-              value={category}
+              value={typeof category === "string" ? category : category._id}
               onChange={handleChangeInput}
               className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
             >

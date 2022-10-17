@@ -8,6 +8,7 @@ export interface IUser extends Document {
   avatar: string;
   role: string;
   root: boolean;
+  aboutMe: string;
   deleted?: string;
   _doc: object;
 }

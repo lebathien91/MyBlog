@@ -14,6 +14,7 @@ export interface IUser {
   cf_password?: string;
   role: string;
   root?: boolean;
+  aboutMe?: string;
   isChecked?: boolean;
 }
 

@@ -6,6 +6,7 @@ import AuthRouter from "@/middleware/AuthRouter";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData, putData } from "@/utils/fetchData";
 import { FormSubmit, InputChange, IUser } from "@/utils/interface";
+import { FaFacebookF, FaTiktok, FaTwitter } from "react-icons/fa";
 
 export default function UpdateUser() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function UpdateUser() {
     cf_password: "",
     email: "",
     role: "user",
+    aboutMe: "",
   };
 
   const [formData, setFormData] = useState<IUser>(initialState);
@@ -39,7 +41,8 @@ export default function UpdateUser() {
     }
   }, [id]);
 
-  const { username, email, password, cf_password, role } = formData;
+  const { avatar, username, email, password, cf_password, role, aboutMe } =
+    formData;
 
   const handleChangeInput = (e: InputChange) => {
     const { name, value } = e.target as HTMLInputElement;
@@ -61,7 +64,7 @@ export default function UpdateUser() {
   return (
     <form className="w-full" onSubmit={handleSubmit}>
       <div className="flex justify-between px-8 mb-8">
-        <h2 className="text-4xl">Create an article</h2>
+        <h2 className="text-4xl">Update User</h2>
         <button className="px-4 py-2 bg-green-800 rounded-sm text-white text-md font-semibold">
           Save
         </button>
@@ -142,21 +145,46 @@ export default function UpdateUser() {
               <option value="admin">Admin</option>
             </select>
           </div>
+          <div className="mb-8">
+            <label htmlFor="aboutMe" className="w-full text-xl font-semibold">
+              About Me
+            </label>
+            <textarea
+              name="aboutMe"
+              id="aboutMe"
+              rows={3}
+              placeholder="About me"
+              value={aboutMe}
+              onChange={handleChangeInput}
+              className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
+            ></textarea>
+          </div>
         </div>
-        <div className="col-span-3 ml-8  ">
-          <div className="rounded-md shadow-md p-6 mb-8 bg-white">
-            <h3 className="uppercase text-gray-500 border-b">Infomation</h3>
-            <div className="flex justify-between py-3">
-              <span>Created</span>
-              <span>Now</span>
+        <div className="col-span-3 ml-8">
+          <div className="rounded-md shadow-md p-6 mb-8 bg-white mt-16 break-words">
+            <div className="mx-auto w-40 h-40 rounded-full overflow-hidden mt-[-100px]">
+              <img src={avatar} />
             </div>
-            <div className="flex justify-between py-3">
-              <span>Updated</span>
-              <span>{new Date().toLocaleDateString()}</span>
-            </div>
-            <div className="flex justify-between py-3">
-              <span>By</span>
-              <span>Your Name</span>
+
+            <h2 className="uppercase text-gray-600 text-center my-4">
+              {username}
+            </h2>
+            <p className="text-center">
+              {aboutMe
+                ? aboutMe
+                : "Vài dòng giới thiệu ngắn gọn về bản thân bạn để cho mọi người biết về bạn?"}
+            </p>
+
+            <div className="mt-12 mb-6 flex items-center justify-center text-2xl">
+              <a href="https://facebook.com" title="Facebook">
+                <FaFacebookF className="text-[#4267B2]" />
+              </a>
+              <a href="https://twitter.com/" title="Twitter">
+                <FaTwitter className="mx-6 text-[#1DA1F2]" />
+              </a>
+              <a href="https://www.tiktok.com/" title="Tiktok">
+                <FaTiktok className="text-[#833AB4]" />
+              </a>
             </div>
           </div>
         </div>

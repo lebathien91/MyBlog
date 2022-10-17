@@ -37,6 +37,11 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    aboutMe: {
+      type: String,
+      trim: true,
+      maxLength: [250, "Your name is up to 250 chars long."],
+    },
     deleted: {
       type: Date,
     },

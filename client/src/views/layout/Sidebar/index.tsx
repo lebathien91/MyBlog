@@ -12,7 +12,7 @@ import {
 import {
   MdDashboard,
   MdOutlineArticle,
-  MdFolderOpen,
+  MdOutlinePermMedia,
   MdSettings,
 } from "react-icons/md";
 
@@ -45,9 +45,8 @@ const ListMenu = [
   {
     title: "Files",
     slug: "file",
-    icon: <MdFolderOpen size="22px" />,
+    icon: <MdOutlinePermMedia size="22px" />,
   },
-
   {
     title: "Settings",
     slug: "settings",

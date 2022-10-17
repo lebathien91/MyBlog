@@ -37,7 +37,7 @@ export default function NewCategory() {
   return (
     <form className="w-full" onSubmit={handleSubmit}>
       <div className="flex justify-between px-8 mb-8">
-        <h2 className="text-4xl">Create an article</h2>
+        <h2 className="text-4xl">Create a category</h2>
         <button className="px-4 py-2 bg-green-800 rounded-sm text-white text-md font-semibold">
           Save
         </button>

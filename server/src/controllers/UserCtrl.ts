@@ -36,7 +36,8 @@ const UsersCtrl = class {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { username, password, cf_password, role, avatar } = req.body;
+      const { username, password, cf_password, role, avatar, aboutMe } =
+        req.body;
 
       if (password) {
         if (password.length < 6) {
@@ -52,7 +53,7 @@ const UsersCtrl = class {
         const hashPassword = await bcrypt.hash(password, 12);
         const updateUser = await Users.findOneAndUpdate(
           { _id: id },
-          { username, password: hashPassword, role, avatar }
+          { username, password: hashPassword, role, avatar, aboutMe }
         );
 
         if (!updateUser) return res.status(400).json({ error: "Invalid User" });
@@ -64,13 +65,14 @@ const UsersCtrl = class {
             email: updateUser.email,
             role: updateUser.role,
             avatar: updateUser.avatar,
+            aboutMe: updateUser.aboutMe,
             root: updateUser.root,
           },
         });
       } else {
         const updateUser = await Users.findOneAndUpdate(
           { _id: id },
-          { username, role, avatar }
+          { username, role, avatar, aboutMe }
         );
 
         if (!updateUser) return res.status(400).json({ error: "Invalid User" });
@@ -82,6 +84,7 @@ const UsersCtrl = class {
             email: updateUser.email,
             role: updateUser.role,
             avatar: updateUser.avatar,
+            aboutMe: updateUser.aboutMe,
             root: updateUser.root,
           },
         });
