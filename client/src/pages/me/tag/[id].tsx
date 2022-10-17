@@ -23,7 +23,7 @@ export default function UpdateTag() {
 
   const [formData, setFormData] = useState<ITag>(initialState);
   const [newThumbnail, setNewThumbnail] = useState<File>();
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [categories, setCategories] = useState<Array<ICategory>>([]);
 
   useEffect(() => {
     getData("category")

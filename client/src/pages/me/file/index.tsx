@@ -1,10 +1,10 @@
 import React, { ReactElement } from "react";
-import Admin from "../../../views/layout/AuthRouter";
+import AuthRouter from "@/middleware/AuthRouter";
 
-export default function FilesPage() {
+export default function Files() {
   return <>FilesPage</>;
 }
 
-FilesPage.getLayout = function getLayout(page: ReactElement) {
-  return <Admin>{page}</Admin>;
+Files.getLayout = function getLayout(page: ReactElement) {
+  return <AuthRouter>{page}</AuthRouter>;
 };

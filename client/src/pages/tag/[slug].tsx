@@ -5,9 +5,15 @@ import Layout from "@/layout/index";
 import Loading from "@/components/Loading";
 import Detail from "@/views/pages/Detail";
 import { getData } from "@/utils/fetchData";
-import { ITag } from "@/utils/interface";
+import { IArticle, ITag } from "@/utils/interface";
 
-export default function Tags({ tag, articles, slug }: any) {
+interface ITags {
+  tag: ITag;
+  articles: Array<IArticle>;
+  slug: string;
+}
+
+export default function Tags({ tag, articles, slug }: ITags) {
   const router = useRouter();
   if (router.isFallback) {
     return <Loading />;

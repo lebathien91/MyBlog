@@ -21,7 +21,7 @@ export default function NewTag() {
   };
 
   const [formData, setFormData] = useState(initialState);
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [categories, setCategories] = useState<Array<ICategory>>([]);
   useEffect(() => {
     getData("category")
       .then((res) => {

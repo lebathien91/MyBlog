@@ -32,4 +32,10 @@ const categorySchema = new Schema(
   }
 );
 
-export default mongoose.model<ICategory>("category", categorySchema);
+categorySchema.index({ name: "text" });
+
+const Categories = mongoose.model<ICategory>("category", categorySchema);
+
+Categories.createIndexes({ name: "text" });
+
+export default Categories;

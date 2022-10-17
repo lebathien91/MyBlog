@@ -2,8 +2,10 @@ import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { toast } from "react-toastify";
-import { ICategory } from "../../../utils/interface";
-import { getData } from "../../../utils/fetchData";
+import { useRouter } from "next/router";
+
+import { getData } from "@/utils/fetchData";
+import { ICategory } from "@/utils/interface";
 
 interface NavProps {
   isMobile: boolean;
@@ -11,6 +13,9 @@ interface NavProps {
 }
 
 const NavMenu = ({ isMobile, setIsMobile }: NavProps) => {
+  const router = useRouter();
+  const { slug } = router.query;
+
   const [sticky, setSticky] = useState(false);
   const navElement = useRef<HTMLHeadingElement>(null);
 
@@ -68,9 +73,13 @@ const NavMenu = ({ isMobile, setIsMobile }: NavProps) => {
         {categories.map((category) => (
           <li
             key={category._id}
-            className="mr-4 font-bold uppercase text-lg ml-4 lg:ml-0 py-3"
+            className={`mr-4 font-bold uppercase text-lg ml-4 lg:ml-0 py-3 ${
+              slug === category.slug ? "text-red-700" : ""
+            }`}
           >
-            <a href={`/category/${category?.slug}`}>{category.name}</a>
+            <Link href={`/category/${category?.slug}`}>
+              <a>{category.name}</a>
+            </Link>
           </li>
         ))}
       </ul>

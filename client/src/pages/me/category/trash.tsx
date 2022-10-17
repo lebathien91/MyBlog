@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdClose, MdRestore } from "react-icons/md";
 
 import AuthRouter from "@/middleware/AuthRouter";
@@ -10,24 +11,34 @@ import Pagination from "@/components/Pagination";
 import { GlobalContext } from "@/store/GlobalState";
 import { deleteData, getData, patchData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
+import useDebounce from "@/hooks/useDebounce";
 
 export default function TrashCategoriesPage() {
   const router = useRouter();
 
   const { state, dispatch } = useContext(GlobalContext);
-  const token = state.auth?.token;
+  const { token } = state.auth;
 
-  const [posts, setPosts] = useState<ICategory[]>([]);
+  const [posts, setPosts] = useState<Array<ICategory>>([]);
   const [select, setSelect] = useState<string>();
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
   const pages = Math.ceil(count / limit);
   const page = router.query.page || 1;
+  const [sort, setSort] = useState<string>();
+  const [keyword, setKeyword] = useState<string>("");
+
+  const debounced = useDebounce(keyword, 500);
 
   useEffect(() => {
     // getPost & getCount dựa trên page and limit
     dispatch({ type: "NOTIFY", payload: { loading: true } });
-    getData(`category/trash?page=${page}&limit=${limit}`, token)
+    getData(
+      `category/trash?page=${page}&limit=${limit}&sort=${sort}&search=${encodeURIComponent(
+        debounced
+      )}`,
+      token
+    )
       .then((res) => {
         if (!res.error) {
           setPosts(res.categories);
@@ -42,7 +53,7 @@ export default function TrashCategoriesPage() {
 
         toast.error(error, { theme: "colored" });
       });
-  }, [limit, page]);
+  }, [limit, page, sort, debounced]);
 
   const handleCheckBox = (e: InputChange) => {
     const { value, checked } = e.target as HTMLInputElement;
@@ -142,10 +153,39 @@ export default function TrashCategoriesPage() {
     return toast.success(res.success, { theme: "colored" });
   };
 
+  const onSortingChange = (field: string) => {
+    const order = field === sort ? `-${field}` : field;
+    setSort(order);
+  };
+  const TableHeaders = [
+    {
+      name: "STT",
+      field: "stt",
+      sortable: false,
+    },
+    {
+      name: "Name",
+      field: "name",
+      sortable: true,
+    },
+
+    {
+      name: "Actions",
+      field: "action",
+      sortable: false,
+    },
+  ];
   return (
     <>
+      <div className="my-8 font-semibold text-sky-700">
+        <Link href="/me/category">
+          <a className="mx-2 px-2 border-r border-slate-800">Public</a>
+        </Link>
+
+        <a className="text-gray-500">Trash ({count})</a>
+      </div>
       <div className="flex justify-between px-4">
-        <div className="flex">
+        <div className="flex items-center">
           <form onSubmit={handleSubmit}>
             <select
               name="select"
@@ -161,19 +201,19 @@ export default function TrashCategoriesPage() {
               Thực hiện
             </button>
           </form>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            className="ml-4 p-2 pr-8 hidden lg:block rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
+          />
         </div>
         <Link href="/me/category/create">
           <a className="px-4 py-2 bg-green-800 rounded-sm text-white text-md font-semibold">
             Create Category
           </a>
         </Link>
-      </div>
-      <div className="px-4 my-4 font-semibold text-sky-700">
-        <Link href="/me/category">
-          <a className="mx-2 px-2 border-r border-slate-800">Public</a>
-        </Link>
-
-        <a className="text-gray-500">Trash ({count})</a>
       </div>
 
       <Table
@@ -194,10 +234,28 @@ export default function TrashCategoriesPage() {
                 onChange={handleCheckBox}
               />
             </th>
-            <th className="py-3 border-b text-left pr-4">ID</th>
-            <th className="py-3 border-b text-left">Name</th>
+            {TableHeaders.map((header) => (
+              <th className="py-3 border-b text-left" key={header.field}>
+                {header.sortable ? (
+                  <span
+                    className="cursor-pointer flex items-center"
+                    onClick={() => onSortingChange(header.field)}
+                  >
+                    {header.name}
 
-            <th className="py-3 border-b text-left">Action</th>
+                    {sort === header.field ? (
+                      <FaSortDown className="ml-2" />
+                    ) : sort === "-" + header.field ? (
+                      <FaSortUp className="ml-2" />
+                    ) : (
+                      <FaSort className="ml-2" />
+                    )}
+                  </span>
+                ) : (
+                  header.name
+                )}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>

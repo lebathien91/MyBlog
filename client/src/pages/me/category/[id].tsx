@@ -11,8 +11,7 @@ export default function UpdateCategory() {
   const router = useRouter();
   const { id } = router.query;
   const { state, dispatch } = useContext(GlobalContext);
-  const { auth } = state;
-  const token = auth.token;
+  const { token } = state.auth;
 
   const initialState = {
     name: "",

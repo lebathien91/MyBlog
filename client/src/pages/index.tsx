@@ -6,7 +6,7 @@ import { getData } from "@/utils/fetchData";
 import { ITag } from "@/utils/interface";
 
 interface IHome {
-  tags: ITag[];
+  tags: Array<ITag>;
   count: number;
 }
 

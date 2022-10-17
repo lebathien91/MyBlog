@@ -11,7 +11,7 @@ import { BiEdit, BiTrash } from "react-icons/bi";
 import { toast } from "react-toastify";
 
 import Table from "@/components/DataTable";
-import { getData } from "@/utils/fetchData";
+import { getData, patchData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
 
 import { IArticle, ICategory, ITag, IUser } from "@/utils/interface";
@@ -38,7 +38,9 @@ const Dashboard = () => {
       .catch((error) => {
         toast.error(error, { theme: "colored" });
       });
+  }, [countUsers]);
 
+  useEffect(() => {
     getData(`category?limit=${5}`)
       .then((res) => {
         setCategories(res.categories);
@@ -47,16 +49,9 @@ const Dashboard = () => {
       .catch((error) => {
         toast.error(error, { theme: "colored" });
       });
+  }, [countCategories]);
 
-    getData(`article?limit=${5}`)
-      .then((res) => {
-        setArticles(res.articles);
-        setCountArticles(res.count);
-      })
-      .catch((error) => {
-        toast.error(error, { theme: "colored" });
-      });
-
+  useEffect(() => {
     getData(`tag?limit=${5}`)
       .then((res) => {
         setTags(res.tags);
@@ -65,7 +60,46 @@ const Dashboard = () => {
       .catch((error) => {
         toast.error(error, { theme: "colored" });
       });
-  }, []);
+  }, [countTag]);
+
+  useEffect(() => {
+    getData(`article?limit=${5}`)
+      .then((res) => {
+        setArticles(res.articles);
+        setCountArticles(res.count);
+      })
+      .catch((error) => {
+        toast.error(error, { theme: "colored" });
+      });
+  }, [countArticle]);
+
+  const handleDeleteArtile = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`article/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    const newArticles = articles.filter((article) => {
+      return article._id !== id;
+    });
+    setArticles(newArticles);
+    setCountArticles((prev) => prev - 1);
+  };
+
+  const handleDeleteTag = async (id: string | undefined) => {
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await patchData(`tag/${id}`, {}, token);
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    const newTags = tags.filter((tag) => {
+      return tag._id !== id;
+    });
+    setTags(newTags);
+    setCountTag((prev) => prev - 1);
+  };
 
   const cards = [
     {
@@ -101,6 +135,7 @@ const Dashboard = () => {
       time: "Just Updated",
     },
   ];
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
@@ -170,8 +205,10 @@ const Dashboard = () => {
                             type: "NOTIFY",
                             payload: {
                               modal: {
-                                type: "DELETE_ARTICLE",
-                                id: article._id,
+                                title: "Chuyển thùng rác",
+                                message: "Thông điệp",
+                                handleSure: () =>
+                                  handleDeleteArtile(article._id),
                               },
                             },
                           })
@@ -224,7 +261,11 @@ const Dashboard = () => {
                           dispatch({
                             type: "NOTIFY",
                             payload: {
-                              modal: { type: "DELETE_TAG", id: tag._id },
+                              modal: {
+                                title: "Chuyển thùng rác",
+                                message: "Thông điệp",
+                                handleSure: () => handleDeleteTag(tag._id),
+                              },
                             },
                           })
                         }

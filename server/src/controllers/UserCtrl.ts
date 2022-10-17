@@ -96,13 +96,16 @@ const UsersCtrl = class {
   async find(req: Request, res: Response) {
     try {
       const features = new featureAPI(Users.find({ deleted: null }), req.query)
+        .filtering()
+        .searching()
+        .populated()
         .sorting()
         .paginating();
 
-      const counting = new featureAPI(
-        Users.find({ deleted: null }),
-        req.query
-      ).counting();
+      const counting = new featureAPI(Users.find({ deleted: null }), req.query)
+        .filtering()
+        .searching()
+        .counting();
 
       const results = await Promise.allSettled([
         features.query,
@@ -143,6 +146,7 @@ const UsersCtrl = class {
         Users.where("deleted").ne(null),
         req.query
       )
+        .filtering()
         .populated()
         .searching()
         .sorting()
@@ -152,6 +156,7 @@ const UsersCtrl = class {
         Users.where("deleted").ne(null),
         req.query
       )
+        .filtering()
         .searching()
         .counting();
 

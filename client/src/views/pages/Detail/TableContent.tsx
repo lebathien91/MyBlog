@@ -86,26 +86,30 @@ const TableContent = ({ active, headings }: TableContentProps) => {
 
   useIntersectionObserver(setActiveId);
   return (
-    <aside className="flex-[2_1_0%] hidden md:block">
-      <nav className={`${active ? "pt-8" : ""}`}>
+    <aside className="flex-[2_1_0%] hidden xl:block min-w-[280px">
+      <nav className={`${active ? "pt-8" : ""} sticky top-10`}>
         <h2 className="py-4">Table Content</h2>
-        <ol>
+        <ol className="">
           {nestedHeadings.map((heading) => (
-            <li key={heading.id}>
+            <li key={heading.id} className="pt-1">
               <a
                 href={`#${heading.id}`}
-                className={heading.id === activeId ? "font-bold" : ""}
+                className={`hover:underline ${
+                  heading.id === activeId ? "font-bold" : ""
+                }`}
               >
                 {heading.id === activeId && <span className="icon"></span>}
                 {heading.title}
               </a>
               {heading.items.length > 0 && (
-                <ol>
+                <ol className="ml-6">
                   {heading.items.map((child: any) => (
-                    <li key={child.id}>
+                    <li key={child.id} className="mb-1">
                       <a
                         href={`#${child.id}`}
-                        className={child.id === activeId ? "font-bold" : ""}
+                        className={`hover:underline ${
+                          child.id === activeId ? "font-bold" : ""
+                        }`}
                       >
                         {heading.id === activeId && (
                           <span className="icon"></span>

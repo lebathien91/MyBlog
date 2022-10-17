@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { ITag } from "@/utils/interface";
+import { format } from "date-fns";
 import NextImage from "@/components/Image";
+
+import { ITag } from "@/utils/interface";
 
 const Tag = ({ post }: { post: ITag }) => {
   return (
@@ -22,7 +24,7 @@ const Tag = ({ post }: { post: ITag }) => {
         <Link href={`/tag/${post.slug}`}>
           <a>{typeof post.category === "object" && post.category.name}</a>
         </Link>
-        <span>{post.createdAt}</span>
+        <span>{format(new Date(post.createdAt as string), "dd/MM/yyyy")}</span>
       </footer>
     </div>
   );

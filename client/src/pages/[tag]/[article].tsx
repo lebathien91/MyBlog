@@ -39,7 +39,7 @@ export async function getStaticPaths() {
   const res = await getData("article?limit=1000&populate=tag");
   const articles = res.articles;
 
-  let paths: { params: object }[] = [];
+  let paths: Array<{ params: object }> = [];
   articles.forEach((article: IArticle) => {
     let articleSlug = article.slug;
     let tagSlug = typeof article.tag === "object" && article.tag.slug;

@@ -63,20 +63,22 @@ const Detail = ({ data }: any) => {
 
         <article className="flex-[7_1_0%] px-[16px]">
           <header className={`${activeTopic ? "pt-8" : ""} pb-4`}>
-            <div className="font-semibold text-xl">
+            <div className="font-semibold text-xl text-[#0065b3]">
               <Link href={`/tag/${slugDisease}`}>
-                <a>{nameDisease}</a>
+                <a className="hover:underline">{nameDisease}</a>
               </Link>
               <span> / </span>
               <Link href={`/${slugDisease}/${article.slug}`}>
-                <a>{article.title}</a>
+                <a className="hover:underline">{article.title}</a>
               </Link>
             </div>
           </header>
           <main>
             <h1 className="text-4xl">{article.title}</h1>
             <div className="mt-2 text-[#4d626e]">
-              <time>{format(new Date(article.updatedAt), "dd/MM/yyyy")}</time>
+              <time>
+                Update: {format(new Date(article.updatedAt), "dd/MM/yyyy")}
+              </time>
               <span> - {readTime} phút đọc</span>
             </div>
             <div
@@ -86,7 +88,11 @@ const Detail = ({ data }: any) => {
           </main>
         </article>
 
-        <TableContent active={activeTopic} headings={headings} />
+        <TableContent
+          key={article.slug}
+          active={activeTopic}
+          headings={headings}
+        />
       </div>
     </div>
   );

@@ -2557,11 +2557,6 @@ sleep-promise@^9.1.0:
   resolved "https://registry.yarnpkg.com/sleep-promise/-/sleep-promise-9.1.0.tgz#101ebe65700bcd184709da95d960967b02b79d03"
   integrity sha512-UHYzVpz9Xn8b+jikYSD6bqvf754xL2uBUzDFwiU6NcdZeifPr6UfgU43xpkPu67VMS88+TI2PSI7Eohgqf2fKA==
 
-slug@^8.2.2:
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/slug/-/slug-8.2.2.tgz#33b019a857a11fc4773c1e9a9f60e3da651a9e5d"
-  integrity sha512-5ByW6qXqPeG0Tmlkh24JhdXhvQsbaJSjVr3GgGxUV0BSskZKKBZZfFWxezap8+fh1vxBN9GVbqI1V6nqAFxlBg==
-
 slugify@^1.6.5:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.6.5.tgz#c8f5c072bf2135b80703589b39a3d41451fbe8c8"

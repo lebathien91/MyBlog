@@ -46,4 +46,10 @@ const userSchema = new Schema(
   }
 );
 
-export default mongoose.model<IUser>("user", userSchema);
+userSchema.index({ username: "text" });
+
+const Users = mongoose.model<IUser>("user", userSchema);
+
+Users.createIndexes({ name: "text" });
+
+export default Users;

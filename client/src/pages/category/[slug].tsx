@@ -8,7 +8,7 @@ import { getData } from "@/utils/fetchData";
 import { ITag } from "@/utils/interface";
 
 interface ICategory {
-  tags: ITag[];
+  tags: Array<ITag>;
   count: number;
 }
 

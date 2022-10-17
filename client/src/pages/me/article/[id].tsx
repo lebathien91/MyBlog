@@ -7,7 +7,7 @@ import AuthRouter from "@/middleware/AuthRouter";
 import Editor from "@/components/Editor";
 import { getData, putData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
-import { FormSubmit, IArticle, InputChange } from "@/utils/interface";
+import { FormSubmit, IArticle, InputChange, ITag } from "@/utils/interface";
 
 export default function UpdateArticle() {
   const router = useRouter();
@@ -48,14 +48,14 @@ export default function UpdateArticle() {
   const { title, description, tag, createdAt, updatedAt } = formData;
 
   const loadTags = async (inputValue: string) => {
-    let options: { value: string | number; label: string }[] = [];
+    let options: Array<{ value: string | undefined; label: string }> = [];
     try {
       if (inputValue.length < 2) return { options };
 
       const res = await getData(`tag?search=${inputValue}`);
 
       // Get Tags
-      res.tags.forEach((tag: any) => {
+      res.tags.forEach((tag: ITag) => {
         options.push({
           value: tag._id,
           label: tag.name,
@@ -75,7 +75,6 @@ export default function UpdateArticle() {
   };
 
   const handleChangeTagSelect = (e: any) => {
-    console.log(e.value);
     setTagId(e.value);
   };
 
