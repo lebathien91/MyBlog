@@ -30,7 +30,7 @@ const AuthCtrl = class {
           .status(400)
           .json({ error: "Your token is incorrect or has expired." });
 
-      const user = await Users.findById(decoded.id).select("-password");
+      const user = await Users.findById(decoded.id);
 
       if (!user)
         return res.status(400).json({ error: "This account does not exist." });
@@ -116,6 +116,7 @@ const AuthCtrl = class {
           avatar: user.avatar,
           role: user.role,
           root: user.root,
+          aboutMe: user.aboutMe,
         },
       });
     } catch (error: any) {
@@ -168,24 +169,17 @@ const AuthCtrl = class {
   // Route: /auth
   async update(req: IReqAuth, res: Response) {
     try {
-      const { username, avatar } = req.body;
+      const { username, avatar, aboutMe } = req.body;
       const user = await Users.findOneAndUpdate(
         { _id: req.user?._id },
-        { username, avatar }
+        { username, avatar, aboutMe }
       );
 
       if (!user) return res.status(400).json({ error: "Invalid User" });
 
       res.json({
         success: "Update Success",
-        user: {
-          _id: user._id,
-          username: user.username,
-          email: user.email,
-          avatar: user.avatar,
-          role: user.role,
-          root: user.root,
-        },
+        user,
       });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });

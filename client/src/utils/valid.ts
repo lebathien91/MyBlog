@@ -1,8 +1,8 @@
 export const validRegister = (
-  username: string,
-  email: string,
-  password: string,
-  cf_password: string
+  username?: string,
+  email?: string,
+  password?: string,
+  cf_password?: string
 ) => {
   if (!username || !email || !password || !cf_password)
     return "Bạn cần nhập đầy đủ các trường";

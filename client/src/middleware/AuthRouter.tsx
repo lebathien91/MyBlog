@@ -3,7 +3,6 @@ import Layout from "@/layout/index";
 import Loading from "@/components/Loading";
 import Login from "@/pages/login";
 import { GlobalContext } from "@/store/GlobalState";
-import Profile from "@/views/pages/Me";
 import Admin from "@/layout/Admin";
 
 export default function AuthRouter({
