@@ -16,6 +16,7 @@ export default function UpdateUser() {
   const { token } = state.auth;
 
   const initialState = {
+    _id: "",
     avatar: "",
     username: "",
     password: "",

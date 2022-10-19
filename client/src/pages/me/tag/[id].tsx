@@ -16,6 +16,7 @@ export default function UpdateTag() {
   const token = state.auth.token;
 
   const initialState = {
+    _id: "",
     name: "",
     description: "",
     category: "",

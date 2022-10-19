@@ -6,7 +6,7 @@ export type InputChange = ChangeEvent<
 export type FormSubmit = FormEvent<HTMLFormElement>;
 
 export interface IUser {
-  _id?: string;
+  _id: string;
   username: string;
   email: string;
   avatar?: string;
@@ -19,7 +19,7 @@ export interface IUser {
 }
 
 export interface ICategory {
-  _id?: string;
+  _id: string;
   name: string;
   slug?: string;
   createdAt?: string;
@@ -29,7 +29,7 @@ export interface ICategory {
 }
 
 export interface ITag {
-  _id?: string;
+  _id: string;
   name: string;
   slug?: string;
   thumbnail: string;
@@ -42,7 +42,7 @@ export interface ITag {
 }
 
 export interface IArticle {
-  _id?: string;
+  _id: string;
   title: string;
   slug?: string;
   tag: string | ITag;

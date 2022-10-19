@@ -69,7 +69,7 @@ export default function TrashUsersPage() {
     }
   };
 
-  const handleDestroy = async (id: string | undefined) => {
+  const handleDestroy = async (id: string) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await deleteData(`user/${id}`, {}, token);
     dispatch({ type: "NOTIFY", payload: {} });
@@ -83,7 +83,7 @@ export default function TrashUsersPage() {
     return toast.success(res.success, { theme: "colored" });
   };
 
-  const handeMutiDestroy = async (ids: Array<string | undefined>) => {
+  const handeMutiDestroy = async (ids: Array<string>) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await deleteData("user", ids, token);
     dispatch({ type: "NOTIFY", payload: {} });
@@ -91,7 +91,7 @@ export default function TrashUsersPage() {
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
     const newPosts = posts.filter((post) => {
-      return !ids.includes(post._id);
+      return !ids.includes(post._id!);
     });
     setPosts(newPosts);
     setCount((prev) => prev - ids.length);
@@ -297,7 +297,7 @@ export default function TrashUsersPage() {
                           modal: {
                             title: "Xóa thành viên",
                             message: "Bạn có chắc chắn muốn xóa thành viên?",
-                            handleSure: () => handleDestroy(post._id),
+                            handleSure: () => handleDestroy(post._id!),
                           },
                         },
                       })

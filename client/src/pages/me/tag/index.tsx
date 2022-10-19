@@ -3,7 +3,7 @@ import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import { FaSort, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 
 import AuthRouter from "@/middleware/AuthRouter";
 import Table from "@/components/DataTable";
@@ -72,7 +72,7 @@ export default function TagsPage() {
     }
   };
 
-  const handleDelete = async (id: string | undefined) => {
+  const handleDelete = async (id: string) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await patchData(`tag/${id}`, {}, token);
     dispatch({ type: "NOTIFY", payload: {} });
@@ -86,7 +86,7 @@ export default function TagsPage() {
     return toast.success(res.success, { theme: "colored" });
   };
 
-  const handeMutiDelete = async (ids: Array<string | undefined>) => {
+  const handeMutiDelete = async (ids: Array<string>) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await patchData("tag", ids, token);
     dispatch({ type: "NOTIFY", payload: {} });
@@ -217,9 +217,9 @@ export default function TagsPage() {
                     {header.name}
 
                     {sort === header.field ? (
-                      <FaSortDown className="ml-2" />
+                      <FaSortAlphaDown className="ml-2" />
                     ) : sort === "-" + header.field ? (
-                      <FaSortUp className="ml-2" />
+                      <FaSortAlphaDownAlt className="ml-2" />
                     ) : (
                       <FaSort className="ml-2" />
                     )}

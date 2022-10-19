@@ -17,6 +17,7 @@ export default function UpdateArticle() {
   const { user, token } = state.auth;
 
   const initialState = {
+    _id: "",
     title: "",
     description: "",
     tag: "",
@@ -48,7 +49,7 @@ export default function UpdateArticle() {
   const { title, description, tag, createdAt, updatedAt } = formData;
 
   const loadTags = async (inputValue: string) => {
-    let options: Array<{ value: string | undefined; label: string }> = [];
+    let options: Array<{ value: string; label: string }> = [];
     try {
       const res = await getData(`tag?limit=20&search=${inputValue}`);
 

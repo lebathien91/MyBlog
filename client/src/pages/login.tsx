@@ -65,7 +65,7 @@ const Login = () => {
 
   return (
     <main>
-      <section className="relative w-full h-full py-40 min-h-screen">
+      <section className="relative w-full h-full py-32 min-h-screen">
         <div className="absolute top-0 w-full h-full bg-gray-800 bg-no-repeat bg-full"></div>
         <div className="container mx-auto px-4 h-full">
           <div className="flex content-center items-center justify-center h-full">
@@ -165,15 +165,13 @@ const Login = () => {
               </div>
               <div className="flex flex-wrap mt-6 relative">
                 <div className="w-1/2">
-                  <a href="#" className="text-gray-200">
-                    <small>Forgot password?</small>
-                  </a>
+                  <Link href="/auth/forgot">
+                    <a className="text-gray-200 text-sm">Forgot password?</a>
+                  </Link>
                 </div>
                 <div className="w-1/2 text-right">
                   <Link href="/register">
-                    <a className="text-gray-200">
-                      <small>Create new account</small>
-                    </a>
+                    <a className="text-gray-200 text-sm">Create new account</a>
                   </Link>
                 </div>
               </div>

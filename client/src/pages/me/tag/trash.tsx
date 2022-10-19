@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
-import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import { FaSort, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 import { MdClose, MdRestore } from "react-icons/md";
 import { toast } from "react-toastify";
 
@@ -72,7 +72,7 @@ export default function TrashTagsPage() {
     }
   };
 
-  const handleDestroy = async (id: string | undefined) => {
+  const handleDestroy = async (id: string) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await deleteData(`tag/${id}`, {}, token);
     dispatch({ type: "NOTIFY", payload: {} });
@@ -86,7 +86,7 @@ export default function TrashTagsPage() {
     return toast.success(res.success, { theme: "colored" });
   };
 
-  const handeMutiDestroy = async (ids: Array<string | undefined>) => {
+  const handeMutiDestroy = async (ids: Array<string>) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await deleteData("tag", ids, token);
     dispatch({ type: "NOTIFY", payload: {} });
@@ -254,9 +254,9 @@ export default function TrashTagsPage() {
                     {header.name}
 
                     {sort === header.field ? (
-                      <FaSortDown className="ml-2" />
+                      <FaSortAlphaDown className="ml-2" />
                     ) : sort === "-" + header.field ? (
-                      <FaSortUp className="ml-2" />
+                      <FaSortAlphaDownAlt className="ml-2" />
                     ) : (
                       <FaSort className="ml-2" />
                     )}

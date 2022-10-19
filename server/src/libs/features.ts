@@ -1,10 +1,5 @@
 export const featureAPI = class {
-  query: any;
-  queryString: any;
-  constructor(query: any, queryString: any) {
-    this.query = query;
-    this.queryString = queryString;
-  }
+  constructor(public query: any, public queryString: any) {}
 
   filtering() {
     const queryObj = { ...this.queryString };

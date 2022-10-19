@@ -56,9 +56,20 @@ const AuthCtrl = class {
 
       const hashPassword = await bcrypt.hash(password, 12);
 
-      const newUser = new Users({ username, email, password: hashPassword });
+      const newUser = { username, email, password: hashPassword };
 
-      await newUser.save();
+      const activationToken = createActivationToken(newUser);
+
+      const url = `${process.env.CLIENT_URL}/auth/activate/${activationToken}`;
+
+      const result = await sendEmail(email, url);
+
+      if (result)
+        res.json({
+          success: "Register Success! Please activate your email to start.",
+        });
+
+      res.status(400).json({ error: "Do not send email" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }

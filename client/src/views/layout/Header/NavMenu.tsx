@@ -38,7 +38,7 @@ const NavMenu = ({ isMobile, setIsMobile }: NavProps) => {
 
   const [categories, setCategories] = useState<ICategory[]>([]);
   useEffect(() => {
-    getData(`category`)
+    getData(`category?sort="-createdAt"`)
       .then((res) => {
         setCategories(res.categories);
       })

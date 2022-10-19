@@ -17,6 +17,7 @@ export default function NewArticle() {
   const { user, token } = state.auth;
 
   const initialState = {
+    _id: "",
     title: "",
     description: "",
     tag: "",

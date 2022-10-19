@@ -59,7 +59,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: any) {
-  console.log(params);
   try {
     const tagSlug = params.tag;
     const articleSlug = params.article;

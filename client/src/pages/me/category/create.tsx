@@ -13,6 +13,7 @@ export default function NewCategory() {
   const token = state.auth.token;
 
   const [formData, setFormData] = useState<ICategory>({
+    _id: "",
     name: "",
     description: "",
   });

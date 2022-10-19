@@ -14,6 +14,7 @@ export default function NewTag() {
   const token = state.auth.token;
 
   const initialState = {
+    _id: "",
     name: "",
     description: "",
     category: "",

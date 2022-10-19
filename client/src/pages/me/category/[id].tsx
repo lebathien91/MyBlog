@@ -14,6 +14,7 @@ export default function UpdateCategory() {
   const { token } = state.auth;
 
   const initialState = {
+    _id: "",
     name: "",
     description: "",
   };
