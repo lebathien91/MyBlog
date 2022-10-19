@@ -1,6 +1,7 @@
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 import { toast } from "react-toastify";
+import { format } from "date-fns";
 import { useRouter } from "next/router";
 
 import AuthRouter from "@/middleware/AuthRouter";
@@ -13,8 +14,7 @@ export default function UpdateArticle() {
   const router = useRouter();
   const { id } = router.query;
   const { state, dispatch } = useContext(GlobalContext);
-  const { auth } = state;
-  const token = auth.token;
+  const { user, token } = state.auth;
 
   const initialState = {
     title: "",
@@ -50,9 +50,7 @@ export default function UpdateArticle() {
   const loadTags = async (inputValue: string) => {
     let options: Array<{ value: string | undefined; label: string }> = [];
     try {
-      if (inputValue.length < 2) return { options };
-
-      const res = await getData(`tag?search=${inputValue}`);
+      const res = await getData(`tag?limit=20&search=${inputValue}`);
 
       // Get Tags
       res.tags.forEach((tag: ITag) => {
@@ -165,15 +163,18 @@ export default function UpdateArticle() {
             <h3 className="uppercase text-gray-500 border-b">Infomation</h3>
             <div className="flex justify-between py-3">
               <span>Created</span>
-              <span>{createdAt}</span>
+              <time>
+                {createdAt &&
+                  format(new Date(createdAt as string), "h:m a - dd/MM/yyyy")}
+              </time>
             </div>
             <div className="flex justify-between py-3">
               <span>Updated</span>
-              <span>{updatedAt}</span>
+              <time>{format(new Date(), "h:m a - dd/MM/yyyy")}</time>
             </div>
             <div className="flex justify-between py-3">
-              <span>By</span>
-              <span>Your Name</span>
+              <span>Update By</span>
+              <span>{user.username}</span>
             </div>
           </div>
         </div>

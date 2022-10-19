@@ -9,7 +9,7 @@ const Modal = () => {
   const { title, message, handleSure } = modal;
 
   return (
-    <div className="fixed top-0 left-0 z-40 w-full h-full overflow-x-hidden overflow-y-auto outline-none">
+    <div className="fixed top-0 left-0 z-50 w-full h-full overflow-x-hidden overflow-y-auto outline-none">
       <div className="fixed top-0 left-0 bg-gray-800 opacity-30 w-full h-full"></div>
       <div className="relative z-50 m-2 md:mx-auto md:my-8 max-w-[500px] w-auto pointer-events-none ">
         <div className="relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding border border-gray-400 rounded-md outline-none">

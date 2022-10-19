@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import Layout from "@/layout/index";
 import { GlobalContext } from "@/store/GlobalState";
-import { FaFacebookF, FaTiktok, FaTwitter } from "react-icons/fa";
+import { FaCamera, FaFacebookF, FaTiktok, FaTwitter } from "react-icons/fa";
 import { FormSubmit, InputChange, IUser } from "@/utils/interface";
 import Loading from "@/components/Loading";
 import Login from "./login";
 import { toast } from "react-toastify";
 import { validRegister } from "@/utils/valid";
 import { patchData, putData } from "@/utils/fetchData";
-import { uploadImage } from "@/utils/uploadImage";
+import { checkImage, uploadImage } from "@/utils/uploadImage";
 
 export default function Profile() {
   const { state, dispatch } = useContext(GlobalContext);
@@ -33,8 +33,20 @@ export default function Profile() {
     setFormData({ ...formData, ...user });
   }, [user]);
 
-  const { _id, avatar, username, email, password, cf_password, aboutMe } =
-    formData;
+  const { avatar, username, email, password, cf_password, aboutMe } = formData;
+
+  const changeAvatar = (e: InputChange) => {
+    const target = e.target as HTMLInputElement;
+    const files = target.files;
+
+    if (files) {
+      const file = files[0];
+      console.log(file);
+      const errMsg = checkImage(file, 2);
+      if (errMsg) return toast.error(errMsg, { theme: "colored" });
+      setNewAvatar(file);
+    }
+  };
 
   const handleChangeInput = (e: InputChange) => {
     const { name, value } = e.target as HTMLInputElement;
@@ -84,13 +96,25 @@ export default function Profile() {
   return (
     <Layout>
       <form
-        className="container grid grid-cols-3 my-12 gap-8"
+        className="container grid grid-cols-3 my-24 gap-8"
         onSubmit={handleSubmit}
       >
-        <aside className="col-span-1">
-          <div className="border rounded-md shadow-md p-4 mt-16">
-            <div className="mx-auto w-40 h-40 rounded-full overflow-hidden mt-[-100px]">
+        <aside className="col-span-3 xl:col-span-1">
+          <div className="border rounded-md shadow-md p-4">
+            <div className="mx-auto w-40 h-40 rounded-full overflow-hidden mt-[-90px] relative group">
               <img src={newAvatar ? URL.createObjectURL(newAvatar) : avatar} />
+              <span className="absolute w-full h-[50%] bg-slate-200 opacity-80 left-0 bottom-[-100%] group-hover:bottom-[-10%] text-orange-500 flex flex-col items-center py-2 font-semibold">
+                <FaCamera />
+                <p>Change...</p>
+                <input
+                  type="file"
+                  name="avatar"
+                  id="avatar"
+                  accept="image/*"
+                  onChange={changeAvatar}
+                  className="absolute top-0 left-0 w-full h-full opacity-0"
+                />
+              </span>
             </div>
 
             <h2 className="uppercase text-gray-600 text-center my-4">
@@ -115,16 +139,8 @@ export default function Profile() {
             </div>
           </div>
         </aside>
-        <main className="col-span-2">
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="border py-2 px-4 bg-cyan-800 rounded-md text-white font-bold mr-8"
-            >
-              Save
-            </button>
-          </div>
-          <div className="border rounded-md shadow-md p-4 mt-6">
+        <main className="col-span-3 xl:col-span-2">
+          <div className="border rounded-md shadow-md p-4">
             <div className="mb-8">
               <label
                 htmlFor="username"
@@ -202,6 +218,14 @@ export default function Profile() {
                 onChange={handleChangeInput}
                 className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
               ></textarea>
+            </div>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="border py-2 px-4 bg-cyan-700 rounded-md text-white font-bold mr-8"
+              >
+                Save
+              </button>
             </div>
           </div>
         </main>

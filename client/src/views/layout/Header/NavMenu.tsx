@@ -75,7 +75,7 @@ const NavMenu = ({ isMobile, setIsMobile }: NavProps) => {
             key={category._id}
             className={`mr-4 font-bold uppercase text-lg ml-4 lg:ml-0 py-3 ${
               slug === category.slug ? "text-red-700" : ""
-            }`}
+            } hover:text-red-700`}
           >
             <Link href={`/category/${category?.slug}`}>
               <a>{category.name}</a>

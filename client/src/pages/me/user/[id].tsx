@@ -6,7 +6,8 @@ import AuthRouter from "@/middleware/AuthRouter";
 import { GlobalContext } from "@/store/GlobalState";
 import { getData, putData } from "@/utils/fetchData";
 import { FormSubmit, InputChange, IUser } from "@/utils/interface";
-import { FaFacebookF, FaTiktok, FaTwitter } from "react-icons/fa";
+import { FaCamera, FaFacebookF, FaTiktok, FaTwitter } from "react-icons/fa";
+import { checkImage, uploadImage } from "@/utils/uploadImage";
 
 export default function UpdateUser() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function UpdateUser() {
   };
 
   const [formData, setFormData] = useState<IUser>(initialState);
+  const [newAvatar, setNewAvatar] = useState<File>();
 
   useEffect(() => {
     if (id) {
@@ -44,6 +46,19 @@ export default function UpdateUser() {
   const { avatar, username, email, password, cf_password, role, aboutMe } =
     formData;
 
+  const changeAvatar = (e: InputChange) => {
+    const target = e.target as HTMLInputElement;
+    const files = target.files;
+
+    if (files) {
+      const file = files[0];
+      console.log(file);
+      const errMsg = checkImage(file, 2);
+      if (errMsg) return toast.error(errMsg, { theme: "colored" });
+      setNewAvatar(file);
+    }
+  };
+
   const handleChangeInput = (e: InputChange) => {
     const { name, value } = e.target as HTMLInputElement;
     setFormData({ ...formData, [name]: value });
@@ -52,8 +67,17 @@ export default function UpdateUser() {
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
+    let media;
+
     dispatch({ type: "NOTIFY", payload: { loading: true } });
-    const res = await putData(`user/${id}`, formData, token);
+
+    if (newAvatar) media = await uploadImage(newAvatar, "UserName");
+
+    const res = await putData(
+      `user/${id}`,
+      { ...formData, avatar: media && media.url },
+      token
+    );
     dispatch({ type: "NOTIFY", payload: {} });
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
@@ -162,8 +186,20 @@ export default function UpdateUser() {
         </div>
         <div className="col-span-3 ml-8">
           <div className="rounded-md shadow-md p-6 mb-8 bg-white mt-16 break-words">
-            <div className="mx-auto w-40 h-40 rounded-full overflow-hidden mt-[-100px]">
-              <img src={avatar} />
+            <div className="mx-auto w-40 h-40 rounded-full overflow-hidden mt-[-90px] relative group">
+              <img src={newAvatar ? URL.createObjectURL(newAvatar) : avatar} />
+              <span className="absolute w-full h-[50%] bg-slate-200 opacity-80 left-0 bottom-[-100%] group-hover:bottom-[-10%] text-orange-500 flex flex-col items-center py-2 font-semibold">
+                <FaCamera />
+                <p>Change...</p>
+                <input
+                  type="file"
+                  name="avatar"
+                  id="avatar"
+                  accept="image/*"
+                  onChange={changeAvatar}
+                  className="absolute top-0 left-0 w-full h-full opacity-0"
+                />
+              </span>
             </div>
 
             <h2 className="uppercase text-gray-600 text-center my-4">
