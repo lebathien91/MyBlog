@@ -9,6 +9,7 @@ import { GlobalContext } from "@/store/GlobalState";
 import { InputChange, FormSubmit, ICategory, ITag } from "@/utils/interface";
 import { checkImage, uploadImage } from "@/utils/uploadImage";
 import Seo from "@/components/Seo";
+import { format } from "date-fns";
 
 export default function UpdateTag() {
   const router = useRouter();
@@ -211,7 +212,9 @@ export default function UpdateTag() {
                     : "Category"}
                 </span>
 
-                <span>{createdAt}</span>
+                <span>
+                  {format(new Date(createdAt as string), "h:m a - dd/MM/yyyy")}
+                </span>
               </footer>
             </div>
           </div>

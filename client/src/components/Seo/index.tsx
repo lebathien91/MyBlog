@@ -11,7 +11,7 @@ const Seo = ({ title, description, image, article }: ISeo) => {
   return (
     <Head>
       <link rel="shortcut icon" href="/favicon.webp" />
-      <title>{title} | Bác sĩ nhà quê</title>
+      <title>{`${title} | Bác sĩ nhà quê`}</title>
 
       <meta property="og:locale" content="vi_VN" />
       <meta property="og:site_name" content="Bác sĩ nhà quê" />

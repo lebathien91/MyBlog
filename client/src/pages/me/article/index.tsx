@@ -173,7 +173,7 @@ export default function ArticlesPage() {
               <option value="DELETE_MULTI_ARTICLE">Delete</option>
             </select>
             <button className="ml-4 px-4 py-2 bg-yellow-600 rounded-sm text-white text-md font-semibold">
-              Thực hiện
+              Submit
             </button>
           </form>
 

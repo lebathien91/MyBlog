@@ -8,6 +8,7 @@ import { getData, postData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange, ITag } from "@/utils/interface";
 import { checkImage, uploadImage } from "@/utils/uploadImage";
 import Seo from "@/components/Seo";
+import { format } from "date-fns";
 
 export default function NewTag() {
   const router = useRouter();
@@ -190,7 +191,7 @@ export default function NewTag() {
                     : "Category"}
                 </span>
 
-                <span>{new Date().toISOString()}</span>
+                <span>{format(new Date(), "h:m a - dd/MM/yyyy")}</span>
               </footer>
             </div>
           </div>
