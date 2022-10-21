@@ -6,6 +6,7 @@ import Loading from "@/components/Loading";
 import Detail from "@/views/pages/Detail";
 import { getData } from "@/utils/fetchData";
 import { IArticle, ITag } from "@/utils/interface";
+import Seo from "@/components/Seo";
 
 interface ITags {
   tag: ITag;
@@ -27,7 +28,16 @@ export default function Tags({ tag, articles, slug }: ITags) {
     article: articles[0],
     articleSlug: articles[0]?.slug,
   };
-  return <Detail data={data} />;
+  return (
+    <>
+      <Seo
+        title={tag?.name}
+        description={tag?.description}
+        image={tag.thumbnail}
+      />
+      <Detail data={data} />
+    </>
+  );
 }
 
 export async function getStaticPaths() {

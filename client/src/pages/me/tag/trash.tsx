@@ -12,6 +12,7 @@ import { GlobalContext } from "@/store/GlobalState";
 import useDebounce from "@/hooks/useDebounce";
 import { deleteData, getData, patchData } from "@/utils/fetchData";
 import { FormSubmit, InputChange, ITag } from "@/utils/interface";
+import Seo from "@/components/Seo";
 
 export default function TrashTagsPage() {
   const router = useRouter();
@@ -187,6 +188,7 @@ export default function TrashTagsPage() {
 
   return (
     <>
+      <Seo title="Danh sách tag rác - Dashboard" />
       <div className="my-8 font-semibold text-sky-700">
         <Link href="/me/tag">
           <a className="mx-2 px-2 border-r border-slate-800">Public</a>

@@ -7,6 +7,7 @@ import { GlobalContext } from "@/store/GlobalState";
 import { getData, postData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange, ITag } from "@/utils/interface";
 import { checkImage, uploadImage } from "@/utils/uploadImage";
+import Seo from "@/components/Seo";
 
 export default function NewTag() {
   const router = useRouter();
@@ -78,114 +79,124 @@ export default function NewTag() {
   };
 
   return (
-    <form className="w-full" onSubmit={handleSubmit}>
-      <div className="flex justify-between px-8 mb-8">
-        <h2 className="text-4xl">Create a tag</h2>
-        <button className="px-4 py-2 bg-green-800 rounded-sm text-white text-md font-semibold">
-          Save
-        </button>
-      </div>
-      <div className="w-full grid grid-cols-8">
-        <div className="col-span-8 lg:col-span-4 xl:col-span-5 bg-white p-8 rounded-md shadow-md border">
-          <div className="mb-8">
-            <label htmlFor="name" className="w-full text-xl font-semibold">
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="Name Tag"
-              value={name}
-              onChange={handleChangeInput}
-              className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
-            />
-          </div>
+    <>
+      <Seo title="Tạo bài tag - Dashboard" />
 
-          <div className="mb-8">
-            <label htmlFor="category" className="w-full text-xl font-semibold">
-              Category
-            </label>
-            <select
-              name="category"
-              id="category"
-              value={typeof category === "string" ? category : category._id}
-              onChange={handleChangeInput}
-              className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
-            >
-              <option value="">-- Choose --</option>
-              {categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+      <form className="w-full" onSubmit={handleSubmit}>
+        <div className="flex justify-between px-8 mb-8">
+          <h2 className="text-4xl">Create a tag</h2>
+          <button className="px-4 py-2 bg-green-800 rounded-sm text-white text-md font-semibold">
+            Save
+          </button>
+        </div>
+        <div className="w-full grid grid-cols-8">
+          <div className="col-span-8 lg:col-span-4 xl:col-span-5 bg-white p-8 rounded-md shadow-md border">
+            <div className="mb-8">
+              <label htmlFor="name" className="w-full text-xl font-semibold">
+                Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Name Tag"
+                value={name}
+                onChange={handleChangeInput}
+                className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
+              />
+            </div>
+
+            <div className="mb-8">
+              <label
+                htmlFor="category"
+                className="w-full text-xl font-semibold"
+              >
+                Category
+              </label>
+              <select
+                name="category"
+                id="category"
+                value={typeof category === "string" ? category : category._id}
+                onChange={handleChangeInput}
+                className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
+              >
+                <option value="">-- Choose --</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-8">
+              <label
+                htmlFor="thumbnail"
+                className="w-full text-xl font-semibold"
+              >
+                Thumbnail
+              </label>
+              <input
+                type="file"
+                name="thumbnail"
+                id="thumbnail"
+                accept="image/*"
+                onChange={changeThumbnail}
+                className="w-full block mt-1"
+              />
+            </div>
+            <div className="">
+              <label
+                htmlFor="description"
+                className="w-full text-xl font-semibold"
+              >
+                Description
+              </label>
+              <textarea
+                name="description"
+                id="description"
+                rows={3}
+                placeholder="Description Tag"
+                value={description}
+                onChange={handleChangeInput}
+                className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
+              ></textarea>
+            </div>
           </div>
-          <div className="mb-8">
-            <label htmlFor="thumbnail" className="w-full text-xl font-semibold">
-              Thumbnail
-            </label>
-            <input
-              type="file"
-              name="thumbnail"
-              id="thumbnail"
-              accept="image/*"
-              onChange={changeThumbnail}
-              className="w-full block mt-1"
-            />
-          </div>
-          <div className="">
-            <label
-              htmlFor="description"
-              className="w-full text-xl font-semibold"
-            >
-              Description
-            </label>
-            <textarea
-              name="description"
-              id="description"
-              rows={3}
-              placeholder="Description Tag"
-              value={description}
-              onChange={handleChangeInput}
-              className="w-full p-2 pr-8 block mt-1 rounded-md border border-gray-300 shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 focus:border-[#2563eb] focus:border focus:outline-none"
-            ></textarea>
+          <div className="hidden lg:block lg:col-span-4 xl:col-span-3 lg:pl-8">
+            <div className="bg-white border border-gray-300 rounded-md overflow-hidden shadow-md shadow-slate-300 hover:shadow-2xl hover:shadow-slate-300">
+              <img
+                src={
+                  banner
+                    ? URL.createObjectURL(banner)
+                    : "https://res.cloudinary.com/kuchuoi/image/upload/v1662444829/Diseases/jpe803fyhzckocfxpn8r.webp"
+                }
+                alt="Example"
+              />
+
+              <main className="px-4">
+                <h2 className="py-2">{name ? name : "Title Example"}</h2>
+                <p className="line-clamp-3">
+                  {description
+                    ? description
+                    : "Phần mô tả tóm tắt nội dung. Phần này thường dài khoảng ~ 200 ký tự trong đó nêu những nội dung nổi bật của bài"}
+                </p>
+              </main>
+              <footer className="px-4 py-2 flex justify-between text-[17px]">
+                <span>
+                  {category
+                    ? categories.filter(
+                        (cat) => cat._id?.toString() == category
+                      )[0].name
+                    : "Category"}
+                </span>
+
+                <span>{new Date().toISOString()}</span>
+              </footer>
+            </div>
           </div>
         </div>
-        <div className="hidden lg:block lg:col-span-4 xl:col-span-3 lg:pl-8">
-          <div className="bg-white border border-gray-300 rounded-md overflow-hidden shadow-md shadow-slate-300 hover:shadow-2xl hover:shadow-slate-300">
-            <img
-              src={
-                banner
-                  ? URL.createObjectURL(banner)
-                  : "https://res.cloudinary.com/kuchuoi/image/upload/v1662444829/Diseases/jpe803fyhzckocfxpn8r.webp"
-              }
-              alt="Example"
-            />
-
-            <main className="px-4">
-              <h2 className="py-2">{name ? name : "Title Example"}</h2>
-              <p className="line-clamp-3">
-                {description
-                  ? description
-                  : "Phần mô tả tóm tắt nội dung. Phần này thường dài khoảng ~ 200 ký tự trong đó nêu những nội dung nổi bật của bài"}
-              </p>
-            </main>
-            <footer className="px-4 py-2 flex justify-between text-[17px]">
-              <span>
-                {category
-                  ? categories.filter(
-                      (cat) => cat._id?.toString() == category
-                    )[0].name
-                  : "Category"}
-              </span>
-
-              <span>{new Date().toISOString()}</span>
-            </footer>
-          </div>
-        </div>
-      </div>
-    </form>
+      </form>
+    </>
   );
 }
 

@@ -2,12 +2,13 @@ import { setCookie } from "typescript-cookie";
 import { MdFacebook } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { FormSubmit, InputChange } from "../utils/interface";
 import { toast } from "react-toastify";
 import { postData } from "../utils/fetchData";
 import { GlobalContext } from "../store/GlobalState";
 import { useRouter } from "next/router";
+import Seo from "@/components/Seo";
 
 const Login = () => {
   const router = useRouter();
@@ -184,3 +185,12 @@ const Login = () => {
 };
 
 export default Login;
+
+Login.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <>
+      <Seo title="Đăng nhập" />
+      {page}
+    </>
+  );
+};

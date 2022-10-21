@@ -6,6 +6,7 @@ import Tags from "@/views/pages/Tags";
 import Loading from "@/components/Loading";
 import { getData } from "@/utils/fetchData";
 import { ITag } from "@/utils/interface";
+import Seo from "@/components/Seo";
 
 interface ICategory {
   tags: Array<ITag>;
@@ -17,11 +18,6 @@ export default function Category({ tags, count }: ICategory) {
   if (router.isFallback) {
     return <Loading />;
   }
-
-  const seo = {
-    metaTitle: "Chuyên mục",
-    metaDescription: `Tất cả bài viết theo chuyên mục`,
-  };
 
   return <Tags posts={tags} />;
 }
@@ -72,5 +68,10 @@ export async function getStaticProps({ params }: any) {
 }
 
 Category.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return (
+    <Layout>
+      <Seo title="Chuyên mục" />
+      {page}
+    </Layout>
+  );
 };

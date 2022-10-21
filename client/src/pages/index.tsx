@@ -3,7 +3,9 @@ import type { ReactElement } from "react";
 import Layout from "@/layout/index";
 import Tags from "@/views/pages/Tags";
 import { getData } from "@/utils/fetchData";
+
 import { ITag } from "@/utils/interface";
+import Seo from "@/components/Seo";
 
 interface IHome {
   tags: Array<ITag>;
@@ -11,7 +13,12 @@ interface IHome {
 }
 
 export default function Home({ tags, count }: IHome) {
-  return <Tags posts={tags} />;
+  return (
+    <>
+      <Seo title="Trang chủ" />
+      <Tags posts={tags} />
+    </>
+  );
 }
 
 export async function getStaticProps() {

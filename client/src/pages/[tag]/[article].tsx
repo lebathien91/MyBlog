@@ -5,6 +5,7 @@ import { getData } from "@/utils/fetchData";
 import { IArticle } from "@/utils/interface";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
+import Seo from "@/components/Seo";
 
 export default function Single({ tag, articles, articleSlug }: any) {
   const router = useRouter();
@@ -26,13 +27,16 @@ export default function Single({ tag, articles, articleSlug }: any) {
     articleSlug,
   };
 
-  const seo = {
-    metaTitle: article[0].title,
-    metaDescription: article[0].description,
-    article: true,
-  };
-
-  return <Detail data={data} />;
+  return (
+    <>
+      <Seo
+        title={article[0].title}
+        description={article[0].description}
+        article
+      />
+      <Detail data={data} />
+    </>
+  );
 }
 
 export async function getStaticPaths() {

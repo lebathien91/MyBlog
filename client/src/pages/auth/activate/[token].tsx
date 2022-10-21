@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import Layout from "@/layout/index";
 import { postData } from "@/utils/fetchData";
+import Seo from "@/components/Seo";
 
 export default function ActivationEmail() {
   const router = useRouter();
@@ -43,5 +44,10 @@ export default function ActivationEmail() {
 }
 
 ActivationEmail.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return (
+    <Layout>
+      <Seo title="Kích hoạt tài khoản" />
+      {page}
+    </Layout>
+  );
 };

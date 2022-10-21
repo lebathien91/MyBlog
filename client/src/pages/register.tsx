@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { GlobalContext } from "../store/GlobalState";
 import { postData } from "../utils/fetchData";
 import { useRouter } from "next/router";
+import Seo from "@/components/Seo";
 
 const Register = () => {
   const router = useRouter();
@@ -57,6 +58,7 @@ const Register = () => {
   };
   return (
     <main>
+      <Seo title="Đăng ký" />
       <section className="relative w-full h-full py-32 min-h-screen">
         <div className="absolute top-0 w-full h-full bg-gray-800 bg-no-repeat bg-full"></div>
         <div className="container mx-auto px-4 h-full">

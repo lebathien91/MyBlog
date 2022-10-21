@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import Layout from "@/layout/index";
 import { GlobalContext } from "@/store/GlobalState";
 import { FaCamera, FaFacebookF, FaTiktok, FaTwitter } from "react-icons/fa";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { validRegister } from "@/utils/valid";
 import { patchData, putData } from "@/utils/fetchData";
 import { checkImage, uploadImage } from "@/utils/uploadImage";
+import Seo from "@/components/Seo";
 
 export default function Profile() {
   const { state, dispatch } = useContext(GlobalContext);
@@ -95,6 +96,8 @@ export default function Profile() {
   if (!user) return <Login />;
   return (
     <Layout>
+      <Seo title={user.username} />
+
       <form
         className="container grid grid-cols-3 my-24 gap-8"
         onSubmit={handleSubmit}

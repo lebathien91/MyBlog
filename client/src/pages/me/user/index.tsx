@@ -12,6 +12,7 @@ import Pagination from "@/components/Pagination";
 import { FormSubmit, IUser } from "@/utils/interface";
 import { getData, patchData } from "@/utils/fetchData";
 import useDebounce from "@/hooks/useDebounce";
+import Seo from "@/components/Seo";
 
 export default function UsersPage() {
   const router = useRouter();
@@ -154,6 +155,7 @@ export default function UsersPage() {
   ];
   return (
     <>
+      <Seo title="Danh sách thành viên - Dashboard" />
       <div className="my-8 font-semibold text-sky-700">
         <a className="mx-2 px-2 border-r border-slate-800 text-gray-500">
           Public ({count})

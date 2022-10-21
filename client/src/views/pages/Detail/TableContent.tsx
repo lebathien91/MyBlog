@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
 interface TableContentProps {
-  active: boolean;
   headings: any[];
 }
 
-const TableContent = ({ active, headings }: TableContentProps) => {
+const TableContent = ({ headings }: TableContentProps) => {
   const [activeId, setActiveId] = useState<any>();
   const getNestedHeadings = (headingElements: any[]) => {
     const nestedHeadings: any[] = [];
@@ -87,7 +86,7 @@ const TableContent = ({ active, headings }: TableContentProps) => {
   useIntersectionObserver(setActiveId);
   return (
     <aside className="flex-[2_1_0%] hidden xl:block min-w-[280px">
-      <nav className={`${active ? "pt-8" : ""} sticky top-10`}>
+      <nav className={`sticky top-12`}>
         <h2 className="py-4">Table Content</h2>
         <ol className="">
           {nestedHeadings.map((heading) => (

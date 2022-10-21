@@ -6,6 +6,11 @@ import TableContent from "./TableContent";
 import Topic from "./Topic";
 import Link from "next/link";
 import { format } from "date-fns";
+import {
+  MdFormatListBulleted,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
+} from "react-icons/md";
 
 const Detail = ({ data }: any) => {
   const [activeTopic, setActiveTopic] = useState<boolean>(true);
@@ -41,15 +46,23 @@ const Detail = ({ data }: any) => {
 
   return (
     <div className="relative">
-      <IoIosArrowForward
-        size="1.875rem"
-        className={`sticky top-[53px] left-0 p-1 bg-[#dfd9d9] z-30 cursor-pointer ${
+      <button
+        className={`fixed bottom-16 left-12 p-1 bg-[#20232a] text-[#61dafb] w-14 h-14 z-30 rounded-full ${
           activeTopic && !isMobile && "lg:hidden"
         } ${!activeTopic && !isMobile && "lg:block"} ${
           activeTopic && isMobile && "hidden"
         }`}
         onClick={() => handleOpen()}
-      />
+      >
+        <div className="flex flex-col justify-center items-center">
+          <span>
+            <MdKeyboardArrowUp size="26" />
+
+            <MdKeyboardArrowDown size="26" />
+          </span>
+        </div>
+      </button>
+
       <div className="container flex relative">
         <Topic
           key={`topic-${articleSlug}`}
@@ -62,7 +75,7 @@ const Detail = ({ data }: any) => {
         />
 
         <article className="flex-[7_1_0%] px-[16px]">
-          <header className={`${activeTopic ? "pt-8" : ""} pb-4`}>
+          <header className="py-8">
             <div className="font-semibold text-xl text-[#0065b3]">
               <Link href={`/tag/${slugDisease}`}>
                 <a className="hover:underline">{nameDisease}</a>
@@ -88,11 +101,7 @@ const Detail = ({ data }: any) => {
           </main>
         </article>
 
-        <TableContent
-          key={article.slug}
-          active={activeTopic}
-          headings={headings}
-        />
+        <TableContent key={article.slug} headings={headings} />
       </div>
     </div>
   );

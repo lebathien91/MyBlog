@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import Table from "@/components/DataTable";
 import { getData, patchData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
-
+import Seo from "@/components/Seo";
 import { IArticle, ICategory, ITag, IUser } from "@/utils/interface";
 
 const Dashboard = () => {
@@ -138,6 +138,7 @@ const Dashboard = () => {
 
   return (
     <>
+      <Seo title="Dashboard" />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
         {cards.map((card, index) => (
           <div className="col-span-1 my-8" key={index}>

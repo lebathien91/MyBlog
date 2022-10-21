@@ -12,6 +12,7 @@ import Pagination from "@/components/Pagination";
 import { deleteData, getData, patchData } from "@/utils/fetchData";
 import { FormSubmit, IUser } from "@/utils/interface";
 import useDebounce from "@/hooks/useDebounce";
+import Seo from "@/components/Seo";
 
 export default function TrashUsersPage() {
   const router = useRouter();
@@ -184,6 +185,8 @@ export default function TrashUsersPage() {
   ];
   return (
     <>
+      <Seo title="Danh sách thành viên rác - Dashboard" />
+
       <div className="my-8 font-semibold text-sky-700">
         <Link href="/me/user">
           <a className="mx-2 px-2 border-r border-slate-800">Public</a>

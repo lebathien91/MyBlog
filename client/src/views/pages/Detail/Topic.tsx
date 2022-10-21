@@ -27,13 +27,13 @@ const Topic = ({
         active && !isMobile && "hidden lg:block"
       }`}
     >
-      <nav className="px-4 md:px-2 lg:px-1 min-w-[230px] sticky top-10">
+      <nav className="px-4 md:px-2 lg:px-1 min-w-[230px] sticky top-16">
         <MdClose
           size="1.5rem"
           className="absolute right-4 top-4 cursor-pointer"
           onClick={() => setActive(false)}
         />
-        <h2 className="pt-8 pb-4">Topic: {disease.name}</h2>
+        <h2 className="py-4">Topic: {disease.name}</h2>
         <ul>
           {articles.map((item) => (
             <li key={item.slug} className="my-1 text-[#0065b3] hover:underline">

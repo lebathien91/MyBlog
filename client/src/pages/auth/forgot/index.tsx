@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { FormSubmit, InputChange } from "@/utils/interface";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
@@ -16,6 +17,7 @@ export default function ForgotPassword() {
   };
   return (
     <main>
+      <Seo title="Quên mật khẩu" />
       <section className="relative w-full h-full py-32 min-h-screen">
         <div className="absolute top-0 w-full h-full bg-gray-800 bg-no-repeat bg-full"></div>
         <div className="container mx-auto px-4 h-full">
