@@ -54,12 +54,8 @@ const Detail = ({ data }: any) => {
         }`}
         onClick={() => handleOpen()}
       >
-        <div className="flex flex-col justify-center items-center">
-          <span>
-            <MdKeyboardArrowUp size="26" />
-
-            <MdKeyboardArrowDown size="26" />
-          </span>
+        <div className="flex justify-center items-center">
+          <MdFormatListBulleted size={26} />
         </div>
       </button>
 

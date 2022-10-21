@@ -106,7 +106,7 @@ export default function Me() {
             </Link>
           </div>
           <div className="border rounded-md shadow-md p-4">
-            <h1 className="my-2 text-rose-700">Your's Articles</h1>
+            <h1 className="my-2 text-rose-700">Your&apos;s Articles</h1>
             {posts.length > 0 ? (
               <>
                 <div className="mb-8">
