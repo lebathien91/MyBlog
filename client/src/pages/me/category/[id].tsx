@@ -7,12 +7,13 @@ import { GlobalContext } from "@/store/GlobalState";
 import { getData, putData } from "@/utils/fetchData";
 import { FormSubmit, ICategory, InputChange } from "@/utils/interface";
 import Seo from "@/components/Seo";
+import { format } from "date-fns";
 
 export default function UpdateCategory() {
   const router = useRouter();
   const { id } = router.query;
   const { state, dispatch } = useContext(GlobalContext);
-  const { token } = state.auth;
+  const { token, user } = state.auth;
 
   const initialState = {
     _id: "",
@@ -107,7 +108,10 @@ export default function UpdateCategory() {
               <h3 className="uppercase text-gray-500 border-b">Infomation</h3>
               <div className="flex justify-between py-3">
                 <span>Created</span>
-                <span>Now</span>
+                <span>
+                  {createdAt &&
+                    format(new Date(createdAt as string), "h:m a - dd/MM/yyy")}
+                </span>
               </div>
               <div className="flex justify-between py-3">
                 <span>Updated</span>
@@ -115,7 +119,7 @@ export default function UpdateCategory() {
               </div>
               <div className="flex justify-between py-3">
                 <span>By</span>
-                <span>Your Name</span>
+                <span>{user.username}</span>
               </div>
             </div>
           </div>

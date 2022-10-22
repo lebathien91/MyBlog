@@ -213,7 +213,8 @@ export default function UpdateTag() {
                 </span>
 
                 <span>
-                  {format(new Date(createdAt as string), "h:m a - dd/MM/yyyy")}
+                  {createdAt &&
+                    format(new Date(createdAt as string), "h:m a - dd/MM/yyyy")}
                 </span>
               </footer>
             </div>

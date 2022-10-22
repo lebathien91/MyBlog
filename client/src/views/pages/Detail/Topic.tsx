@@ -33,7 +33,7 @@ const Topic = ({
           className="absolute right-4 top-4 cursor-pointer"
           onClick={() => setActive(false)}
         />
-        <h2 className="py-4">Topic: {disease.name}</h2>
+        <h2 className="py-4 pr-12">Topic: {disease.name}</h2>
         <ul>
           {articles.map((item) => (
             <li key={item.slug} className="my-1 text-[#0065b3] hover:underline">

@@ -8,10 +8,11 @@ const CategoryCtrl = class {
   // Route: /category/create
   async create(req: Request, res: Response) {
     try {
-      const { name } = req.body;
+      const { name, description } = req.body;
 
       const newCategory = new Categories({
         name,
+        description,
       });
 
       await newCategory.save();

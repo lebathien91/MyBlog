@@ -236,7 +236,10 @@ export default function UsersPage() {
         </thead>
         <tbody>
           {posts.map((post, index) => (
-            <tr key={post._id}>
+            <tr
+              key={post._id}
+              className={post.root ? "text-red-600 font-semibold" : ""}
+            >
               <td className="py-3 border-b pr-4 text-center">
                 <input
                   type="checkbox"
@@ -248,7 +251,9 @@ export default function UsersPage() {
               <td className="py-3 border-b pr-4">{index + 1}</td>
               <td className="py-3 border-b">{post.username}</td>
               <td className="py-3 border-b">{post.email}</td>
-              <td className="py-3 border-b">{post.role}</td>
+              <td className="py-3 border-b">
+                {post.root ? "root" : post.role}
+              </td>
               <td className="py-3 border-b">
                 <div className="flex">
                   <Link href={`/me/user/${post._id}`}>
