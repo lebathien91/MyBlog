@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import slug from "mongoose-slug-updater";
-import { ITag } from "../config/interface";
+import { ITag } from "../utils/interface";
 
 const Schema = mongoose.Schema;
 

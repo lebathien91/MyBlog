@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import slug from "mongoose-slug-updater";
-import { ICategory } from "../config/interface";
+import { ICategory } from "../utils/interface";
 
 const Schema = mongoose.Schema;
 

@@ -1,15 +1,15 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import { IDecodedToken, IReqAuth } from "../config/interface";
+import { IDecodedToken, IReqAuth } from "../utils/interface";
 import Users from "../models/userModles";
 
 import {
   createAccessToken,
   createActivationToken,
   createRefreshToken,
-} from "../libs/generateToken";
-import sendEmail from "../libs/sendMail";
+} from "../utils/generateToken";
+import sendEmail from "../utils/sendMail";
 
 const AuthCtrl = class {
   // Method: GET

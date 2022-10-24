@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 
 import Users from "../models/userModles";
-import { featureAPI } from "../libs/features";
-import { IReqAuth } from "../config/interface";
+import { featureAPI } from "../utils/features";
+import { IReqAuth } from "../utils/interface";
 
 const UsersCtrl = class {
   // Method: POST

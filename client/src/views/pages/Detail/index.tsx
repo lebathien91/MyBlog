@@ -1,16 +1,14 @@
 import { parse } from "node-html-parser";
 import slug from "slugify";
 import { useState } from "react";
-import { IoIosArrowForward } from "react-icons/io";
-import TableContent from "./TableContent";
-import Topic from "./Topic";
+
 import Link from "next/link";
 import { format } from "date-fns";
-import {
-  MdFormatListBulleted,
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-} from "react-icons/md";
+import { MdFormatListBulleted } from "react-icons/md";
+
+import TableContent from "./TableContent";
+import Topic from "./Topic";
+import Comment from "./Comment";
 
 const Detail = ({ data }: any) => {
   const [activeTopic, setActiveTopic] = useState<boolean>(true);
@@ -45,7 +43,7 @@ const Detail = ({ data }: any) => {
   }
 
   return (
-    <div className="relative">
+    <div className="mb-12">
       <button
         className={`fixed bottom-16 left-12 p-1 bg-[#20232a] text-[#61dafb] w-14 h-14 z-30 rounded-full ${
           activeTopic && !isMobile && "lg:hidden"
@@ -95,6 +93,8 @@ const Detail = ({ data }: any) => {
               dangerouslySetInnerHTML={{ __html: content.toString() }}
             />
           </main>
+
+          <Comment />
         </article>
 
         <TableContent key={article.slug} headings={headings} />

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Categories from "../models/categoryModles";
-import { featureAPI } from "../libs/features";
-import { IReqAuth } from "../config/interface";
+import { featureAPI } from "../utils/features";
+import { IReqAuth } from "../utils/interface";
 
 const CategoryCtrl = class {
   // Method: POST

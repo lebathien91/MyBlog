@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import slug from "mongoose-slug-updater";
 
-import { IArticle } from "../config/interface";
+import { IArticle } from "../utils/interface";
 
 const Schema = mongoose.Schema;
 
@@ -17,7 +17,7 @@ const articleSchema = new Schema(
     },
     title: {
       type: String,
-      maxLength: [255, "Name không dài quá 100 ký tự."],
+      maxLength: [100, "Name không dài quá 100 ký tự."],
       trim: true,
     },
     slug: {

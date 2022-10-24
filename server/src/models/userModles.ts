@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IUser } from "../config/interface";
+import { IUser } from "../utils/interface";
 
 const Schema = mongoose.Schema;
 

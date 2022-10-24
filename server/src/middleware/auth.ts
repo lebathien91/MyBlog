@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Response, NextFunction } from "express";
-import { IReqAuth, IDecodedToken } from "../config/interface";
+import { IReqAuth, IDecodedToken } from "../utils/interface";
 
 import Users from "../models/userModles";
 

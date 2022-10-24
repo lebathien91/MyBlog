@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import slug from "mongoose-slug-updater";
-import { IPage } from "../config/interface";
+import { IPage } from "../utils/interface";
 
 const Schema = mongoose.Schema;
 

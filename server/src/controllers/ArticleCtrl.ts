@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { IReqAuth } from "../config/interface";
+import { IReqAuth } from "../utils/interface";
 import Articles from "../models/articleModles";
-import { featureAPI } from "../libs/features";
+import { featureAPI } from "../utils/features";
 
 const ArticleCtrl = class {
   // Method: POST

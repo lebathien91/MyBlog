@@ -50,13 +50,14 @@ export interface IPage extends Document {
   _doc: object;
 }
 
-export interface IMedia extends Document {
-  name: string;
-  url: string;
-  width: number;
-  height: number;
-  type: string;
-  size?: string;
+export interface IComment extends Document {
+  user: string;
+  articleId: string;
+  articleUserId: string;
+  content: string;
+  replyComment: string[];
+  replyUser: string;
+  commentRoot: string;
   _doc: object;
 }
 

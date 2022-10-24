@@ -3,7 +3,7 @@ import Tags from "../models/tagModles";
 import { IReqAuth } from "../utils/interface";
 import { featureAPI } from "../utils/features";
 
-const TagCtrl = class {
+const CommentCtrl = class {
   // Method: POST
   // Route: /tag/create
   async create(req: IReqAuth, res: Response) {
@@ -237,4 +237,4 @@ const TagCtrl = class {
   }
 };
 
-export default new TagCtrl();
+export default new CommentCtrl();
