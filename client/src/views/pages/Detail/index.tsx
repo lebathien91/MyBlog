@@ -94,7 +94,7 @@ const Detail = ({ data }: any) => {
             />
           </main>
 
-          <Comment />
+          <Comment articleId={article._id} articleUserId={article.user} />
         </article>
 
         <TableContent key={article.slug} headings={headings} />

@@ -4,9 +4,8 @@ import { auth, isEditor, isAdmin, isRoot } from "../middleware/auth";
 
 const router = express.Router();
 
-router.post("/comment/create", auth, isEditor, CommentCtrl.create);
+router.get("/comment/article/:id", CommentCtrl.getComments);
 
-router.get("/comment/trash", CommentCtrl.trash);
 router.patch("/comment/restore/:id", auth, isAdmin, CommentCtrl.restore);
 router.patch("/comment/restore", auth, isAdmin, CommentCtrl.restoreMany);
 
@@ -19,7 +18,8 @@ router
 
 router
   .route("/comment")
-  .get(CommentCtrl.find)
+  .get(auth, CommentCtrl.find)
+  .post(auth, CommentCtrl.create)
   .patch(auth, isAdmin, CommentCtrl.deleteMany)
   .delete(auth, isAdmin, CommentCtrl.destroyMany);
 

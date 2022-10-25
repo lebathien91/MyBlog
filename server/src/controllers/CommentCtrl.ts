@@ -2,24 +2,31 @@ import { Request, Response } from "express";
 import Tags from "../models/tagModles";
 import { IReqAuth } from "../utils/interface";
 import { featureAPI } from "../utils/features";
+import Comments from "../models/commentModles";
 
 const CommentCtrl = class {
+  // Method: GET
+  // Route: /comment/article/:id
+  async getComments(req: IReqAuth, res: Response) {
+    const articleId = req.params.id;
+    try {
+      const comments = await Comments.find({ articleId });
+
+      res.json({ success: "Find Success", comments });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
   // Method: POST
   // Route: /tag/create
   async create(req: IReqAuth, res: Response) {
     try {
-      const { category, name, description, thumbnail } = req.body;
+      const newComment = new Comments(req.body);
 
-      const newTag = new Tags({
-        category,
-        name,
-        description,
-        thumbnail,
-      });
+      await newComment.save();
 
-      await newTag.save();
-
-      res.json({ success: "Create Tag Success" });
+      res.json({ success: "Create Comment Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
