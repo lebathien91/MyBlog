@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/tag/create", auth, isEditor, TagCtrl.create);
 
-router.get("/tag/trash", TagCtrl.trash);
+router.get("/tag/trash", auth, isAdmin, TagCtrl.trash);
 router.patch("/tag/restore/:id", auth, isAdmin, TagCtrl.restore);
 router.patch("/tag/restore", auth, isAdmin, TagCtrl.restoreMany);
 

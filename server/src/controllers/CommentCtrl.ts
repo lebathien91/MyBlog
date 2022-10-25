@@ -1,5 +1,4 @@
-import { Request, Response } from "express";
-import Tags from "../models/tagModles";
+import { Response } from "express";
 import { IReqAuth } from "../utils/interface";
 import { featureAPI } from "../utils/features";
 import Comments from "../models/commentModles";
@@ -10,19 +9,47 @@ const CommentCtrl = class {
   async getComments(req: IReqAuth, res: Response) {
     const articleId = req.params.id;
     try {
-      const comments = await Comments.find({ articleId });
+      const features = new featureAPI(
+        Comments.find({ articleId, deleted: null }),
+        req.query
+      )
+        .filtering()
+        .searching()
+        .populated()
+        .sorting()
+        .paginating();
 
-      res.json({ success: "Find Success", comments });
+      const counting = new featureAPI(
+        Comments.find({ articleId, deleted: null }),
+        req.query
+      )
+        .filtering()
+        .searching()
+        .counting();
+
+      const results = await Promise.allSettled([
+        features.query,
+        counting.query,
+      ]);
+
+      const comments =
+        results[0].status === "fulfilled" ? results[0].value : [];
+      const count = results[1].status === "fulfilled" ? results[1].value : 0;
+
+      res.json({ success: "Find Success", comments, count });
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: POST
-  // Route: /tag/create
+  // Route: /comment/create
   async create(req: IReqAuth, res: Response) {
     try {
-      const newComment = new Comments(req.body);
+      const newComment = new Comments({
+        user: req.user._id,
+        ...req.body,
+      });
 
       await newComment.save();
 
@@ -33,32 +60,38 @@ const CommentCtrl = class {
   }
 
   // Method: PUT
-  // Route: /tag/:id
+  // Route: /comment/:id
   async update(req: IReqAuth, res: Response) {
     const id = req.params.id;
     try {
-      const tag = await Tags.findOneAndUpdate({ _id: id }, req.body);
+      const comment = await Comments.findOneAndUpdate({ _id: id }, req.body);
 
-      if (!tag) return res.status(400).json({ error: "Invalid Tag." });
+      if (!comment) return res.status(400).json({ error: "Invalid Comment." });
 
-      res.json({ success: "Update Success", tag });
+      res.json({ success: "Update Success", comment });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: GET
-  // Route: /tag
+  // Route: /comment
   async find(req: IReqAuth, res: Response) {
     try {
-      const features = new featureAPI(Tags.find({ deleted: null }), req.query)
+      const features = new featureAPI(
+        Comments.find({ deleted: null }),
+        req.query
+      )
         .filtering()
         .searching()
         .populated()
         .sorting()
         .paginating();
 
-      const counting = new featureAPI(Tags.find({ deleted: null }), req.query)
+      const counting = new featureAPI(
+        Comments.find({ deleted: null }),
+        req.query
+      )
         .filtering()
         .searching()
         .counting();
@@ -68,27 +101,34 @@ const CommentCtrl = class {
         counting.query,
       ]);
 
-      const tags = results[0].status === "fulfilled" ? results[0].value : [];
+      const comments =
+        results[0].status === "fulfilled" ? results[0].value : [];
       const count = results[1].status === "fulfilled" ? results[1].value : 0;
 
-      res.json({ success: "Find Success", tags, count });
+      res.json({ success: "Find Success", comments, count });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: GET
-  // Route: /tag/trash
+  // Route: /comment/trash
   async trash(req: IReqAuth, res: Response) {
     try {
-      const features = new featureAPI(Tags.where("deleted").ne(null), req.query)
+      const features = new featureAPI(
+        Comments.where("deleted").ne(null),
+        req.query
+      )
         .filtering()
         .populated()
         .searching()
         .sorting()
         .paginating();
 
-      const counting = new featureAPI(Tags.where("deleted").ne(null), req.query)
+      const counting = new featureAPI(
+        Comments.where("deleted").ne(null),
+        req.query
+      )
         .searching()
         .counting();
 
@@ -97,143 +137,144 @@ const CommentCtrl = class {
         counting.query,
       ]);
 
-      const tags = results[0].status === "fulfilled" ? results[0].value : [];
+      const comments =
+        results[0].status === "fulfilled" ? results[0].value : [];
       const count = results[1].status === "fulfilled" ? results[1].value : 0;
 
-      res.json({ success: "Find Success", tags, count });
+      res.json({ success: "Find Success", comments, count });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: GET
-  // Route: /tag/:slug
-  async findBySlug(req: IReqAuth, res: Response) {
-    try {
-      const populate = req.query.populate as string;
-
-      const tag = await Tags.findOne({
-        slug: req.params.slug,
-        deleted: null,
-      }).populate(populate);
-
-      if (!tag) return res.status(400).json({ error: "Invalid Tag." });
-
-      res.json({ success: "Find Tag Success", tag });
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
-    }
-  }
-
-  // Method: GET
-  // Route: /tag/:id
+  // Route: /comment/:id
   async findById(req: IReqAuth, res: Response) {
     try {
       const populate = req.query.populate as string;
 
-      const tag = await Tags.findById({
+      const comment = await Comments.findById({
         _id: req.params.id,
         deleted: null,
       }).populate(populate);
-      if (!tag) return res.status(400).json({ error: "Invalid Tag." });
+      if (!comment) return res.status(400).json({ error: "Invalid Comment." });
 
-      res.json({ success: "Find Tag Success", tag });
+      res.json({ success: "Find Comment Success", comment });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: PATCH
-  // Route: /tag/:id
+  // Route: /comment/:id
   async delete(req: IReqAuth, res: Response) {
     try {
       const { id } = req.params;
       const date = new Date();
-      const tag = await Tags.findOneAndUpdate({ _id: id }, { deleted: date });
+      if (
+        req.user?.role === "editor" ||
+        req.user?.role === "admin" ||
+        req.user.root
+      ) {
+        const comment = await Comments.findOneAndUpdate(
+          { _id: id },
+          { deleted: date }
+        );
+        if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
-      if (!tag) return res.status(400).json({ error: "Invalid Tag" });
+        res.json({ success: "Delete Comment Success" });
+      } else {
+        const comment = await Comments.findOneAndUpdate(
+          { _id: id, user: req.user?._id },
+          { deleted: date }
+        );
+        if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
-      res.json({ success: "Delete Tag Success" });
+        res.json({ success: "Delete Comment Success" });
+      }
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: PATCH
-  // Route: /tag
+  // Route: /comment
   async deleteMany(req: IReqAuth, res: Response) {
     try {
       const ids = req.body;
       const date = new Date();
-      const tag = await Tags.updateMany(
+      const comment = await Comments.updateMany(
         { _id: { $in: ids } },
         { deleted: date }
       );
 
-      if (!tag) return res.status(400).json({ error: "Invalid Tag" });
+      if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
-      res.json({ success: "Delete Tag Success" });
+      res.json({ success: "Delete Comment Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: PATCH
-  // Route: /tag/restore/:id
+  // Route: /comment/restore/:id
   async restore(req: IReqAuth, res: Response) {
     try {
       const { id } = req.params;
-      const tag = await Tags.findOneAndUpdate({ _id: id }, { deleted: null });
+      const comment = await Comments.findOneAndUpdate(
+        { _id: id },
+        { deleted: null }
+      );
 
-      if (!tag) return res.status(400).json({ error: "Invalid Tag" });
+      if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
-      res.json({ success: "Restore Tag Success" });
+      res.json({ success: "Restore Comment Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: PATCH
-  // Route: /tag
+  // Route: /comment
   async restoreMany(req: IReqAuth, res: Response) {
     try {
       const ids = req.body;
-      const tag = await Tags.updateMany(
+      const comment = await Comments.updateMany(
         { _id: { $in: ids } },
         { deleted: null }
       );
 
-      if (!tag) return res.status(400).json({ error: "Invalid Tag" });
+      if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
-      res.json({ success: "Restore Tag Success" });
+      res.json({ success: "Restore Comment Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: DELETE
-  // Route: /tag/:id
+  // Route: /comment/:id
   async destroy(req: IReqAuth, res: Response) {
     try {
       const { id } = req.params;
 
-      const tag = await Tags.findByIdAndDelete({ _id: id });
+      const comment = await Comments.findByIdAndDelete({ _id: id });
 
-      if (!tag) return res.status(400).json({ error: "Invalid Tag" });
+      if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
-      res.json({ success: "Delete Tag Success" });
+      res.json({ success: "Delete Comment Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
   // Method: DELETE
-  // Route: /tag
+  // Route: /comment
   async destroyMany(req: IReqAuth, res: Response) {
     try {
       const ids = req.body;
       console.log(ids);
-      const results = await Tags.deleteMany({ _id: { $in: ids } });
+      const results = await Comments.deleteMany({ _id: { $in: ids } });
 
       if (!results) return res.status(400).json({ error: "Invalid Article" });
 

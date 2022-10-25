@@ -37,6 +37,9 @@ const commentSchema = new Schema(
       type: mongoose.Types.ObjectId,
       ref: "comment",
     },
+    deleted: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

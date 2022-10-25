@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get("/comment/article/:id", CommentCtrl.getComments);
 
+router.get("/comment/trash", auth, isAdmin, CommentCtrl.trash);
 router.patch("/comment/restore/:id", auth, isAdmin, CommentCtrl.restore);
 router.patch("/comment/restore", auth, isAdmin, CommentCtrl.restoreMany);
 
@@ -13,7 +14,7 @@ router
   .route("/comment/:id")
   .get(CommentCtrl.findById)
   .put(auth, isEditor, CommentCtrl.update)
-  .patch(auth, isAdmin, CommentCtrl.delete)
+  .patch(auth, CommentCtrl.delete)
   .delete(auth, isRoot, CommentCtrl.destroy);
 
 router

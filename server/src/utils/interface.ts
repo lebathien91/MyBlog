@@ -58,6 +58,7 @@ export interface IComment extends Document {
   replyComment: string[];
   replyUser: string;
   commentRoot: string;
+  deleted?: string;
   _doc: object;
 }
 

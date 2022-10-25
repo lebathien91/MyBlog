@@ -172,7 +172,11 @@ const ArticleCtrl = class {
       const id = req.params.id;
       const date = new Date();
 
-      if (req.user?.role === "editor" || req.user?.role === "admin") {
+      if (
+        req.user?.role === "editor" ||
+        req.user?.role === "admin" ||
+        req.user.root
+      ) {
         const article = await Articles.findOneAndUpdate(
           { _id: id },
           { deleted: date }

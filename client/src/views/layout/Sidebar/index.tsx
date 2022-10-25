@@ -12,6 +12,7 @@ import {
 import {
   MdDashboard,
   MdOutlineArticle,
+  MdOutlineComment,
   MdOutlinePermMedia,
   MdSettings,
 } from "react-icons/md";
@@ -41,6 +42,11 @@ const ListMenu = [
     title: "Articles",
     slug: "article",
     icon: <MdOutlineArticle size="22px" />,
+  },
+  {
+    title: "Comments",
+    slug: "comment",
+    icon: <MdOutlineComment size="22px" />,
   },
   {
     title: "Files",
