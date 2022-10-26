@@ -8,7 +8,7 @@ import { MdFormatListBulleted } from "react-icons/md";
 
 import TableContent from "./TableContent";
 import Topic from "./Topic";
-import Comment from "./Comment";
+import Comments from "./Comments";
 
 const Detail = ({ data }: any) => {
   const [activeTopic, setActiveTopic] = useState<boolean>(true);
@@ -94,7 +94,7 @@ const Detail = ({ data }: any) => {
             />
           </main>
 
-          <Comment articleId={article._id} articleUserId={article.user} />
+          <Comments articleId={article._id} articleUserId={article.user} />
         </article>
 
         <TableContent key={article.slug} headings={headings} />

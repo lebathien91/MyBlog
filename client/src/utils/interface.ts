@@ -55,14 +55,14 @@ export interface IArticle {
 }
 
 export interface IComment {
-  _id: string;
+  _id?: string;
   user: string | IUser;
   articleId: string;
   articleUserId: string;
   content: string;
   replyComment: string[];
-  replyUser: string;
-  commentRoot: string;
+  replyUser?: string;
+  commentRoot?: string;
   createdAt?: string;
   updatedAt?: string;
   isChecked?: boolean;

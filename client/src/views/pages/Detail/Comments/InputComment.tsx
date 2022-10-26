@@ -7,31 +7,19 @@ import { FormSubmit } from "@/utils/interface";
 import { Avatar } from "./Avatar";
 
 interface IProps {
-  articleId: string;
-  articleUserId: string;
+  callback: (content: string) => void;
 }
 
-export const InputComment = ({ articleId, articleUserId }: IProps) => {
+export const InputComment = ({ callback }: IProps) => {
   const { state, dispatch } = useContext(GlobalContext);
   const { user, token } = state.auth;
   const [content, setContent] = useState("");
+
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
-    const data = {
-      articleId,
-      articleUserId,
-      content,
-      replyComment: [],
-    };
-
-    dispatch({ type: "NOTIFY", payload: { loading: true } });
-    const res = await postData(`comment`, data, token);
-    dispatch({ type: "NOTIFY", payload: {} });
-    if (res.error) toast.error(res.error, { theme: "colored" });
-
+    callback(content);
     setContent("");
-    toast.success(res.success);
   };
 
   if (!user) return <div>Login</div>;
