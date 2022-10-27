@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/comment/article/:id", CommentCtrl.getComments);
 
+router.post("/comment/reply", auth, CommentCtrl.replyComment);
+
 router.get("/comment/trash", auth, isAdmin, CommentCtrl.trash);
 router.patch("/comment/restore/:id", auth, isAdmin, CommentCtrl.restore);
 router.patch("/comment/restore", auth, isAdmin, CommentCtrl.restoreMany);

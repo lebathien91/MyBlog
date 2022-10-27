@@ -60,8 +60,8 @@ export interface IComment {
   articleId: string;
   articleUserId: string;
   content: string;
-  replyComment: string[];
-  replyUser?: string;
+  replyComment: IComment[];
+  replyUser?: string | IUser;
   commentRoot?: string;
   createdAt?: string;
   updatedAt?: string;

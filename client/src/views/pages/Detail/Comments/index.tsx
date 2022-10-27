@@ -51,14 +51,7 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
   return (
     <div id="comment">
       <h1 className="mt-12">Comment</h1>
-      {user && (
-        <div className="my-8">
-          <div className="flex">
-            <Avatar user={user} />
-            <InputComment callback={handleComment} />
-          </div>
-        </div>
-      )}
+      {user && <InputComment callback={handleComment} />}
       <div className="w-full h-auto py-2 flex flex-col space-y-2">
         {comments.map((comment, i) => (
           <Comment comment={comment} key={i} />

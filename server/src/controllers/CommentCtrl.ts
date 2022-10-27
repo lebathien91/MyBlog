@@ -59,6 +59,36 @@ const CommentCtrl = class {
     }
   }
 
+  // Method: POST
+  // Route: /comment/reply-comment
+  async replyComment(req: IReqAuth, res: Response) {
+    try {
+      const { content, articleId, articleUserId, commentRoot, replyUser } =
+        req.body;
+      const newComment = new Comments({
+        user: req.user._id,
+        content,
+        articleId,
+        articleUserId,
+        commentRoot,
+        replyUser: replyUser._id,
+      });
+
+      await Comments.findOneAndUpdate(
+        { _id: commentRoot },
+        {
+          $push: { replyComment: newComment._id },
+        }
+      );
+
+      await newComment.save();
+
+      res.json({ success: "Create Comment Success", newComment });
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
   // Method: PUT
   // Route: /comment/:id
   async update(req: IReqAuth, res: Response) {
