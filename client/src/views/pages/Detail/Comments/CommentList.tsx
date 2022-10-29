@@ -12,31 +12,19 @@ interface IProps {
   comment: IComment;
   showReply: IComment[];
   setShowReply: (showReply: IComment[]) => void;
+  deleteComment: (id: string) => void;
 }
 const CommentList = ({
   children,
   comment,
   showReply,
   setShowReply,
+  deleteComment,
 }: IProps) => {
   const { state, dispatch } = useContext(GlobalContext);
   const { user, token } = state.auth;
 
   const [onReply, setOnReply] = useState(false);
-
-  const handleDeleteComment = async (id: string) => {
-    dispatch({ type: "NOTIFY", payload: { loading: true } });
-    const res = await patchData(`comment/${id}`, {}, token);
-    dispatch({ type: "NOTIFY", payload: {} });
-
-    if (res.error) return toast.error(res.error, { theme: "colored" });
-    // const newPosts = comments.filter((comment) => {
-    //   return comment._id !== id;
-    // });
-    // setComments(newPosts);
-
-    return toast.success(res.success, { theme: "colored" });
-  };
 
   const handleReply = async (content: string) => {
     const data = {
@@ -55,8 +43,8 @@ const CommentList = ({
     const res = await postData(`comment/reply`, data, token);
     dispatch({ type: "NOTIFY", payload: {} });
     if (res.error) toast.error(res.error, { theme: "colored" });
-
-    setShowReply([data, ...showReply]);
+    const newComment = { ...res.newComment, user };
+    setShowReply([newComment, ...showReply]);
     return toast.success(res.success);
   };
 
@@ -67,7 +55,7 @@ const CommentList = ({
           <div className="bg-gray-100 w-auto rounded-xl px-2 pb-2">
             <div className="font-medium flex justify-between items-center py-1">
               <a href="#" className="hover:underline text-md">
-                <small>{(comment.user as IUser).username}</small>
+                <small>{(comment.user as IUser)?.username}</small>
               </a>
               {user &&
                 (user.root ||
@@ -87,7 +75,7 @@ const CommentList = ({
                               title: "Xóa bình luận",
                               message: "Bạn có chắn chắn muốn xóa bình luận",
                               handleSure: () =>
-                                handleDeleteComment(comment._id as string),
+                                deleteComment(comment._id as string),
                             },
                           },
                         })
@@ -111,7 +99,7 @@ const CommentList = ({
 
               <a href="#" className="hover:underline">
                 <small>
-                  {format(new Date(comment.updatedAt as string), "dd/MM/yy")}
+                  {/* {format(new Date(comment.updatedAt as string), "dd/MM/yy")} */}
                 </small>
               </a>
             </div>

@@ -6,9 +6,10 @@ import CommentList from "./CommentList";
 
 interface IProps {
   comment: IComment;
+  deleteComment: (id: string) => void;
 }
 
-const Comment = ({ comment }: IProps) => {
+const Comment = ({ comment, deleteComment }: IProps) => {
   const [showReply, setShowReply] = useState<IComment[]>([]);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const Comment = ({ comment }: IProps) => {
         comment={comment}
         showReply={showReply}
         setShowReply={setShowReply}
+        deleteComment={deleteComment}
       >
         {showReply.map((commentReply, i) => (
           <div key={i} className="flex items-center space-x-2 mb-2">
@@ -32,6 +34,7 @@ const Comment = ({ comment }: IProps) => {
               comment={commentReply}
               showReply={showReply}
               setShowReply={setShowReply}
+              deleteComment={deleteComment}
             />
           </div>
         ))}

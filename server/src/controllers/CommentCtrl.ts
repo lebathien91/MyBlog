@@ -53,7 +53,7 @@ const CommentCtrl = class {
 
       await newComment.save();
 
-      res.json({ success: "Create Comment Success" });
+      res.json({ success: "Create Comment Success", newComment });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
