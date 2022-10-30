@@ -1,12 +1,14 @@
-import { GlobalContext } from "@/store/GlobalState";
-import { postData, putData } from "@/utils/fetchData";
-import { IComment, IUser } from "@/utils/interface";
 import { format } from "date-fns";
 import React, { ReactNode, useContext, useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
 import { toast } from "react-toastify";
 
+import { GlobalContext } from "@/store/GlobalState";
+import Avatar from "./Avatar";
 import { InputComment } from "./InputComment";
+
+import { postData, putData } from "@/utils/fetchData";
+import { IComment, IUser } from "@/utils/interface";
 
 interface IProps {
   children?: ReactNode;
@@ -68,17 +70,7 @@ const CommentList = ({
 
   return (
     <>
-      {edit ? (
-        <></>
-      ) : (
-        <div className="flex flex-shrink-0 self-start cursor-pointer">
-          <img
-            src={user.avatar}
-            alt={user.username}
-            className="h-8 w-8 object-cover rounded-full"
-          />
-        </div>
-      )}
+      {!edit && <Avatar user={comment.user as IUser} size={8} />}
       <div className="w-full">
         {edit ? (
           <InputComment
@@ -91,7 +83,10 @@ const CommentList = ({
             <div className="block min-w-[250px]">
               <div className="bg-gray-100 w-auto rounded-xl px-2 pb-2">
                 <div className="font-medium flex justify-between items-center py-1">
-                  <a href="#" className="hover:underline text-md">
+                  <a
+                    href="#"
+                    className="hover:underline text-red-600 font-bold text-md"
+                  >
                     <small>{(comment.user as IUser)?.username}</small>
                   </a>
                   {user &&
@@ -134,7 +129,7 @@ const CommentList = ({
                     className="hover:underline"
                     onClick={() => setOnReply(!onReply)}
                   >
-                    <small>Reply</small>
+                    <small>{onReply ? "Cancel" : "Reply"}</small>
                   </button>
 
                   <a href="#" className="hover:underline">

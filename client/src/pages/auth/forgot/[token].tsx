@@ -1,8 +1,15 @@
 import Seo from "@/components/Seo";
+import { GlobalContext } from "@/store/GlobalState";
+import { postData } from "@/utils/fetchData";
 import { FormSubmit, InputChange } from "@/utils/interface";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useContext, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function ResetPassword() {
+  const router = useRouter();
+  const { state, dispatch } = useContext(GlobalContext);
+
   const [formData, setFormData] = useState({
     password: "",
     cf_password: "",
@@ -15,13 +22,27 @@ export default function ResetPassword() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleCheckBox = (e: InputChange) => {
-    const { name, checked } = e.target as HTMLInputElement;
-    setFormData({ ...formData, [name]: checked });
-  };
-
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
+
+    if (password.length < 6)
+      return toast.error("Mật khẩu ít nhấp 6 ký tự", { theme: "colored" });
+
+    if (password !== cf_password)
+      return toast.error("Mật khẩu nhập lại không khớp", { theme: "colored" });
+
+    const token = router.query.token;
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await postData(
+      "auth/reset-password",
+      { password },
+      token as string
+    );
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) return toast.error(res.error, { theme: "colored" });
+
+    toast.success(res.success, { theme: "colored" });
   };
   return (
     <main>

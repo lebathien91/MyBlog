@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { FaSort, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
-import { MdClose, MdRestore } from "react-icons/md";
+import { MdCheck, MdClose, MdRestore } from "react-icons/md";
 import { toast } from "react-toastify";
 
 import AuthRouter from "@/middleware/AuthRouter";
@@ -170,13 +170,18 @@ export default function TrashTagsPage() {
       sortable: false,
     },
     {
-      name: "Name",
-      field: "name",
+      name: "Content",
+      field: "content",
       sortable: true,
     },
     {
-      name: "Categories",
-      field: "category",
+      name: "User",
+      field: "user",
+      sortable: true,
+    },
+    {
+      name: "Root Comment",
+      field: "commentRoot",
       sortable: true,
     },
     {
@@ -282,6 +287,13 @@ export default function TrashTagsPage() {
               </td>
               <td className="py-3 border-b">
                 {typeof post.user === "object" && post.user?.username}
+              </td>
+              <td className="py-3 border-b max-w-xs px-8">
+                {post.commentRoot ? (
+                  ""
+                ) : (
+                  <MdCheck size={26} className="font-bold text-sky-600" />
+                )}
               </td>
               <td className="py-3 border-b">
                 <div className="flex">

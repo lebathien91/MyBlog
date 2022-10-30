@@ -2,6 +2,7 @@ import { createContext, ReactNode, useEffect, useReducer } from "react";
 import { getCookie } from "typescript-cookie";
 import { getData } from "../utils/fetchData";
 import Reducers from "./Reducer";
+import { io } from "socket.io-client";
 
 const initialState = {
   notify: {},

@@ -21,6 +21,7 @@
     "react-select-async-paginate": "^0.7.0",
     "react-toastify": "^9.0.8",
     "slugify": "^1.6.5",
+    "socket.io-client": "^4.5.3",
     "typescript-cookie": "^1.0.4"
   },
   "devDependencies": {

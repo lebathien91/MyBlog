@@ -18,7 +18,9 @@ const Login = () => {
   useEffect(() => {
     const authLength = Object.keys(auth).length;
 
-    if (!auth.loading && authLength !== 0) router.push("/me");
+    const url = router.asPath.split("?")[1] || "/me";
+
+    if (!auth.loading && authLength !== 0) router.push(url);
   }, [auth]);
 
   const [formData, setFormData] = useState({

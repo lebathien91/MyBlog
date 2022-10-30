@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  MdCategory,
   MdLocalOffer,
   MdOutlineArticle,
   MdOutlineAccessTime,
+  MdComment,
 } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 import { BiEdit, BiTrash } from "react-icons/bi";
@@ -14,7 +14,7 @@ import Table from "@/components/DataTable";
 import { getData, patchData } from "@/utils/fetchData";
 import { GlobalContext } from "@/store/GlobalState";
 import Seo from "@/components/Seo";
-import { IArticle, ICategory, ITag, IUser } from "@/utils/interface";
+import { IArticle, IComment, ITag, IUser } from "@/utils/interface";
 
 const Dashboard = () => {
   const { state, dispatch } = useContext(GlobalContext);
@@ -22,8 +22,8 @@ const Dashboard = () => {
 
   const [users, setUsers] = useState<IUser[]>([]);
   const [countUsers, setCountUsers] = useState<number>(0);
-  const [categories, setCategories] = useState<ICategory[]>([]);
-  const [countCategories, setCountCategories] = useState<number>(0);
+  const [comments, setComments] = useState<IComment[]>([]);
+  const [countComment, setCountComment] = useState<number>(0);
   const [tags, setTags] = useState<ITag[]>([]);
   const [countTag, setCountTag] = useState<number>(0);
   const [articles, setArticles] = useState<IArticle[]>([]);
@@ -41,15 +41,15 @@ const Dashboard = () => {
   }, [countUsers]);
 
   useEffect(() => {
-    getData(`category?limit=${5}`)
+    getData(`comment?limit=${5}`, token)
       .then((res) => {
-        setCategories(res.categories);
-        setCountCategories(res.count);
+        setComments(res.comments);
+        setCountComment(res.count);
       })
       .catch((error) => {
         toast.error(error, { theme: "colored" });
       });
-  }, [countCategories]);
+  }, [countComment]);
 
   useEffect(() => {
     getData(`tag?limit=${5}`)
@@ -87,18 +87,18 @@ const Dashboard = () => {
     setCountArticles((prev) => prev - 1);
   };
 
-  const handleDeleteTag = async (id: string | undefined) => {
+  const handleDeleteComment = async (id: string | undefined) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
-    const res = await patchData(`tag/${id}`, {}, token);
+    const res = await patchData(`comment/${id}`, {}, token);
     dispatch({ type: "NOTIFY", payload: {} });
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
-    const newTags = tags.filter((tag) => {
-      return tag._id !== id;
+    const newComments = comments.filter((comment) => {
+      return comment._id !== id;
     });
-    setTags(newTags);
-    setCountTag((prev) => prev - 1);
+    setComments(newComments);
+    setCountComment((prev) => prev - 1);
   };
 
   const cards = [
@@ -108,14 +108,6 @@ const Dashboard = () => {
       category: "Users",
       slug: "user",
       count: countUsers,
-      time: "Just Updated",
-    },
-    {
-      icon: <MdCategory size="36px" />,
-      color: "bg-[#66bb6a]",
-      category: "Categories",
-      slug: "category",
-      count: countCategories,
       time: "Just Updated",
     },
     {
@@ -132,6 +124,14 @@ const Dashboard = () => {
       category: "Articles",
       slug: "article",
       count: countArticle,
+      time: "Just Updated",
+    },
+    {
+      icon: <MdComment size="36px" />,
+      color: "bg-[#66bb6a]",
+      category: "Comments",
+      slug: "comment",
+      count: countComment,
       time: "Just Updated",
     },
   ];
@@ -235,27 +235,22 @@ const Dashboard = () => {
                 <th className="py-3 border-b text-center pr-4">ID</th>
                 <th className="py-3 pr-8 border-b text-left">Name</th>
 
-                <th className="p-3 border-b text-center">Action</th>
+                <th className="p-3 border-b text-center">Xoá</th>
               </tr>
             </thead>
             <tbody>
-              {tags.map((tag, i) => (
-                <tr key={tag._id}>
+              {comments.map((comment, i) => (
+                <tr key={comment._id}>
                   <td className="py-3 border-b text-center pr-4">{i + 1}</td>
 
                   <td className="py-3 pr-8 border-b">
-                    <h4 title={tag.name} className="line-clamp-1">
-                      {tag.name}
+                    <h4 title={comment.content} className="line-clamp-1">
+                      {comment.content}
                     </h4>
                   </td>
 
                   <td className="p-3 border-b text-center">
                     <div className="flex items-center justify-center">
-                      <Link href={`/me/tag/${tag._id}`}>
-                        <a className="mr-3 text-sky-800 text-xl">
-                          <BiEdit />
-                        </a>
-                      </Link>
                       <button
                         className="text-red-700 text-xl"
                         onClick={() =>
@@ -263,9 +258,10 @@ const Dashboard = () => {
                             type: "NOTIFY",
                             payload: {
                               modal: {
-                                title: "Xóa chủ đề",
-                                message: "Bạn có chắc chắn muốn xóa chủ đề?",
-                                handleSure: () => handleDeleteTag(tag._id),
+                                title: "Xóa bình luận",
+                                message: "Bạn có chắc chắn muốn xóa bình luận?",
+                                handleSure: () =>
+                                  handleDeleteComment(comment._id),
                               },
                             },
                           })

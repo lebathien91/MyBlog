@@ -1,6 +1,10 @@
 import { useContext, useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 import { GlobalContext } from "@/store/GlobalState";
 import { FormSubmit, IComment } from "@/utils/interface";
+import Avatar from "./Avatar";
 
 interface IProps {
   callback: (content: string) => void;
@@ -15,6 +19,7 @@ export const InputComment = ({
   callback,
   setOnReply,
 }: IProps) => {
+  const router = useRouter();
   const { state } = useContext(GlobalContext);
   const { user } = state.auth;
   const [content, setContent] = useState("");
@@ -36,15 +41,24 @@ export const InputComment = ({
     setContent("");
   };
 
-  if (!user) return <div>Login</div>;
+  if (!user)
+    return (
+      <div>
+        <p>
+          Hãy
+          <Link href={`/login?${router.asPath}`}>
+            <a className="mx-1 text-sky-600 font-semibold">Login</a>
+          </Link>
+          để bình luận
+        </p>
+      </div>
+    );
 
   return (
     <div className="my-8">
       <div className="flex">
-        <div className="w-12 h-12 mr-4 overflow-hidden rounded-full">
-          <img src={user.avatar} />
-        </div>
-        <form className="flex-[1_1]" onSubmit={handleSubmit}>
+        <Avatar user={user} size={14} />
+        <form className="flex-[1_1] ml-4" onSubmit={handleSubmit}>
           <input
             className=" w-full pt-4 pb-2 focus:outline-none border-b border-gray-400 focus:border-gray-900"
             placeholder="Viết bình luận..."

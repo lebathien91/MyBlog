@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { BiEdit, BiTrash } from "react-icons/bi";
+import { BiTrash } from "react-icons/bi";
 import { FaSort, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 
 import AuthRouter from "@/middleware/AuthRouter";
@@ -13,6 +13,7 @@ import { getData, patchData } from "@/utils/fetchData";
 import { FormSubmit, InputChange, IComment } from "@/utils/interface";
 import useDebounce from "@/hooks/useDebounce";
 import Seo from "@/components/Seo";
+import { MdCheck } from "react-icons/md";
 
 export default function CommentPage() {
   const router = useRouter();
@@ -146,6 +147,11 @@ export default function CommentPage() {
       sortable: true,
     },
     {
+      name: "Root Comment",
+      field: "commentRoot",
+      sortable: true,
+    },
+    {
       name: "Actions",
       field: "action",
       sortable: false,
@@ -246,31 +252,31 @@ export default function CommentPage() {
               <td className="py-3 border-b">
                 {typeof post.user === "object" && post.user?.username}
               </td>
+              <td className="py-3 border-b max-w-xs px-8">
+                {post.commentRoot ? (
+                  ""
+                ) : (
+                  <MdCheck size={26} className="font-bold text-sky-600" />
+                )}
+              </td>
               <td className="py-3 border-b">
-                <div className="flex">
-                  <Link href={`/me/comment/${post._id}`}>
-                    <a className="mr-3 text-sky-800 text-xl">
-                      <BiEdit />
-                    </a>
-                  </Link>
-                  <button
-                    className="text-red-700 text-xl"
-                    onClick={() =>
-                      dispatch({
-                        type: "NOTIFY",
-                        payload: {
-                          modal: {
-                            title: "Xóa chủ đề",
-                            message: "Bạn có chắc chắn muốn xóa chủ đề?",
-                            handleSure: () => handleDelete(post._id),
-                          },
+                <button
+                  className="text-red-700 text-xl"
+                  onClick={() =>
+                    dispatch({
+                      type: "NOTIFY",
+                      payload: {
+                        modal: {
+                          title: "Xóa chủ đề",
+                          message: "Bạn có chắc chắn muốn xóa chủ đề?",
+                          handleSure: () => handleDelete(post._id),
                         },
-                      })
-                    }
-                  >
-                    <BiTrash />
-                  </button>
-                </div>
+                      },
+                    })
+                  }
+                >
+                  <BiTrash />
+                </button>
               </td>
             </tr>
           ))}

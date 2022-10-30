@@ -1,9 +1,14 @@
 import Seo from "@/components/Seo";
+import { GlobalContext } from "@/store/GlobalState";
+import { postData } from "@/utils/fetchData";
 import { FormSubmit, InputChange } from "@/utils/interface";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function ForgotPassword() {
+  const router = useRouter();
+  const { state, dispatch } = useContext(GlobalContext);
   const [email, setEmail] = useState("");
 
   const handleChangeInput = (e: InputChange) => {
@@ -13,7 +18,18 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
-    console.log(email);
+
+    dispatch({ type: "NOTIFY", payload: { loading: true } });
+    const res = await postData("auth/forgot", { email });
+    dispatch({ type: "NOTIFY", payload: {} });
+
+    if (res.error) toast.error(res.error, { theme: "colored" });
+
+    toast.success(res.success, { theme: "colored", autoClose: 5000 });
+
+    setTimeout(() => {
+      return router.push("/");
+    }, 5000);
   };
   return (
     <main>

@@ -1,7 +1,7 @@
-import { IComment } from "@/utils/interface";
 import { useEffect, useState } from "react";
 
 import CommentList from "./CommentList";
+import { IComment } from "@/utils/interface";
 
 interface IProps {
   comment: IComment;

@@ -1,12 +1,11 @@
-import { GlobalContext } from "@/store/GlobalState";
-import { getData, patchData, postData } from "@/utils/fetchData";
-import { IComment } from "@/utils/interface";
-
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+import { GlobalContext } from "@/store/GlobalState";
 import Comment from "./Comment";
 import { InputComment } from "./InputComment";
+import { getData, patchData, postData } from "@/utils/fetchData";
+import { IComment } from "@/utils/interface";
 
 interface ICommentProps {
   articleId: string;
@@ -81,8 +80,8 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
   return (
     <div id="comment">
       <h1 className="mt-12">Comment</h1>
-      {user && <InputComment callback={handleComment} />}
-      <div className="w-full h-auto py-2 flex flex-col space-y-2">
+      <InputComment callback={handleComment} />
+      <div className="w-full h-auto pl-10 py-8 mt-8 flex flex-col space-y-2">
         {comments.map((comment) => (
           <Comment
             key={comment._id}
