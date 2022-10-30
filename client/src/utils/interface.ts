@@ -55,7 +55,7 @@ export interface IArticle {
 }
 
 export interface IComment {
-  _id?: string;
+  _id: string;
   user: string | IUser;
   articleId: string;
   articleUserId: string;

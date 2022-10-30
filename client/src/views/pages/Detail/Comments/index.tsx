@@ -1,11 +1,10 @@
 import { GlobalContext } from "@/store/GlobalState";
 import { getData, patchData, postData } from "@/utils/fetchData";
 import { IComment } from "@/utils/interface";
-import { format } from "date-fns";
+
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { Avatar } from "./Avatar";
 import Comment from "./Comment";
 import { InputComment } from "./InputComment";
 
@@ -19,7 +18,7 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
   const [comments, setComments] = useState<Array<IComment>>([]);
 
   useEffect(() => {
-    getData(`comment/article/${articleId}?populate=user`)
+    getData(`comment/article/${articleId}`)
       .then((res) => {
         setComments(res.comments);
       })
@@ -47,33 +46,48 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
 
     const newComment = { ...res.newComment, user };
 
-    setComments([newComment, ...comments]);
-    return toast.success(res.success);
+    return setComments([newComment, ...comments]);
   };
 
-  const handleDeleteComment = async (id: string) => {
+  const handleDeleteComment = async (comment: IComment) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
-    const res = await patchData(`comment/${id}`, {}, token);
+    const res = await patchData(`comment/${comment._id}`, {}, token);
     dispatch({ type: "NOTIFY", payload: {} });
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
-    const newPosts = comments.filter((comment) => {
-      return comment._id !== id;
-    });
-    setComments(newPosts);
+
+    let newComments: IComment[];
+
+    if (comment.commentRoot) {
+      newComments = comments.map((item) =>
+        item._id === comment.commentRoot
+          ? {
+              ...item,
+              replyComment: item.replyComment.filter(
+                (repCM) => repCM._id !== comment._id
+              ),
+            }
+          : item
+      );
+    } else {
+      newComments = comments.filter((item) => item._id !== comment._id);
+    }
+
+    setComments(newComments);
 
     return toast.success(res.success, { theme: "colored" });
   };
+
   return (
     <div id="comment">
       <h1 className="mt-12">Comment</h1>
       {user && <InputComment callback={handleComment} />}
       <div className="w-full h-auto py-2 flex flex-col space-y-2">
-        {comments.map((comment, i) => (
+        {comments.map((comment) => (
           <Comment
+            key={comment._id}
             comment={comment}
             deleteComment={handleDeleteComment}
-            key={i}
           />
         ))}
       </div>

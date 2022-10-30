@@ -1,12 +1,11 @@
-import { IComment, IUser } from "@/utils/interface";
+import { IComment } from "@/utils/interface";
 import { useEffect, useState } from "react";
 
-import { Avatar } from "./Avatar";
 import CommentList from "./CommentList";
 
 interface IProps {
   comment: IComment;
-  deleteComment: (id: string) => void;
+  deleteComment: (comment: IComment) => void;
 }
 
 const Comment = ({ comment, deleteComment }: IProps) => {
@@ -19,8 +18,6 @@ const Comment = ({ comment, deleteComment }: IProps) => {
 
   return (
     <div className="flex items-center space-x-2 mb-2">
-      <Avatar user={comment.user as IUser} />
-
       <CommentList
         comment={comment}
         showReply={showReply}
@@ -28,8 +25,10 @@ const Comment = ({ comment, deleteComment }: IProps) => {
         deleteComment={deleteComment}
       >
         {showReply.map((commentReply, i) => (
-          <div key={i} className="flex items-center space-x-2 mb-2">
-            <Avatar user={comment.user as IUser} />
+          <div
+            key={commentReply._id}
+            className="flex items-center space-x-2 mb-2"
+          >
             <CommentList
               comment={commentReply}
               showReply={showReply}

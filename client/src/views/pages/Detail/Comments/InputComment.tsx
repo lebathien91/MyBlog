@@ -1,24 +1,38 @@
-import { useContext, useState } from "react";
-import { toast } from "react-toastify";
-
+import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "@/store/GlobalState";
-import { postData } from "@/utils/fetchData";
-import { FormSubmit } from "@/utils/interface";
-import { Avatar } from "./Avatar";
+import { FormSubmit, IComment } from "@/utils/interface";
 
 interface IProps {
   callback: (content: string) => void;
+  setOnReply?: Function;
+  edit?: IComment;
+  setEdit?: Function;
 }
 
-export const InputComment = ({ callback }: IProps) => {
-  const { state, dispatch } = useContext(GlobalContext);
-  const { user, token } = state.auth;
+export const InputComment = ({
+  edit,
+  setEdit,
+  callback,
+  setOnReply,
+}: IProps) => {
+  const { state } = useContext(GlobalContext);
+  const { user } = state.auth;
   const [content, setContent] = useState("");
+
+  useEffect(() => {
+    if (edit) setContent(edit.content);
+  }, [edit]);
 
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
 
     callback(content);
+    setContent("");
+  };
+
+  const handleCancel = () => {
+    if (setOnReply) setOnReply(false);
+    if (edit && setEdit) return setEdit(undefined);
     setContent("");
   };
 
@@ -43,14 +57,14 @@ export const InputComment = ({ callback }: IProps) => {
             <input
               className="px-4 py-2 bg-gray-200 rounded-sm text-black text-md font-semibold mr-4 cursor-pointer"
               type="button"
-              onClick={() => setContent("")}
+              onClick={handleCancel}
               value="Cancel"
             />
 
             <input
               className="px-4 py-2 bg-green-800 rounded-sm text-white text-md font-semibold"
               type="submit"
-              value="Submit"
+              value={edit ? "Update" : "Submit"}
             />
           </div>
         </form>

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { IReqAuth } from "../utils/interface";
+import { IComment, IReqAuth } from "../utils/interface";
 import { featureAPI } from "../utils/features";
 import Comments from "../models/commentModles";
 
@@ -8,24 +8,24 @@ const CommentCtrl = class {
   // Route: /comment/article/:id
   async getComments(req: IReqAuth, res: Response) {
     const articleId = req.params.id;
+
     try {
       const features = new featureAPI(
-        Comments.find({ articleId, deleted: null }),
+        Comments.find({ deleted: null, articleId, commentRoot: null })
+          .populate("user")
+          .populate({
+            path: "replyComment",
+            populate: { path: "user" },
+          }),
         req.query
       )
-        .filtering()
-        .searching()
-        .populated()
         .sorting()
         .paginating();
 
       const counting = new featureAPI(
         Comments.find({ articleId, deleted: null }),
         req.query
-      )
-        .filtering()
-        .searching()
-        .counting();
+      ).counting();
 
       const results = await Promise.allSettled([
         features.query,
@@ -60,7 +60,7 @@ const CommentCtrl = class {
   }
 
   // Method: POST
-  // Route: /comment/reply-comment
+  // Route: /comment/reply
   async replyComment(req: IReqAuth, res: Response) {
     try {
       const { content, articleId, articleUserId, commentRoot, replyUser } =
@@ -74,12 +74,13 @@ const CommentCtrl = class {
         replyUser: replyUser._id,
       });
 
-      await Comments.findOneAndUpdate(
-        { _id: commentRoot },
-        {
-          $push: { replyComment: newComment._id },
-        }
-      );
+      if (content)
+        await Comments.findOneAndUpdate(
+          { _id: commentRoot },
+          {
+            $push: { replyComment: newComment._id },
+          }
+        );
 
       await newComment.save();
 
@@ -212,6 +213,20 @@ const CommentCtrl = class {
         );
         if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
+        if (comment.commentRoot) {
+          await Comments.findOneAndUpdate(
+            { _id: comment.commentRoot },
+            {
+              $pull: { replyComment: comment._id },
+            }
+          );
+        } else {
+          await Comments.updateMany(
+            { _id: { $in: comment.replyComment } },
+            { deleted: date }
+          );
+        }
+
         res.json({ success: "Delete Comment Success" });
       } else {
         const comment = await Comments.findOneAndUpdate(
@@ -220,27 +235,22 @@ const CommentCtrl = class {
         );
         if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
+        if (comment.commentRoot) {
+          await Comments.findOneAndUpdate(
+            { _id: comment.commentRoot },
+            {
+              $pull: { replyComment: comment._id },
+            }
+          );
+        } else {
+          await Comments.updateMany(
+            { _id: { $in: comment.replyComment } },
+            { deleted: date }
+          );
+        }
+
         res.json({ success: "Delete Comment Success" });
       }
-    } catch (error: any) {
-      return res.status(500).json({ error: error.message });
-    }
-  }
-
-  // Method: PATCH
-  // Route: /comment
-  async deleteMany(req: IReqAuth, res: Response) {
-    try {
-      const ids = req.body;
-      const date = new Date();
-      const comment = await Comments.updateMany(
-        { _id: { $in: ids } },
-        { deleted: date }
-      );
-
-      if (!comment) return res.status(400).json({ error: "Invalid Comment" });
-
-      res.json({ success: "Delete Comment Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
@@ -258,7 +268,44 @@ const CommentCtrl = class {
 
       if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
+      if (comment.commentRoot) {
+        await Comments.findOneAndUpdate(
+          { _id: comment.commentRoot },
+          {
+            $push: { replyComment: comment._id },
+          }
+        );
+      } else {
+        const cms = await Comments.find({ commentRoot: comment._id });
+
+        const cmsArray = cms.map((c) => c._id);
+
+        await Comments.findOneAndUpdate(
+          { _id: id },
+          { replyComment: cmsArray }
+        );
+      }
+
       res.json({ success: "Restore Comment Success" });
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  // Method: PATCH
+  // Route: /comment
+  async deleteMany(req: IReqAuth, res: Response) {
+    try {
+      const ids = req.body;
+      const date = new Date();
+      const comments = await Comments.updateMany(
+        { _id: { $in: ids } },
+        { deleted: date }
+      );
+
+      if (!comments) return res.status(400).json({ error: "Invalid Comment" });
+
+      res.json({ success: "Delete Comment Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
@@ -269,12 +316,12 @@ const CommentCtrl = class {
   async restoreMany(req: IReqAuth, res: Response) {
     try {
       const ids = req.body;
-      const comment = await Comments.updateMany(
+      const comments = await Comments.updateMany(
         { _id: { $in: ids } },
         { deleted: null }
       );
 
-      if (!comment) return res.status(400).json({ error: "Invalid Comment" });
+      if (!comments) return res.status(400).json({ error: "Invalid Comment" });
 
       res.json({ success: "Restore Comment Success" });
     } catch (error: any) {
@@ -292,6 +339,17 @@ const CommentCtrl = class {
 
       if (!comment) return res.status(400).json({ error: "Invalid Comment" });
 
+      if (comment.commentRoot) {
+        await Comments.findOneAndUpdate(
+          { _id: comment.commentRoot },
+          {
+            $pull: { replyComment: comment._id },
+          }
+        );
+      } else {
+        await Comments.deleteMany({ _id: { $in: comment.replyComment } });
+      }
+
       res.json({ success: "Delete Comment Success" });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
@@ -303,10 +361,10 @@ const CommentCtrl = class {
   async destroyMany(req: IReqAuth, res: Response) {
     try {
       const ids = req.body;
-      console.log(ids);
-      const results = await Comments.deleteMany({ _id: { $in: ids } });
 
-      if (!results) return res.status(400).json({ error: "Invalid Article" });
+      const comments = await Comments.deleteMany({ _id: { $in: ids } });
+
+      if (!comments) return res.status(400).json({ error: "Invalid Article" });
 
       res.json({ success: "Destroy Article Success" });
     } catch (error: any) {

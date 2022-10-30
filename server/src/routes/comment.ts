@@ -15,7 +15,7 @@ router.patch("/comment/restore", auth, isAdmin, CommentCtrl.restoreMany);
 router
   .route("/comment/:id")
   .get(CommentCtrl.findById)
-  .put(auth, isEditor, CommentCtrl.update)
+  .put(auth, CommentCtrl.update)
   .patch(auth, CommentCtrl.delete)
   .delete(auth, isRoot, CommentCtrl.destroy);
 
