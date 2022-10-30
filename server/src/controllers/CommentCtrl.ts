@@ -23,7 +23,7 @@ const CommentCtrl = class {
         .paginating();
 
       const counting = new featureAPI(
-        Comments.find({ articleId, deleted: null }),
+        Comments.find({ articleId, deleted: null, commentRoot: null }),
         req.query
       ).counting();
 

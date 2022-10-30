@@ -16,16 +16,23 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
   const { user, token } = state.auth;
   const [comments, setComments] = useState<Array<IComment>>([]);
 
+  const [page, setPage] = useState<number>(1);
+  const [totalComment, setTotalCommnet] = useState<number>(0);
+  const limit = 10;
+  const totalPage = Math.ceil(totalComment / limit);
+
   useEffect(() => {
-    getData(`comment/article/${articleId}`)
+    getData(`comment/article/${articleId}?page=${page}&limit=${limit}`)
       .then((res) => {
         setComments(res.comments);
+        setTotalCommnet(res.count);
       })
       .catch((error) => {
         console.log(error);
         setComments([]);
+        setTotalCommnet(0);
       });
-  }, [articleId]);
+  }, [articleId, page, limit]);
 
   const handleComment = async (content: string) => {
     const data = {
@@ -89,6 +96,15 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
             deleteComment={handleDeleteComment}
           />
         ))}
+
+        {page < totalPage && (
+          <span
+            className="cursor-pointer"
+            onClick={() => setPage((pre) => pre + 1)}
+          >
+            Loadmore
+          </span>
+        )}
       </div>
     </div>
   );
