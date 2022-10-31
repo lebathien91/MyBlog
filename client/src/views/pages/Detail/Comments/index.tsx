@@ -22,7 +22,7 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
   const totalPage = Math.ceil(totalComment / limit);
 
   useEffect(() => {
-    getData(`comment/article/${articleId}?page=${page}&limit=${limit}`)
+    getData(`comment/article/${articleId}?limit=${page * limit}`)
       .then((res) => {
         setComments(res.comments);
         setTotalCommnet(res.count);
@@ -98,12 +98,14 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
         ))}
 
         {page < totalPage && (
-          <span
-            className="cursor-pointer"
-            onClick={() => setPage((pre) => pre + 1)}
-          >
-            Loadmore
-          </span>
+          <div className="container text-center my-4">
+            <button
+              onClick={() => setPage((pre) => pre + 1)}
+              className="px-4 py-2 border-2 border-[#1e73be] hover:bg-[#1e73be] hover:text-white rounded-md uppercase font-semibold translate ease-out duration-500 hover:scale-125"
+            >
+              Loadmore
+            </button>
+          </div>
         )}
       </div>
     </div>

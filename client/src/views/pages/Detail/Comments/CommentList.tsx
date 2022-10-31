@@ -48,7 +48,7 @@ const CommentList = ({
     dispatch({ type: "NOTIFY", payload: {} });
     if (res.error) toast.error(res.error, { theme: "colored" });
     const newComment = { ...res.newComment, user };
-    setShowReply([newComment, ...showReply]);
+    setShowReply([...showReply, newComment]);
     setOnReply(false);
 
     return;
@@ -85,7 +85,11 @@ const CommentList = ({
                 <div className="font-medium flex justify-between items-center py-1">
                   <a
                     href="#"
-                    className="hover:underline text-red-600 font-bold text-md"
+                    className={`hover:underline font-bold text-md ${
+                      (comment.user as IUser).root
+                        ? "text-red-600"
+                        : "text-sky-600"
+                    }`}
                   >
                     <small>{(comment.user as IUser)?.username}</small>
                   </a>
