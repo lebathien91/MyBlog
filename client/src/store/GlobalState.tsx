@@ -7,6 +7,7 @@ import { io } from "socket.io-client";
 const initialState = {
   notify: {},
   auth: { loading: true },
+  socket: null,
 };
 
 export const GlobalContext = createContext<any>(initialState);
@@ -37,6 +38,16 @@ const GlobalState = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "AUTH", payload: {} });
     }
   }, []);
+
+  useEffect(() => {
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
+      transports: ["websocket"],
+    });
+    dispatch({ type: "SOCKET", payload: socket });
+    return () => {
+      socket.close();
+    };
+  }, [dispatch]);
   return (
     <GlobalContext.Provider value={{ state, dispatch }}>
       {children}

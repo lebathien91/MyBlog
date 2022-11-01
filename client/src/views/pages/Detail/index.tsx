@@ -1,6 +1,6 @@
 import { parse } from "node-html-parser";
 import slug from "slugify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
 import { format } from "date-fns";

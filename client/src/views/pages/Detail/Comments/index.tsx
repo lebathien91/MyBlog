@@ -13,6 +13,7 @@ interface ICommentProps {
 }
 const Comments = ({ articleId, articleUserId }: ICommentProps) => {
   const { state, dispatch } = useContext(GlobalContext);
+  const socket = state.socket;
   const { user, token } = state.auth;
   const [comments, setComments] = useState<Array<IComment>>([]);
 
@@ -33,6 +34,15 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
         setTotalCommnet(0);
       });
   }, [articleId, page, limit]);
+
+  useEffect(() => {
+    if (!articleId || !socket) return;
+    socket.emit("joinRoom", articleId);
+
+    return () => {
+      socket.emit("outRoom", articleId);
+    };
+  }, [socket, articleId]);
 
   const handleComment = async (content: string) => {
     const data = {

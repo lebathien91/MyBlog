@@ -20,6 +20,11 @@ const Reducers = (
         ...state,
         auth: action.payload,
       };
+    case ACTIONS.SOCKET:
+      return {
+        ...state,
+        socket: action.payload,
+      };
     default:
       return state;
   }
