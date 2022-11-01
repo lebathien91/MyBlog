@@ -4,6 +4,7 @@ import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import GlobalState from "@/store/GlobalState";
 import Notify from "@/components/Notify";
+import SocketClient from "@/components/SocketClient";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -19,6 +20,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <GlobalState>
+      <SocketClient />
       <Notify />
       {getLayout(<Component {...pageProps} />)}
     </GlobalState>

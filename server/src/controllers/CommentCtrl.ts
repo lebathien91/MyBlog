@@ -1,7 +1,8 @@
 import { Response } from "express";
-import { IComment, IReqAuth } from "../utils/interface";
+import { IReqAuth } from "../utils/interface";
 import { featureAPI } from "../utils/features";
 import Comments from "../models/commentModles";
+import { soketIo } from "../index";
 
 const CommentCtrl = class {
   // Method: GET
@@ -50,8 +51,19 @@ const CommentCtrl = class {
         user: req.user._id,
         ...req.body,
       });
+      const { articleId } = req.body;
 
-      await newComment.save();
+      const data = {
+        ...newComment._doc,
+        user: req.user,
+        createdAt: new Date().toISOString(),
+      };
+
+      console.log(data);
+
+      soketIo.to(`${articleId}`).emit("createComment", data);
+
+      // await newComment.save();
 
       res.json({ success: "Create Comment Success", newComment });
     } catch (error: any) {
