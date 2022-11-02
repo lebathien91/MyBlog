@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import React, { ReactNode, useContext, useState } from "react";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
 import { toast } from "react-toastify";
 
@@ -25,6 +25,7 @@ const CommentList = ({
   deleteComment,
 }: IProps) => {
   const { state, dispatch } = useContext(GlobalContext);
+  const socket = state.socket;
   const { user, token } = state.auth;
 
   const [onReply, setOnReply] = useState(false);
@@ -68,6 +69,13 @@ const CommentList = ({
     setEdit(undefined);
   };
 
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("createReplyComment", (comment: IComment) => {
+      setShowReply([...showReply, comment]);
+    });
+  }, []);
   return (
     <>
       {!edit && <Avatar user={comment.user as IUser} size={8} />}

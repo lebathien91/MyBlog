@@ -47,7 +47,7 @@ const GlobalState = ({ children }: { children: ReactNode }) => {
     return () => {
       socket.close();
     };
-  }, [dispatch]);
+  }, []);
   return (
     <GlobalContext.Provider value={{ state, dispatch }}>
       {children}

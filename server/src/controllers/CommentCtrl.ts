@@ -46,6 +46,9 @@ const CommentCtrl = class {
   // Method: POST
   // Route: /comment/create
   async create(req: IReqAuth, res: Response) {
+    if (!req.user)
+      return res.status(400).json({ error: "invalid Authentication." });
+
     try {
       const newComment = new Comments({
         user: req.user._id,
@@ -53,17 +56,15 @@ const CommentCtrl = class {
       });
       const { articleId } = req.body;
 
-      const data = {
+      const comment = {
         ...newComment._doc,
         user: req.user,
         createdAt: new Date().toISOString(),
       };
 
-      console.log(data);
+      soketIo.to(`${articleId}`).emit("createComment", comment);
 
-      soketIo.to(`${articleId}`).emit("createComment", data);
-
-      // await newComment.save();
+      await newComment.save();
 
       res.json({ success: "Create Comment Success", newComment });
     } catch (error: any) {
@@ -85,7 +86,12 @@ const CommentCtrl = class {
         commentRoot,
         replyUser: replyUser._id,
       });
-
+      const comment = {
+        ...newComment._doc,
+        user: req.user,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
       if (content)
         await Comments.findOneAndUpdate(
           { _id: commentRoot },
@@ -93,7 +99,7 @@ const CommentCtrl = class {
             $push: { replyComment: newComment._id },
           }
         );
-
+      soketIo.to(`${articleId}`).emit("createReplyComment", comment);
       await newComment.save();
 
       res.json({ success: "Create Comment Success", newComment });
@@ -239,6 +245,8 @@ const CommentCtrl = class {
           );
         }
 
+        soketIo.to(`${comment.articleId}`).emit("deleteComment", comment);
+
         res.json({ success: "Delete Comment Success" });
       } else {
         const comment = await Comments.findOneAndUpdate(
@@ -260,7 +268,7 @@ const CommentCtrl = class {
             { deleted: date }
           );
         }
-
+        soketIo.to(`${comment.articleId}`).emit("deleteComment", comment);
         res.json({ success: "Delete Comment Success" });
       }
     } catch (error: any) {

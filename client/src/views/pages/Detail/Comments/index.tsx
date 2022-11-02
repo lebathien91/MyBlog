@@ -35,15 +35,6 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
       });
   }, [articleId, page, limit]);
 
-  useEffect(() => {
-    if (!articleId || !socket) return;
-    socket.emit("joinRoom", articleId);
-
-    return () => {
-      socket.emit("outRoom", articleId);
-    };
-  }, [socket, articleId]);
-
   const handleComment = async (content: string) => {
     const data = {
       user,
@@ -58,7 +49,7 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await postData(`comment`, data, token);
     dispatch({ type: "NOTIFY", payload: {} });
-    if (res.error) toast.error(res.error, { theme: "colored" });
+    if (res.error) return toast.error(res.error, { theme: "colored" });
 
     const newComment = { ...res.newComment, user };
 
@@ -93,6 +84,55 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
 
     return toast.success(res.success, { theme: "colored" });
   };
+
+  useEffect(() => {
+    if (!articleId || !socket) return;
+    socket.emit("joinRoom", articleId);
+
+    return () => {
+      socket.emit("outRoom", articleId);
+    };
+  }, [socket, articleId]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("createComment", (comment: IComment) => {
+      setComments((pre) => [comment, ...pre]);
+    });
+
+    return () => {
+      socket.off("createComment");
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("deleteComment", (comment: IComment) => {
+      console.log(comments);
+      let newComments: IComment[];
+      if (comment.commentRoot) {
+        newComments = comments.map((item) =>
+          item._id === comment.commentRoot
+            ? {
+                ...item,
+                replyComment: item.replyComment.filter(
+                  (repCM) => repCM._id !== comment._id
+                ),
+              }
+            : item
+        );
+      } else {
+        newComments = comments.filter((item) => item._id !== comment._id);
+      }
+      setComments(newComments);
+    });
+
+    return () => {
+      socket.off("deleteComment");
+    };
+  }, [socket]);
 
   return (
     <div id="comment">
