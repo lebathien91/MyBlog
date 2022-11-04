@@ -37,23 +37,16 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
 
   const handleComment = async (content: string) => {
     const data = {
-      user,
       articleId,
       articleUserId,
       content,
       replyComment: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     };
 
     dispatch({ type: "NOTIFY", payload: { loading: true } });
     const res = await postData(`comment`, data, token);
     dispatch({ type: "NOTIFY", payload: {} });
     if (res.error) return toast.error(res.error, { theme: "colored" });
-
-    const newComment = { ...res.newComment, user };
-
-    return setComments([newComment, ...comments]);
   };
 
   const handleDeleteComment = async (comment: IComment) => {
@@ -62,25 +55,6 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
     dispatch({ type: "NOTIFY", payload: {} });
 
     if (res.error) return toast.error(res.error, { theme: "colored" });
-
-    let newComments: IComment[];
-
-    if (comment.commentRoot) {
-      newComments = comments.map((item) =>
-        item._id === comment.commentRoot
-          ? {
-              ...item,
-              replyComment: item.replyComment.filter(
-                (repCM) => repCM._id !== comment._id
-              ),
-            }
-          : item
-      );
-    } else {
-      newComments = comments.filter((item) => item._id !== comment._id);
-    }
-
-    setComments(newComments);
 
     return toast.success(res.success, { theme: "colored" });
   };
@@ -109,28 +83,72 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on("deleteComment", (comment: IComment) => {
-      console.log(comments);
-      let newComments: IComment[];
-      if (comment.commentRoot) {
-        newComments = comments.map((item) =>
+    socket.on("createReplyComment", (comment: IComment) => {
+      setComments((pre) => {
+        return pre.map((item) =>
           item._id === comment.commentRoot
-            ? {
-                ...item,
-                replyComment: item.replyComment.filter(
-                  (repCM) => repCM._id !== comment._id
-                ),
-              }
+            ? { ...item, replyComment: [comment, ...item.replyComment] }
             : item
         );
-      } else {
-        newComments = comments.filter((item) => item._id !== comment._id);
-      }
-      setComments(newComments);
+      });
+    });
+
+    return () => {
+      socket.off("createReplyComment");
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("deleteComment", (comment: IComment) => {
+      setComments((pre) => {
+        if (comment.commentRoot) {
+          return pre.map((item) =>
+            item._id === comment.commentRoot
+              ? {
+                  ...item,
+                  replyComment: item.replyComment.filter(
+                    (repCM) => repCM._id !== comment._id
+                  ),
+                }
+              : item
+          );
+        } else {
+          return pre.filter((item) => item._id !== comment._id);
+        }
+      });
     });
 
     return () => {
       socket.off("deleteComment");
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("updateComment", (comment: IComment) => {
+      setComments((pre) => {
+        if (comment.commentRoot) {
+          return pre.map((item) =>
+            item._id === comment.commentRoot
+              ? {
+                  ...item,
+                  replyComment: item.replyComment.map((repCM) =>
+                    repCM._id === comment._id ? comment : repCM
+                  ),
+                }
+              : item
+          );
+        } else {
+          return pre.map((item) => (item._id === comment._id ? comment : item));
+        }
+      });
+    });
+
+    return () => {
+      socket.off("updateComment");
     };
   }, [socket]);
 

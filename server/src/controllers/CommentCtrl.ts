@@ -75,6 +75,9 @@ const CommentCtrl = class {
   // Method: POST
   // Route: /comment/reply
   async replyComment(req: IReqAuth, res: Response) {
+    if (!req.user)
+      return res.status(400).json({ error: "invalid Authentication." });
+
     try {
       const { content, articleId, articleUserId, commentRoot, replyUser } =
         req.body;
@@ -111,12 +114,18 @@ const CommentCtrl = class {
   // Method: PUT
   // Route: /comment/:id
   async update(req: IReqAuth, res: Response) {
+    if (!req.user)
+      return res.status(400).json({ error: "invalid Authentication." });
+
     const id = req.params.id;
     try {
       const comment = await Comments.findOneAndUpdate({ _id: id }, req.body);
 
       if (!comment) return res.status(400).json({ error: "Invalid Comment." });
 
+      soketIo
+        .to(`${comment.articleId}`)
+        .emit("updateComment", { ...comment, ...req.body });
       res.json({ success: "Update Success", comment });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
@@ -217,6 +226,8 @@ const CommentCtrl = class {
   // Method: PATCH
   // Route: /comment/:id
   async delete(req: IReqAuth, res: Response) {
+    if (!req.user)
+      return res.status(400).json({ error: "invalid Authentication." });
     try {
       const { id } = req.params;
       const date = new Date();

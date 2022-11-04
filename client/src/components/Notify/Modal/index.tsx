@@ -11,7 +11,7 @@ const Modal = () => {
   return (
     <div className="fixed top-0 left-0 z-50 w-full h-full overflow-x-hidden overflow-y-auto outline-none">
       <div className="fixed top-0 left-0 bg-gray-800 opacity-30 w-full h-full"></div>
-      <div className="relative z-50 m-2 md:mx-auto md:my-8 max-w-[500px] w-auto pointer-events-none ">
+      <div className="relative z-50 m-2 mx-auto md:my-8 max-w-[500px] w-auto pointer-events-none ">
         <div className="relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding border border-gray-400 rounded-md outline-none">
           <div className="flex flex-shrink-0 items-center justify-between p-3 border-b border-[#dee2e6] rounded-tl-[calc(0.3rem - 1px)] rounded-tr-[calc(0.3rem-1px)]">
             <h5 className="text-xl md:text-2xl font-semibold">{title}</h5>
