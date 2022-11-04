@@ -25,7 +25,6 @@ const CommentList = ({
   deleteComment,
 }: IProps) => {
   const { state, dispatch } = useContext(GlobalContext);
-  const socket = state.socket;
   const { user, token } = state.auth;
 
   const [onReply, setOnReply] = useState(false);
@@ -69,13 +68,6 @@ const CommentList = ({
     setEdit(undefined);
   };
 
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("createReplyComment", (comment: IComment) => {
-      setShowReply([...showReply, comment]);
-    });
-  }, []);
   return (
     <>
       {!edit && <Avatar user={comment.user as IUser} size={8} />}
@@ -147,7 +139,7 @@ const CommentList = ({
                   <a href="#" className="hover:underline">
                     <small>
                       {format(
-                        new Date(comment.updatedAt as string),
+                        new Date(comment.createdAt as string),
                         "dd/MM/yy"
                       )}
                     </small>
