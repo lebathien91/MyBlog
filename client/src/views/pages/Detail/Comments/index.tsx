@@ -110,7 +110,6 @@ const Comments = ({ articleId, articleUserId }: ICommentProps) => {
     if (!socket) return;
 
     socket.on("deleteComment", (comment: IComment) => {
-      console.log(comments);
       let newComments: IComment[];
       if (comment.commentRoot) {
         newComments = comments.map((item) =>
