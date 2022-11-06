@@ -43,7 +43,7 @@ export default function UpdateUser() {
           dispatch({ type: "NOTIFY", payload: {} });
         });
     }
-  }, [id]);
+  }, [id, token]);
 
   const { avatar, username, email, password, cf_password, role, aboutMe } =
     formData;

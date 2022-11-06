@@ -71,7 +71,7 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
 
   return (
     <aside
-      className={`fixed text-white bg-[#11101D] top-0 left-0 h-full px-[14px] py-[6px] z-30 transition-all ease-linear duration-300 ${
+      className={`fixed text-white bg-[#11101D] top-0 left-0 h-full px-4 py-2 z-30 transition-all ease-linear duration-300 ${
         active ? "w-[250px]" : "w-[78px]"
       }`}
     >
@@ -114,7 +114,7 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
             type="text"
             placeholder="Search..."
             className={`bg-[#1d1b31] outline-none h-[50px] ${
-              active ? "w-full pr-[20px] pl-[50px]" : "w-[50px]"
+              active ? "w-full pr-5 pl-[50px]" : "w-[50px]"
             } border-0 rounded-[12px] transition-all ease-linear duration-300`}
           />
           <span
@@ -136,15 +136,15 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
                 <a
                   className={`flex h-full w-full ${
                     match && "bg-white text-slate-900"
-                  } hover:bg-white hover:text-slate-900 rounded-[12px] items-center transition-all ease-linear duration-300`}
+                  } hover:bg-white hover:text-slate-900 rounded-xl items-center transition-all ease-linear duration-300`}
                 >
                   <i
-                    className={`cursor-pointer flex items-center justify-center min-w-[50px] h-[50px] rounded-[12px] leading-[50px] text-[18px]`}
+                    className={`cursor-pointer flex items-center justify-center min-w-[50px] h-[50px] rounded-xl leading-[50px] text-lg`}
                   >
                     {item.icon}
                   </i>
                   <span
-                    className={`text-[15px] font-[400] duration-300 pointer-events-none whitespace-nowrap ${
+                    className={`duration-300 pointer-events-none whitespace-nowrap ${
                       active ? "opacity-100" : "opacity-0"
                     }`}
                   >
@@ -153,7 +153,7 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
                 </a>
               </Link>
               <span
-                className={`absolute left-[calc(100%_+_15px)] top-[-20px] group-hover:top-[50%] group-hover:translate-y-[-50%] duration-300 shadow-lg z-10 bg-white text-slate-900 px-[12px] py-[6px] rounded-[4px] text-[15px] font-[400] pointer-events-none whitespace-nowrap opacity-0 ${
+                className={`absolute left-[calc(100%_+_15px)] top-[-20px] group-hover:top-[50%] group-hover:translate-y-[-50%] duration-300 shadow-lg z-10 bg-white text-slate-900 px-3 py-2 rounded-md pointer-events-none whitespace-nowrap opacity-0 ${
                   active ? "hidden" : "group-hover:opacity-100"
                 }`}
               >

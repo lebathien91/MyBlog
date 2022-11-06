@@ -149,17 +149,17 @@ const Dashboard = () => {
                 >
                   {card.icon}
                 </div>
-                <p className="text-[#999]">
+                <p className="text-slate-500">
                   <Link href={`/me/${card.slug}`}>{card.category}</Link>
                 </p>
                 <h6 className="text-2xl text-[#3c4858]">{card.count}</h6>
               </div>
               <div className="flex items-center border-t border-[#eee] mt-4 pt-2 pb-1">
-                <i className="mr-2 text-[#999]">
+                <i className="mr-2 text-slate-500">
                   <MdOutlineAccessTime />
                 </i>
                 <Link href={`/me/${card.slug}`}>
-                  <a className="text-[#999] text-[13px]">{card.time}</a>
+                  <a className="text-slate-500 text-[13px]">{card.time}</a>
                 </Link>
               </div>
             </div>
@@ -226,7 +226,7 @@ const Dashboard = () => {
         </div>
         <div className="col-span-1">
           <Table
-            title="New Tag"
+            title="New Comment"
             subtitle="Subtitle Table"
             headerColor="bg-[#ffa726]"
           >

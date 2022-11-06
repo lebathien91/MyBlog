@@ -68,7 +68,7 @@ const Detail = ({ data }: any) => {
           articles={articles}
         />
 
-        <article className="flex-[7_1_0%] px-[16px]">
+        <article className="flex-[7_1_0%] px-4">
           <header className="py-8">
             <div className="font-semibold text-xl text-[#0065b3]">
               <Link href={`/tag/${slugDisease}`}>

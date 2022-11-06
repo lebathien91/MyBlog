@@ -4,6 +4,7 @@ import Loading from "@/components/Loading";
 import Login from "@/pages/login";
 import { GlobalContext } from "@/store/GlobalState";
 import Admin from "@/layout/Admin";
+import Page403 from "@/views/pages/403";
 
 export default function AuthRouter({
   children,
@@ -30,5 +31,5 @@ export default function AuthRouter({
       </Layout>
     );
 
-  return <>403</>;
+  return <Page403 />;
 }

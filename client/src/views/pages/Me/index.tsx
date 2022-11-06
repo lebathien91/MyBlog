@@ -152,12 +152,12 @@ export default function Me() {
                 <Pagination pages={pages} limit={limit} setLimit={setLimit} />
               </>
             ) : (
-              <span>
-                Bạn chưa có bài viết nào. Hãy tạo bài viết mới{" "}
+              <p>
+                Bạn chưa có bài viết nào. Hãy tạo bài viết mới
                 <Link href="/me/article/create">
-                  <a className="text-red-600 font-bold">tại đây</a>
+                  <a className="text-red-600 font-bold"> tại đây</a>
                 </Link>
-              </span>
+              </p>
             )}
           </div>
         </main>

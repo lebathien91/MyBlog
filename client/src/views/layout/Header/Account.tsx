@@ -32,7 +32,7 @@ const Account = () => {
           render={(attrs) =>
             visible && (
               <WrapperTippy {...attrs} icon>
-                <ul className="text-xl">
+                <ul className="text-xl px-4">
                   <li className="flex py-2 items-center hover:text-rose-800 border-b border-[#e5e5e5]">
                     <Link href="/me">
                       <a
@@ -70,7 +70,7 @@ const Account = () => {
           }
         >
           <button
-            className="mx-4 flex items-center cursor-pointer relative after:content-[''] after:absolute after:top-[16px] after:right-[-10px]  after:border-t-[#757575] after:border-t-[6px] after:border-x-[3px] after:border-x-transparent"
+            className="mx-4 flex items-center cursor-pointer relative after:content-[''] after:absolute after:top-4 after:right-[-10px]  after:border-t-[#757575] after:border-t-[6px] after:border-x-[3px] after:border-x-transparent"
             onClick={() => setVisible(true)}
           >
             <span className="w-8 h-8 rounded-full overflow-hidden">

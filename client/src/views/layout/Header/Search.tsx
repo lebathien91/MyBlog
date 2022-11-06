@@ -1,84 +1,92 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import Tippy from "@tippyjs/react";
 import WrapperTippy from "../../../components/WrapperTippy";
-
-const results = [
-  {
-    id: 1,
-    title: "Tiêu đề 1",
-    slug: "tieu-de-1",
-  },
-  {
-    id: 2,
-    title: "Tiêu đề 2",
-    slug: "tieu-de-2",
-  },
-  {
-    id: 3,
-    title: "Tiêu đề 3",
-    slug: "tieu-de-3",
-  },
-  {
-    id: 4,
-    title: "Tiêu đề 4",
-    slug: "tieu-de-4",
-  },
-  {
-    id: 5,
-    title: "Tiêu đề 5",
-    slug: "tieu-de-5",
-  },
-  {
-    id: 6,
-    title: "Tiêu đề 6",
-    slug: "tieu-de-6",
-  },
-];
+import { getData } from "@/utils/fetchData";
+import useDebounce from "@/hooks/useDebounce";
+import { IArticle, InputChange, ITag } from "@/utils/interface";
 
 const Search = () => {
+  const inputElement = useRef<HTMLInputElement>(null);
+
   const [isSearch, setIsSearch] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
 
+  const [keyword, setKeyword] = useState<string>("");
+  const [results, setResults] = useState<IArticle[]>([]);
+  const debounced = useDebounce(keyword, 500);
+
   const handleOnclick = () => {
     setIsSearch(!isSearch);
+    inputElement.current?.focus();
   };
+
+  const handleOnChange = (e: InputChange) => {
+    setKeyword(e.target.value);
+  };
+
+  useEffect(() => {
+    if (debounced.trim().length < 3) {
+      setResults([]);
+      return;
+    }
+    getData(
+      `article?populate=tag&search=${encodeURIComponent(debounced)}`
+    ).then((res) => {
+      setResults(res.articles);
+    });
+  }, [debounced]);
+
   return (
-    <form action="#" className="relative">
-      <Tippy
-        interactive
-        visible={visible && results.length > 0}
-        onClickOutside={() => setVisible(false)}
-        render={(attrs) =>
-          visible &&
-          results.length > 0 && (
-            <WrapperTippy {...attrs}>
-              <ul className="min-w-[350px]">
-                {results.map((result) => (
-                  <li key={result.slug}>
-                    <Link href="/detail">
-                      <a>{result.title}</a>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </WrapperTippy>
-          )
-        }
-      >
-        <input
-          type="text"
-          placeholder="Tìm kiếm"
-          className={`transition-all ease-linear duration-200 h-8 border-[#e6e6e6] focus:border-[#bdbdbd] outline-none rounded-full leading-8 ${
-            isSearch
-              ? "w-[200px] pl-4 pr-8"
-              : "w-0 border-0 lg:border lg:w-[200px] pl-0 pr-0 lg:pl-4 md:pr-8 lg:inline-block"
-          }`}
-          onFocus={() => setVisible(true)}
-        />
-      </Tippy>
+    <form method="GET" action="/search" className="relative flex">
+      <div>
+        <Tippy
+          interactive
+          visible={visible && results.length > 0}
+          onClickOutside={() => setVisible(false)}
+          render={(attrs) =>
+            visible &&
+            results.length > 0 && (
+              <WrapperTippy {...attrs}>
+                <ul className="min-w-[450px] w-full py-4">
+                  {results.map((result) => (
+                    <li
+                      className="py-1 px-4 hover:bg-slate-400"
+                      key={result.slug}
+                      onClick={() => setVisible(false)}
+                    >
+                      <Link
+                        href={`/${(result.tag as ITag).slug}/${result.slug}`}
+                      >
+                        <a>{result.title}</a>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </WrapperTippy>
+            )
+          }
+        >
+          <input
+            ref={inputElement}
+            className={`transition-all ease-linear duration-200 h-8 border-[#e6e6e6] focus:border-[#bdbdbd] outline-none rounded-full leading-8 ${
+              isSearch
+                ? "w-[200px] pl-4 pr-8 border"
+                : "w-0 border-0 lg:border lg:w-[200px] pl-0 pr-0 lg:pl-4 md:pr-8 lg:inline-block"
+            }`}
+            type="text"
+            placeholder="Tìm kiếm..."
+            autoComplete="off"
+            value={keyword}
+            name="q"
+            onChange={handleOnChange}
+            onFocus={() => setVisible(true)}
+          />
+        </Tippy>
+      </div>
       <button
+        type="submit"
         className={`h-full absolute right-2 ${
           isSearch ? "" : "hidden"
         } lg:inline-block`}
