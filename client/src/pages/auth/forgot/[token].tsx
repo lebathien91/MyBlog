@@ -43,6 +43,7 @@ export default function ResetPassword() {
     if (res.error) return toast.error(res.error, { theme: "colored" });
 
     toast.success(res.success, { theme: "colored" });
+    return router.push("/login");
   };
   return (
     <main>

@@ -24,8 +24,7 @@ export default function ActivationEmail() {
   return (
     <div className="container mx-auto px-4 min-h-screen">
       <div className="py-10 text-2xl text-center">
-        {error && <h1 className="my-2 text-red-600">{error}</h1>}
-        {success && (
+        {success ? (
           <>
             <h1 className="my-2 text-red-600">
               Chúc mừng bạn tài khoản đã được kích hoạt.
@@ -37,6 +36,8 @@ export default function ActivationEmail() {
               </Link>
             </span>
           </>
+        ) : (
+          <h1 className="my-2 text-red-600">{error}</h1>
         )}
       </div>
     </div>
