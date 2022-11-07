@@ -71,7 +71,7 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
 
   return (
     <aside
-      className={`fixed text-white bg-[#11101D] top-0 left-0 h-full px-4 py-2 z-30 transition-all ease-linear duration-300 ${
+      className={`fixed text-white bg-[#11101D] top-0 left-0 h-full px-[14px] py-2 z-30 transition-all ease-linear duration-300 ${
         active ? "w-[250px]" : "w-[78px]"
       }`}
     >
@@ -94,7 +94,7 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
           </a>
         </Link>
         <i
-          className={`cursor-pointer flex items-center justify-center min-w-[50px] h-[60px] leading-[60px] absolute top-[50%] right-0 translate-y-[-50%] transition-all ease-linear duration-300  ${
+          className={`cursor-pointer flex items-center justify-center min-w-[50px] h-[60px] leading-[60px] absolute top-1/2 right-0 -translate-y-1/2 transition-all ease-linear duration-300  ${
             active ? "opacity-100 text-right" : "opacity-0"
           }`}
           onClick={() => setActive(!active)}
@@ -102,10 +102,10 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
           <BiMenuAltRight size="23px" />
         </i>
       </div>
-      <ul className="mt-[20px] h-full">
+      <ul className="mt-5 h-full">
         <li className="relative my-2 group">
           <i
-            className={`cursor-pointer flex items-center justify-center min-w-[50px] h-[50px] rounded-[12px] leading-[50px] absolute text-[18px] bg-[#1d1b31] hover:bg-white hover:text-slate-900`}
+            className={`cursor-pointer flex items-center justify-center min-w-[50px] h-[50px] rounded-xl leading-[50px] absolute text-lg bg-[#1d1b31] hover:bg-white hover:text-slate-900`}
             onClick={() => setActive(true)}
           >
             <BiSearch size="22px" />
@@ -113,12 +113,13 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
           <input
             type="text"
             placeholder="Search..."
+            name="q"
             className={`bg-[#1d1b31] outline-none h-[50px] ${
               active ? "w-full pr-5 pl-[50px]" : "w-[50px]"
             } border-0 rounded-[12px] transition-all ease-linear duration-300`}
           />
           <span
-            className={`absolute left-[calc(100%_+_15px)] top-[-20px] group-hover:top-[50%] group-hover:translate-y-[-50%] duration-300 shadow-lg z-10 bg-white text-slate-900 px-[12px] py-[6px] rounded-[4px] text-[15px] font-[400] pointer-events-none whitespace-nowrap opacity-0 ${
+            className={`absolute left-[calc(100%_+_15px)] -top-5 group-hover:top-1/2 group-hover:-translate-y-1/2 duration-300 shadow-lg z-10 bg-white text-slate-900 px-3 py-2 rounded-md pointer-events-none whitespace-nowrap opacity-0 ${
               active ? "hidden" : "group-hover:opacity-100"
             }`}
           >
@@ -153,7 +154,7 @@ const Sidebar = ({ active, setActive }: PropsSidebar) => {
                 </a>
               </Link>
               <span
-                className={`absolute left-[calc(100%_+_15px)] top-[-20px] group-hover:top-[50%] group-hover:translate-y-[-50%] duration-300 shadow-lg z-10 bg-white text-slate-900 px-3 py-2 rounded-md pointer-events-none whitespace-nowrap opacity-0 ${
+                className={`absolute left-[calc(100%_+_15px)] -top-5 group-hover:top-1/2 group-hover:-translate-y-1/2 duration-300 shadow-lg z-10 bg-white text-slate-900 px-3 py-2 rounded-md pointer-events-none whitespace-nowrap opacity-0 ${
                   active ? "hidden" : "group-hover:opacity-100"
                 }`}
               >

@@ -1,6 +1,7 @@
 import { parse } from "node-html-parser";
 import slug from "slugify";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import styles from "./Detail.module.css";
 
 import Link from "next/link";
 import { format } from "date-fns";
@@ -80,7 +81,7 @@ const Detail = ({ data }: any) => {
               </Link>
             </div>
           </header>
-          <main>
+          <main className="single">
             <h1 className="text-4xl">{article.title}</h1>
             <div className="mt-2 text-[#4d626e]">
               <time>
@@ -89,7 +90,7 @@ const Detail = ({ data }: any) => {
               <span> - {readTime} phút đọc</span>
             </div>
             <div
-              className="single"
+              className={styles.single}
               dangerouslySetInnerHTML={{ __html: content.toString() }}
             />
           </main>

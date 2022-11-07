@@ -5,12 +5,10 @@ import { Server, Socket } from "socket.io";
 const SocketServer = (socket: Socket) => {
   socket.on("joinRoom", (id: string) => {
     socket.join(id);
-    console.log({ joinRoom: (socket as any).adapter.rooms });
   });
 
   socket.on("outRoom", (id: string) => {
     socket.leave(id);
-    console.log({ outRoom: (socket as any).adapter.rooms });
   });
 
   socket.on("disconnect", () => {

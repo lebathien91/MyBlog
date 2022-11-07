@@ -20,7 +20,7 @@ const Tag = ({ post }: { post: ITag }) => {
         </h2>
         <p className="line-clamp-3">{post.description}</p>
       </main>
-      <footer className="px-4 py-2 flex justify-between text-[17px]">
+      <footer className="px-4 py-2 flex justify-between text-slate-800">
         <Link href={`/tag/${post.slug}`}>
           <a>{typeof post.category === "object" && post.category.name}</a>
         </Link>

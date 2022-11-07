@@ -34,7 +34,7 @@
     @apply list-decimal my-1;
   }
   .ck-content ul li,
-  single ul li {
+  .single ul li {
     @apply list-disc my-1;
   }
   .ck-content ul.todo-list li,
